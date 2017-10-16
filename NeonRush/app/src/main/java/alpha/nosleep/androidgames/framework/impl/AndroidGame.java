@@ -1,6 +1,7 @@
 package alpha.nosleep.androidgames.framework.impl;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -23,6 +24,10 @@ public abstract class AndroidGame extends Activity implements Game {
     Input input;
     FileIO fileIO;
     Screen screen;
+
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,12 @@ public abstract class AndroidGame extends Activity implements Game {
         screen.resume();
         screen.update(0);
         this.screen = screen;
+    }
+
+    @Override
+    public Activity getActivity()
+    {
+        return this;
     }
     
     public Screen getCurrentScreen() {

@@ -1,6 +1,8 @@
 package alpha.nosleep.neonrush;
 
 import alpha.nosleep.androidgames.framework.Game;
+import alpha.nosleep.androidgames.framework.Graphics;
+import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.androidgames.framework.Screen;
 
 /**
@@ -8,9 +10,16 @@ import alpha.nosleep.androidgames.framework.Screen;
  */
 
 public class MainGameScreen extends Screen {
+    private Pixmap background;
+    Graphics g;
+
     public MainGameScreen(Game game)
     {
         super(game);
+        g = game.getGraphics();
+
+        background = g.newPixmap("gameui.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(background, g.getWidth(), g.getHeight());
     }
 
     @Override
@@ -20,7 +29,7 @@ public class MainGameScreen extends Screen {
 
     @Override
     public void present(float deltaTime) {
-
+        g.drawPixmap(background);
     }
 
     @Override

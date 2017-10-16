@@ -7,6 +7,11 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
@@ -55,6 +60,18 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
+    public Pixmap resizePixmap(Pixmap pixmap, int newWidth, int newHeight) {
+        Bitmap resizedBitmap = null;
+        int originalWidth = pixmap.getBitmap().getWidth();
+        int originalHeight = pixmap.getBitmap().getHeight();
+
+        resizedBitmap = Bitmap.createScaledBitmap(pixmap.getBitmap(), newWidth, newHeight, true);
+        pixmap.setBitmap(resizedBitmap);
+        return pixmap;
+    }
+
+
+    @Override
     public AssetManager getAssets()
     {
         return assets;
@@ -83,12 +100,26 @@ public class AndroidGraphics implements Graphics {
         canvas.drawLine(x, y, x2, y2, paint);
     }
 
+
+
+    @Override
+    public void drawARGBRect(Rect rect, int a, int r, int g, int b)
+    {
+        paint.setARGB(a,r,g,b);
+        paint.setStyle(Style.FILL);
+        canvas.drawRect(rect.left,rect.top,rect.right,rect.bottom,paint);
+    }
+
     @Override
     public void drawRect(int x, int y, int width, int height, int color) {
         paint.setColor(color);
         paint.setStyle(Style.FILL);
         canvas.drawRect(x, y, x + width - 1, y + width - 1, paint);
     }
+
+
+
+
 
     @Override
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight) {
@@ -107,7 +138,13 @@ public class AndroidGraphics implements Graphics {
     
     @Override
     public void drawPixmap(Pixmap pixmap, int x, int y) {
-        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap, x, y, null);
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap, x, y,null);
+    }
+
+    @Override
+    public void drawPixmap(Pixmap pixmap)
+    {
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,(pixmap).getX() , (pixmap).getY(), null);
     }
 
     @Override
@@ -119,4 +156,8 @@ public class AndroidGraphics implements Graphics {
     public int getHeight() {
         return frameBuffer.getHeight();
     }
+
+
+
+
 }
