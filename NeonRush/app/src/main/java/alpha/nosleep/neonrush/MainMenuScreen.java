@@ -22,7 +22,7 @@ public class MainMenuScreen extends Screen {
     {
         super(game);
         Graphics g = game.getGraphics();
-        background = g.newPixmap("gameui.png", Graphics.PixmapFormat.RGB565);
+        background = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.RGB565);
 
         Pixmap img = g.newPixmap("Temp Logo.png", Graphics.PixmapFormat.RGB565);
         buttons.add(new Button(img, 200, 100, 100, 50, new Callable<Screen>() {
