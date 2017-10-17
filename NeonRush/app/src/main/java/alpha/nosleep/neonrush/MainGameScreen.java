@@ -11,25 +11,30 @@ import alpha.nosleep.androidgames.framework.Screen;
 
 public class MainGameScreen extends Screen {
     private Pixmap background;
+    private World world;
     Graphics g;
 
     public MainGameScreen(Game game)
     {
         super(game);
         g = game.getGraphics();
+        world = new World(game, g, 100.0f, 100.0f);
 
         background = g.newPixmap("gameui.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
     }
 
     @Override
-    public void update(float deltaTime) {
-
+    public void update(float deltaTime)
+    {
+        world.update();
     }
 
     @Override
-    public void present(float deltaTime) {
+    public void present(float deltaTime)
+    {
         g.drawPixmap(background);
+        world.draw();
     }
 
     @Override
@@ -46,4 +51,7 @@ public class MainGameScreen extends Screen {
     public void dispose() {
 
     }
+
+
+
 }
