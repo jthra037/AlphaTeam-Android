@@ -4,7 +4,7 @@ package alpha.nosleep.game.framework;
  * Created by John on 2017-10-12.
  */
 
-public class BoxCollider implements ICollider {
+public class BoxCollider implements Collider {
     private ITuple size;
 
     public BoxCollider(ITuple size)
