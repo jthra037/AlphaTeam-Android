@@ -4,7 +4,7 @@ package alpha.nosleep.game.framework;
  * Created by John on 2017-10-12.
  */
 
-public class BoxCollider implements Collider {
+public class BoxCollider extends Collider {
     private ITuple size;
 
     public BoxCollider(ITuple size)
@@ -17,21 +17,21 @@ public class BoxCollider implements Collider {
         this.size = new ITuple(x, y);
     }
 
-    @Override
-    public boolean OnOverlap() {
-        return false;
-    }
-
-    @Override
-    public Hit OnCollision() {
-        return null;
-    }
-
     public ITuple getSize() {
         return size;
     }
 
     public void setSize(ITuple size) {
         this.size = size;
+    }
+
+    @Override
+    public boolean OnOverlap(Object other, ITuple pos) {
+        return false;
+    }
+
+    @Override
+    public Hit OnCollision(Object other, ITuple pos) {
+        return null;
     }
 }

@@ -35,4 +35,9 @@ public abstract class Object
     public Collider getCollider() {
         return collider;
     }
+
+    protected Game getGame()
+    {
+        return game;
+    }
 }
