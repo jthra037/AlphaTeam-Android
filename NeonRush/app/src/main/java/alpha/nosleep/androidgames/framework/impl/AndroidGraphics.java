@@ -24,7 +24,7 @@ import static android.R.attr.y;
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
     Bitmap frameBuffer; // represents our artificial framebuffer
-    Canvas canvas;		// use to draw to the artificial framebuffer
+    Canvas canvas;		// use to present to the artificial framebuffer
     Paint paint;		// needed for drawing
     Rect srcRect = new Rect();
     Rect dstRect = new Rect();

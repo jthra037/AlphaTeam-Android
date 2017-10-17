@@ -130,13 +130,13 @@ public class Animation extends Activity {
 
         public void update()
         {
-            //which frame should we draw
+            //which frame should we present
             rectoToBeDrawn = new Rect((frameNumber * frameWidth) -1, 0, (frameNumber * frameWidth + frameWidth) -1 , frameHeight);
 
             //now the next frame
             frameNumber++;
 
-            //don't try and draw frames that don't exist
+            //don't try and present frames that don't exist
             if (frameNumber == numFrames)
                 frameNumber = 0;
         }
@@ -153,7 +153,7 @@ public class Animation extends Activity {
                 paint.setTextSize(25);
                 canvas.drawText("  Hi Score:" + hi, 10, screenHeight-50,paint);
 
-                //draw the snake head
+                //present the snake head
                 //make this rect whatever size and location you like
 
                 Rect destRect = new Rect(screenWidth/2-300, screenHeight/2-300,screenWidth/2+300,screenHeight/2+300);

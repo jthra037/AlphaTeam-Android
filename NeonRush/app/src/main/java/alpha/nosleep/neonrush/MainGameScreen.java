@@ -34,7 +34,7 @@ public class MainGameScreen extends Screen {
     public void present(float deltaTime)
     {
         g.drawPixmap(background);
-        world.draw();
+        world.present(deltaTime);
     }
 
     @Override

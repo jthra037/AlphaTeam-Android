@@ -35,7 +35,7 @@ public class Ball extends Object implements IPhysics {
         if (img == null)
         {
             Graphics g = getGame().getGraphics();
-            g.drawCircle(position.x, position.y, radius, Color.BLUE);
+            g.drawCircle((int)position.x, (int)position.y, radius, Color.BLUE);
         }
         else
         {
