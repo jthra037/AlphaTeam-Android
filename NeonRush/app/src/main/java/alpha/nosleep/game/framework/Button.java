@@ -2,6 +2,8 @@ package alpha.nosleep.game.framework;
 
 import java.util.concurrent.Callable;
 
+import alpha.nosleep.androidgames.framework.Game;
+import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.androidgames.framework.Screen;
 
@@ -10,38 +12,73 @@ import alpha.nosleep.androidgames.framework.Screen;
  */
 
 public class Button {
-    public Pixmap img;
-    public ITuple position;
-    public ITuple size;
+    private Pixmap img;
+    private ITuple position;
+    private ITuple size;
+    private Graphics g;
+    private Game game;
     private Callable<Void> action;
 
-    public Button(Pixmap img, int xPos, int yPos, int width, int height,
+    public Button(Game game,Pixmap img, int xPos, int yPos, int width, int height,
                   Callable<Void> action)
     {
         this.img = img;
         this.position = new ITuple(xPos, yPos);
         this.size = new ITuple(width, height);
         this.action = action;
+        this.game = game;
+        this.g = this.game.getGraphics();
+
     }
 
-    public Button(Pixmap img, int xPos, int yPos,
+    public Button(Game game,Pixmap img, int xPos, int yPos,
                   Callable<Void> action)
     {
         this.img = img;
         this.position = new ITuple(xPos, yPos);
         this.size = new ITuple(img.getWidth(), img.getHeight());
+        this.game = game;
+        this.g = this.game.getGraphics();
         this.action = action;
     }
 
-    public Button(Pixmap img, Callable<Void> action)
+    public Button(Game game,Pixmap img, Callable<Void> action)
     {
         this.img = img;
-        this.position = new ITuple(img.getX(), img.getY());
+        this.position = new ITuple(0, 0);
         this.size = new ITuple(img.getWidth(), img.getHeight());
+        this.game = game;
+        this.g = this.game.getGraphics();
         this.action = action;
     }
 
-    public Void click()
+    public void resize(int newWidth, int newHeight)
+    {
+        this.g.resizePixmap(img,newWidth,newHeight);
+        this.size = new ITuple(newWidth,newHeight);
+    }
+
+    public void setPosition(int x, int y)
+    {
+        this.img.setPosition(x,y);
+        this.position = new ITuple(x,y);
+    }
+
+    public int getX(){ return this.position.x;}
+
+    public int getY(){return this.position.y;}
+
+    public int getWidth(){return this.size.x;}
+
+    public int getHeight(){return this.size.y;}
+
+    public ITuple getPosition() {return this.position;}
+
+    public ITuple getSize(){return this.size;}
+
+    public Pixmap getImg(){return this.img;}
+
+    public Void onClick()
     {
         try {
             action.call();

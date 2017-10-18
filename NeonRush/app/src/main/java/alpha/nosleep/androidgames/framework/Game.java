@@ -13,5 +13,6 @@ public interface Game
     public Screen getCurrentScreen();
     public Screen getStartScreen();
     public Activity getActivity();
+    public Context getContext();
 }
 
