@@ -2,6 +2,7 @@ package alpha.nosleep.androidgames.framework.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -24,10 +25,7 @@ public abstract class AndroidGame extends Activity implements Game {
     Input input;
     FileIO fileIO;
     Screen screen;
-
-
-
-
+    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +34,7 @@ public abstract class AndroidGame extends Activity implements Game {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         int frameBufferWidth = isLandscape ? 1280 : 800;
         int frameBufferHeight = isLandscape ? 800 : 1280;
@@ -55,6 +53,7 @@ public abstract class AndroidGame extends Activity implements Game {
         audio = new AndroidAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         screen = getStartScreen();
+        context = getApplicationContext();
         setContentView(renderView);
     }
 
@@ -63,6 +62,12 @@ public abstract class AndroidGame extends Activity implements Game {
         super.onResume();
         screen.resume();
         renderView.resume();
+    }
+
+    @Override
+    public Context getContext()
+    {
+       return context;
     }
 
     @Override

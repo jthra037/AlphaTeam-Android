@@ -1,5 +1,7 @@
 package alpha.nosleep.neonrush;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -16,24 +18,83 @@ import alpha.nosleep.game.framework.Button;
  */
 
 public class MainMenuScreen extends Screen {
-    private Pixmap background;
+    private Pixmap gameTitle;
+    Graphics g;
     private List<Button> buttons = new ArrayList<Button>();
 
     public MainMenuScreen(final Game game)
     {
         super(game);
-        Graphics g = game.getGraphics();
-        background = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.RGB565);
+        g = game.getGraphics();
+        gameTitle = g.newPixmap("title.png", Graphics.PixmapFormat.RGB565);
+        gameTitle.setPosition(500,(g.getHeight()/2) - gameTitle.getHeight()/4);
+        g.resizePixmap(gameTitle,700,500);
 
-        Pixmap img = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(img, 100, 50);
-        buttons.add(new Button(img, 200, 100, 100, 50, new Callable<Void>(){
+
+        Pixmap playButton = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(playButton, 100, 50);
+
+        buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
+
                 game.setScreen(new MainGameScreen(game));
+
                 return null;
             }
         }
         ));
+        buttons.get(0).resize(340,100);
+        buttons.get(0).setPosition(100,200);
+
+        Pixmap achievementsButton = g.newPixmap("buttons/achievementsbutton.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(achievementsButton, 100, 50);
+
+        buttons.add(new Button(game,achievementsButton, new Callable<Void>(){
+            public Void call() {
+
+                //game.setScreen(new AchievementsScreen(game));
+                System.out.println("Achievements have yet to be implemented. Please be patient!");
+                return null;
+            }
+        }
+        ));
+        buttons.get(1).resize(340,100);
+        buttons.get(1).setPosition(100,330);
+
+        Pixmap settingsButton = g.newPixmap("buttons/settingsbutton.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(settingsButton, 100, 50);
+
+        buttons.add(new Button(game,settingsButton, new Callable<Void>(){
+            public Void call() {
+
+                //game.setScreen(new SettingsScreen(game));
+                System.out.println("Settings have yet to be implemented. Please be patient!");
+
+                return null;
+            }
+        }
+        ));
+        buttons.get(2).resize(340,100);
+        buttons.get(2).setPosition(100,460);
+
+        Pixmap leaderboardsButton = g.newPixmap("buttons/leaderboardsbutton.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(leaderboardsButton, 100, 50);
+
+        buttons.add(new Button(game,leaderboardsButton, new Callable<Void>(){
+            public Void call() {
+
+                //game.setScreen(new LeaderboardsScreen(game));
+                System.out.println("Leaderboards have yet to be implemented. Please be patient!");
+
+                return null;
+            }
+        }
+        ));
+        buttons.get(3).resize(340,100);
+        buttons.get(3).setPosition(100,590);
+
+
+
     }
 
     @Override
@@ -47,10 +108,10 @@ public class MainMenuScreen extends Screen {
             if (event.type == Input.TouchEvent.TOUCH_DOWN) {
                 for (Button button : buttons)
                 {
-                    if(inBounds(event, button.position.x, button.position.y,
-                            button.size.x, button.size.y))
+                    if(inBounds(event, button.getX(), button.getY(),
+                            button.getWidth(), button.getHeight()))
                     {
-                        button.click();
+                        button.onClick();
                     }
                 }
             }
@@ -59,11 +120,11 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void present(float deltaTime) {
-        Graphics g = game.getGraphics();
-        g.drawPixmap(background, 0, 0);
+        g.drawPixmap(gameTitle);
+
         for (Button button : buttons)
         {
-            g.drawPixmap(button.img, button.position.x, button.position.y);
+            g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
     }
 
