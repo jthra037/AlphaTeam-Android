@@ -41,6 +41,8 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         v.setPosition(player.position);
+
+        new Enemy(this, 15);
     }
 
     public float getWidth()
@@ -58,13 +60,20 @@ public class World
     public void update(float deltaTime)
     {
         //player.move(deltaTime);
-        player.update(deltaTime);
+        //player.update(deltaTime);
+        for (Object object : objects)
+        {
+            object.update(deltaTime);
+        }
         v.setPosition(player.position);
     }
 
     public void present(float deltaTime)
     {
-        player.present(deltaTime);
+        for (Object object : objects)
+        {
+            object.present(deltaTime);
+        }
     }
 
     //Change world coordinate to local on-screen coordinate.
@@ -81,6 +90,9 @@ public class World
     {
         objects.add(object);
     }
+
+    public Player getPlayer()
+    { return player; }
 
     //This represents the viewport into the world that is visible on screen to the player.
     public class ViewableScreen

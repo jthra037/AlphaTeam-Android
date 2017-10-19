@@ -34,6 +34,7 @@ public class Player extends Ball
         color = Color.WHITE;
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
 
+        world.register(this);
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);
     }

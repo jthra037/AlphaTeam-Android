@@ -27,8 +27,8 @@ public class Ball extends Object{
         super(world.game);
         this.radius = radius;
         this.world = world;
-        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
 
+        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius);
         world.register(this);
     }
@@ -55,11 +55,11 @@ public class Ball extends Object{
         if (img == null)
         {
             Graphics g = getGame().getGraphics();
-            g.drawCircle((int)position.x, (int)position.y, radius, color);
+            g.drawCircle(localCoord.x, localCoord.y, radius, color);
         }
         else
         {
-            super.present(deltaTime);
+            super.present(localCoord.x, localCoord.y, deltaTime);
         }
     }
 
@@ -81,6 +81,11 @@ public class Ball extends Object{
 
     public void AddForce(FTuple force, float deltaTime) {
         velocity = velocity.Add(force.Mul(1/mass).Mul(deltaTime));
+    }
+
+    public World getWorld()
+    {
+        return world;
     }
 
     public void AddForce(FTuple force) {

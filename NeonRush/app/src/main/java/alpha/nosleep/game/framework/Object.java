@@ -30,6 +30,16 @@ public abstract class Object
         }
     }
 
+    public void present(int x, int y, float deltaTime)
+    {
+        Graphics g = game.getGraphics();
+
+        if (img != null)
+        {
+            g.drawPixmap(img, x, y);
+        }
+    }
+
     public abstract void update(float deltaTime);
 
     public Collider getCollider() {
