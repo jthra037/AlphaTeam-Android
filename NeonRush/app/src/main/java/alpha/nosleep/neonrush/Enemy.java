@@ -38,8 +38,16 @@ public class Enemy extends Ball {
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        player = getWorld().getPlayer();
-        FTuple Fa = player.getWorldCoord().Add(position.Mul(-1)).Normalized().Mul(F);
+        FTuple playerPos = getWorld().getPlayer().getWorldCoord();
+        FTuple Fa = playerPos.Add(position.Mul(-1)).Normalized().Mul(F);
+        if ( Math.abs(playerPos.x - position.x) > getWorld().getWidth()/2 )
+        {
+            Fa.x *= -1;
+        }
+        if ( Math.abs(playerPos.y - position.y) > getWorld().getHeight()/2 )
+        {
+            Fa.y *= -1;
+        }
         AddForce(Fa);
 
         if(velocity.LengthS() > speed * speed)
