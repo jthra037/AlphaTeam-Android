@@ -17,6 +17,8 @@ public class Button {
     private ITuple size;
     private Graphics g;
     private Game game;
+    private boolean clickable = true;
+    private boolean hidden = false;
     private Callable<Void> action;
 
     public Button(Game game,Pixmap img, int xPos, int yPos, int width, int height,
@@ -30,6 +32,14 @@ public class Button {
         this.g = this.game.getGraphics();
 
     }
+
+    public boolean isClickable(){return clickable;}
+
+    public void isClickable(boolean value) { this.clickable = value; }
+
+    public boolean isHidden(){return hidden;}
+
+    public void hide(boolean value){hidden = value;clickable = !value;}
 
     public Button(Game game,Pixmap img, int xPos, int yPos,
                   Callable<Void> action)
@@ -64,6 +74,7 @@ public class Button {
         this.position = new ITuple(x,y);
     }
 
+
     public int getX(){ return this.position.x;}
 
     public int getY(){return this.position.y;}
@@ -81,7 +92,15 @@ public class Button {
     public Void onClick()
     {
         try {
-            action.call();
+            if(clickable)
+            {
+                action.call();
+            }
+            else
+            {
+                //System.out.println("Not Clickable.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
