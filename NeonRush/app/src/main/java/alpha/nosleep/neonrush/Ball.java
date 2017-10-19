@@ -30,6 +30,7 @@ public class Ball extends Object{
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
 
         collider = new CircleCollider(radius);
+        world.register(this);
     }
 
     @Override

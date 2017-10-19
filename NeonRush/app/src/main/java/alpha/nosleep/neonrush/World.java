@@ -1,9 +1,15 @@
 package alpha.nosleep.neonrush;
 
+import android.graphics.Color;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.game.framework.FTuple;
 import alpha.nosleep.game.framework.ITuple;
+import alpha.nosleep.game.framework.Object;
 
 /**
  * Created by Mark- on 17-Oct-17.
@@ -11,6 +17,11 @@ import alpha.nosleep.game.framework.ITuple;
 
 public class World
 {
+    public int[] Palette = {Color.CYAN, Color.GREEN,
+        Color.MAGENTA, Color.RED,
+        Color.BLUE, Color.YELLOW,
+        Color.GRAY
+    };
     public Game game;
     public Graphics g;
     private ViewableScreen v;
@@ -18,6 +29,7 @@ public class World
     private float worldHeight;
     private Player player;
     private float gravity = -8;
+    private List<Object> objects = new ArrayList<Object>();
 
     public World(Game gm, Graphics graphics, float width, float height)
     {
@@ -63,6 +75,11 @@ public class World
 
         ITuple local = new ITuple(x, y);
         return local;
+    }
+
+    public void register(Object object)
+    {
+        objects.add(object);
     }
 
     //This represents the viewport into the world that is visible on screen to the player.
