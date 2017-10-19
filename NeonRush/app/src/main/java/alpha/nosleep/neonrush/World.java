@@ -30,6 +30,8 @@ public class World
     private Player player;
     private float gravity = -8;
     private List<Object> objects = new ArrayList<Object>();
+    private List<Object> registryList = new ArrayList<Object>();
+    private List<Object> deRegistryList = new ArrayList<Object>();
 
     public World(Game gm, Graphics graphics, float width, float height)
     {
@@ -70,11 +72,17 @@ public class World
                     {
                         unregister(object);
                         unregister(other);
-                        break;
                     }
                 }
             }
         }
+
+        objects.addAll(registryList);
+        registryList.removeAll(registryList);
+
+        objects.removeAll(deRegistryList);
+        deRegistryList.removeAll(deRegistryList);
+
         v.setPosition(player.position);
     }
 
@@ -98,10 +106,10 @@ public class World
 
     public void register(Object object)
     {
-        objects.add(object);
+        registryList.add(object);
     }
     public void unregister(Object object) {
-        objects.remove(object);
+        deRegistryList.add(object);
     }
 
     public Player getPlayer()

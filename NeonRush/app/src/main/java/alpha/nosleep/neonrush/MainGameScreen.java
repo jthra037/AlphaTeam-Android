@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import alpha.nosleep.androidgames.framework.Game;
@@ -15,6 +16,7 @@ import alpha.nosleep.androidgames.framework.Input;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.androidgames.framework.Screen;
 import alpha.nosleep.game.framework.Button;
+import alpha.nosleep.game.framework.FTuple;
 
 /**
  * Created by John on 2017-10-10.
@@ -34,6 +36,10 @@ public class MainGameScreen extends Screen {
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
+
+    private int spawnWait = 2000;
+    private long lastSpawn = 0;
+    private Random random;
 
 
     public MainGameScreen(final Game game)
@@ -107,6 +113,9 @@ public class MainGameScreen extends Screen {
         textPaint.setTypeface(tf);
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(100);
+
+        lastSpawn = System.currentTimeMillis();
+        random = new Random();
     }
 
     @Override
@@ -131,6 +140,33 @@ public class MainGameScreen extends Screen {
         }
 
         world.update(deltaTime);
+
+        if (System.currentTimeMillis() > lastSpawn + spawnWait)
+        {
+            int x = 0;
+            int y = 0;
+            switch (random.nextInt(4))
+            {
+                case 0:
+                    x = 0;
+                    y = random.nextInt((int)world.getHeight());
+                    break;
+                case 1:
+                    x = (int)world.getWidth();
+                    y = random.nextInt((int)world.getHeight());
+                    break;
+                case 2:
+                    y = 0;
+                    x = random.nextInt((int)world.getWidth());
+                    break;
+                case 3:
+                    y = (int)world.getHeight();
+                    x = random.nextInt((int)world.getWidth());
+                    break;
+            }
+            lastSpawn = System.currentTimeMillis() + spawnWait;
+            new Enemy(world, 10, new FTuple(x, y));
+        }
     }
 
     @Override

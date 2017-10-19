@@ -12,13 +12,13 @@ import alpha.nosleep.game.framework.FTuple;
 
 public class Enemy extends Ball {
     private Player player;
-    private float speed = 400;
+    private float speed = 200;
     private float F = 100;
 
     public Enemy(World world, int radius, FTuple position) {
         super(world, radius);
         Random r = new Random();
-        this.color = r.nextInt(world.Palette.length);
+        this.color = world.Palette[r.nextInt(world.Palette.length)];
         this.position = position;
         this.player = world.getPlayer();
 
