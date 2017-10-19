@@ -16,7 +16,6 @@ import alpha.nosleep.game.framework.ITuple;
 
 public class Player extends Ball
 {
-    private ITuple localCoord;
     private FTuple accel;
 
     private float maxSpeed = 600;
@@ -26,12 +25,12 @@ public class Player extends Ball
 
     public Player(World w)
     {
-        super(w.game, 15);
+        super(w, 15);
         world = w;
         i = w.game.getInput();
 
+        color = Color.WHITE;
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
-        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
 
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);
@@ -41,32 +40,7 @@ public class Player extends Ball
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        position.x %= world.getWidth();
-        position.y %= world.getHeight();
-        if(position.x < 0)
-        {
-            position.x = world.getWidth();
-        }
-        if (position.y < 0)
-        {
-            position.y = world.getHeight();
-        }
         move(deltaTime);
-        localCoord = world.toLocalCoord(position);
-    }
-
-    @Override
-    public void present(float deltaTime)
-    {
-        if (img == null)
-        {
-            Graphics g = getGame().getGraphics();
-            g.drawCircle(localCoord.x, localCoord.y, getRadius(), Color.WHITE);
-        }
-        else
-        {
-            super.present(deltaTime);
-        }
     }
 
     public void move(float deltaTime)
@@ -84,9 +58,6 @@ public class Player extends Ball
         {
             velocity = velocity.Normalized().Mul(maxSpeed);
         }
-        //System.out.println("Accel X: " + accel.x + "    Accel Y: " + accel.y);
-        //System.out.println("********************************");
-        //System.out.println("Velocity.x: " + velocity.x + "\n Velocity.y: " + velocity.y);
     }
 
 
