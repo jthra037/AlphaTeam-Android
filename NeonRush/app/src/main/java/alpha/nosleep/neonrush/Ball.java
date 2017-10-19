@@ -5,6 +5,7 @@ import android.graphics.Color;
 import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.game.framework.CircleCollider;
+import alpha.nosleep.game.framework.FTuple;
 import alpha.nosleep.game.framework.IPhysics;
 import alpha.nosleep.game.framework.Object;
 
@@ -12,9 +13,10 @@ import alpha.nosleep.game.framework.Object;
  * Created by John on 2017-10-17.
  */
 
-public class Ball extends Object implements IPhysics {
-    private int radius = 5;
+public class Ball extends Object{
+    private int radius = 500;
     private float mass = 1;
+    protected FTuple velocity = new FTuple(0, 0);
 
     public Ball(Game game, int radius)
     {
@@ -26,7 +28,7 @@ public class Ball extends Object implements IPhysics {
 
     @Override
     public void update(float deltaTime) {
-
+        position.Add(velocity);
     }
 
     @Override
@@ -57,5 +59,10 @@ public class Ball extends Object implements IPhysics {
 
     public void setMass(float mass) {
         this.mass = mass;
+    }
+
+    public void AddForce(FTuple force, float deltaTime) {
+        velocity.x += (force.x / mass) * deltaTime;
+        velocity.y += (force.y / mass) * deltaTime;
     }
 }

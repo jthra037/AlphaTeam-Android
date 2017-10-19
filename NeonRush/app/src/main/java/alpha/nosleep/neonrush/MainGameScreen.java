@@ -18,7 +18,7 @@ public class MainGameScreen extends Screen {
     {
         super(game);
         g = game.getGraphics();
-        world = new World(game, g, 100.0f, 100.0f);
+        world = new World(game, g, g.getWidth(), g.getHeight());
 
         background = g.newPixmap("gameui.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
@@ -27,7 +27,7 @@ public class MainGameScreen extends Screen {
     @Override
     public void update(float deltaTime)
     {
-        world.update();
+        world.update(deltaTime);
     }
 
     @Override

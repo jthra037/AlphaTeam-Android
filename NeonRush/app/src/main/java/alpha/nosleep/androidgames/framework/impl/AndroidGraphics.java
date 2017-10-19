@@ -120,9 +120,11 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawCircle(int x, int y, int radius, int color)
     {
+        System.out.print("Drawing circle with radius: " + radius +
+        "\n At position: " + x + ", " + y);
         paint.setColor(color);
         paint.setStyle(Style.FILL);
-        canvas.drawCircle(x, y, radius - 1, paint);
+        canvas.drawCircle(x, y, radius, paint);
     }
 
 

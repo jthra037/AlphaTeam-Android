@@ -5,5 +5,9 @@ package alpha.nosleep.game.framework;
  */
 
 public interface IPhysics {
+    float mass = 1;
+    FTuple velocity = new FTuple(0, 0);
 
+    void AddForce(float force, float deltaTime);
+    void SetVelocity(FTuple velocity);
 }

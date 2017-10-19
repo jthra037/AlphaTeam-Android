@@ -1,5 +1,7 @@
 package alpha.nosleep.neonrush;
 
+import android.graphics.Color;
+
 import java.util.List;
 
 import alpha.nosleep.androidgames.framework.Graphics;
@@ -19,10 +21,11 @@ public class Player extends Ball
 
     private Input i;
     private World world;
+    //private float friction = 0.6f;
 
     public Player(World w)
     {
-        super(w.game, 5);
+        super(w.game, 15);
         world = w;
         i = w.game.getInput();
 
@@ -33,14 +36,39 @@ public class Player extends Ball
         //world.g.resizePixmap(playerImg, xValue, yValue);
     }
 
-    public void move()
+    @Override
+    public void update(float deltaTime)
+    {
+        super.update(deltaTime);
+        localCoord = world.toLocalCoord(position);
+    }
+
+    @Override
+    public void present(float deltaTime)
+    {
+        if (img == null)
+        {
+            Graphics g = getGame().getGraphics();
+            g.drawCircle(localCoord.x, localCoord.y, getRadius(), Color.WHITE);
+        }
+        else
+        {
+            super.present(deltaTime);
+        }
+    }
+
+    public void move(float deltaTime)
     {
         accel = new FTuple(i.getAccelX(), i.getAccelY());
+        float Fg = getMass() * world.getGravity();
+        float dx = Fg * accel.x;
+        float dy = Fg * accel.x;
 
+        AddForce(new FTuple(dx, dy), deltaTime);
 
-
-
-        System.out.println("Accel X: " + accel.x + "    Accel Y: " + accel.y);
+        //System.out.println("Accel X: " + accel.x + "    Accel Y: " + accel.y);
+        //System.out.println("********************************");
+        //System.out.println("Velocity.x: " + velocity.x + "\n Velocity.y: " + velocity.y);
     }
 
 

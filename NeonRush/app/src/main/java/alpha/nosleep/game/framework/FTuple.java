@@ -14,4 +14,14 @@ public class FTuple
         this.x = x;
         this.y = y;
     }
+
+    public FTuple Add(FTuple in)
+    {
+        return new FTuple(this.x + in.x, this.y + in.y);
+    }
+
+    public FTuple Add(float x, float y)
+    {
+        return new FTuple(this.x + x, this.y + y);
+    }
 }
