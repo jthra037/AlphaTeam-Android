@@ -6,6 +6,7 @@ import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Input;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.game.framework.FTuple;
+import alpha.nosleep.game.framework.ITuple;
 
 /**
  * Created by Mark- on 17-Oct-17.
@@ -13,7 +14,7 @@ import alpha.nosleep.game.framework.FTuple;
 
 public class Player extends Ball
 {
-    private FTuple localCoord;
+    private ITuple localCoord;
     private FTuple accel;
 
     private Input i;
@@ -26,7 +27,7 @@ public class Player extends Ball
         i = w.game.getInput();
 
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
-        localCoord = new FTuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
+        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
 
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);

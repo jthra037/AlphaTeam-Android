@@ -74,6 +74,7 @@ public class World
         {
             g = graphics;
             viewSize = new ITuple(g.getWidth(), g.getHeight());
+            worldPosition = new FTuple(g.getWidth()/2, g.getHeight()/2);
         }
 
         public void setPosition(FTuple player)

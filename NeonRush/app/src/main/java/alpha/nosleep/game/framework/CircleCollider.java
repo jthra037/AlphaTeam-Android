@@ -50,9 +50,9 @@ public class CircleCollider extends Collider {
 
     private boolean circleCircleCollision(Object other, CircleCollider otherCollider, ITuple pos)
     {
-        int ds = ((other.position.x - pos.x) * (other.position.x - pos.x)) +
+        float ds = ((other.position.x - pos.x) * (other.position.x - pos.x)) +
                 ((other.position.y - pos.y) * (other.position.y - pos.y));
-        int rs = (otherCollider.getRadius() * otherCollider.getRadius()) + (radius * radius);
+        float rs = (otherCollider.getRadius() * otherCollider.getRadius()) + (radius * radius);
 
         return ds < rs;
     }
