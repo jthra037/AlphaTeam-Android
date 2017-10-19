@@ -16,7 +16,9 @@ import alpha.nosleep.game.framework.ITuple;
 
 public class Player extends Ball
 {
-    private FTuple accel;
+    private FTuple accel;       //Current accelerometer values.
+    private FTuple lastAccel = new FTuple(0.0f, 0.0f);   //Last frame's accelerometer values.
+    private float speedScalar = 15.0f;
 
     private float maxSpeed = 600;
     private Input i;
@@ -47,17 +49,25 @@ public class Player extends Ball
     {
         accel = new FTuple(i.getAccelX(), i.getAccelY());
         float Fn = getMass() * -world.getGravity();
+
+        float dx = Fn * (accel.y - lastAccel.y) * speedScalar;
+        float dy = Fn * (accel.x - lastAccel.x) * speedScalar;
+
         //float dx = Fn * accel.y * (accel.y / damp) * (accel.y / Math.abs(accel.y));
         //float dy = Fn * accel.x * (accel.x / damp) * (accel.x / Math.abs(accel.x));
-        float dx = Fn * accel.y;
-        float dy = Fn * accel.x;
+
         FTuple Fa = new FTuple(dx, dy);
 
         AddForce(Fa); // Impulse plays more fun
+
+        /*
         if (velocity.LengthS() > maxSpeed * maxSpeed)
         {
             velocity = velocity.Normalized().Mul(maxSpeed);
         }
+        */
+
+        lastAccel = accel;
     }
 
 
