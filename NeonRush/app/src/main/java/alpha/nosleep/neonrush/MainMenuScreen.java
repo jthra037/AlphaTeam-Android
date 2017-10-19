@@ -1,5 +1,7 @@
 package alpha.nosleep.neonrush;
 
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,12 +22,14 @@ import alpha.nosleep.game.framework.Button;
 public class MainMenuScreen extends Screen {
     private Pixmap gameTitle;
     Graphics g;
+    Rect backGround;
     private List<Button> buttons = new ArrayList<Button>();
 
     public MainMenuScreen(final Game game)
     {
         super(game);
         g = game.getGraphics();
+        backGround = new Rect(0,0,g.getWidth()+1,g.getHeight());
         gameTitle = g.newPixmap("title.png", Graphics.PixmapFormat.RGB565);
         gameTitle.setPosition(500,(g.getHeight()/2) - gameTitle.getHeight()/4);
         g.resizePixmap(gameTitle,700,500);
@@ -120,6 +124,7 @@ public class MainMenuScreen extends Screen {
 
     @Override
     public void present(float deltaTime) {
+        g.drawRect(backGround, Color.BLACK );
         g.drawPixmap(gameTitle);
 
         for (Button button : buttons)

@@ -21,6 +21,8 @@ public interface Graphics
     public void drawRect(int x, int y, int width, int height, int color);
     public void drawCircle(int x, int y, int radius, int color);
     public void drawARGBRect(Rect rect, int a, int r, int g, int b);
+    public void drawRect(Rect rect, int color);
+    public Rect setRectPosition(Rect rect,int x, int y);
     public void drawPixmap(Pixmap pixmap, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight);
     public void drawPixmap(Pixmap pixmap, int x, int y);
     public void drawPixmap(Pixmap pixmap);

@@ -105,16 +105,33 @@ public class AndroidGraphics implements Graphics {
     @Override
     public void drawARGBRect(Rect rect, int a, int r, int g, int b)
     {
-        paint.setARGB(a,r,g,b);
-        paint.setStyle(Style.FILL);
-        canvas.drawRect(rect.left,rect.top,rect.right,rect.bottom,paint);
+
+        paint.setColor(Color.rgb(r,g,b));
+        paint.setAlpha(a);
+        canvas.drawRect(rect.left,rect.top,rect.right+rect.left -1,rect.bottom+ rect.top -1,paint );
     }
 
     @Override
     public void drawRect(int x, int y, int width, int height, int color) {
+
         paint.setColor(color);
         paint.setStyle(Style.FILL);
         canvas.drawRect(x, y, x + width - 1, y + width - 1, paint);
+    }
+
+    @Override
+    public void drawRect(Rect rect, int color)
+    {
+        paint.setColor(color);
+        paint.setStyle((Style.FILL));
+        canvas.drawRect(rect.left,rect.top,rect.right + rect.left -1,rect.bottom + rect.top -1,paint);
+    }
+
+    @Override
+    public Rect setRectPosition(Rect rect,int x, int y)
+    {
+        rect.set(x,y,rect.right,rect.bottom);
+        return rect;
     }
 
     @Override
