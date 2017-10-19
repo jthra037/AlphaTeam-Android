@@ -53,7 +53,7 @@ public class Player extends Ball
         float dy = Fn * accel.x;
         FTuple Fa = new FTuple(dx, dy);
 
-        AddForce(Fa);
+        AddForce(Fa); // Impulse plays more fun
         if (velocity.LengthS() > maxSpeed * maxSpeed)
         {
             velocity = velocity.Normalized().Mul(maxSpeed);
