@@ -64,6 +64,18 @@ public class World
         for (Object object : objects)
         {
             object.update(deltaTime);
+            for (Object other : objects)
+            {
+                if (other != object)
+                {
+                    if(object.getCollider().OnOverlap(other, object.position))
+                    {
+                        unregister(object);
+                        unregister(other);
+                        break;
+                    }
+                }
+            }
         }
         v.setPosition(player.position);
     }
@@ -89,6 +101,9 @@ public class World
     public void register(Object object)
     {
         objects.add(object);
+    }
+    public void unregister(Object object) {
+        objects.remove(object);
     }
 
     public Player getPlayer()

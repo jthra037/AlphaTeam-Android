@@ -14,5 +14,6 @@ public abstract class Collider
     public ColliderFormat format = null;
 
     public abstract boolean OnOverlap(Object other, ITuple pos);
+    public abstract boolean OnOverlap(Object other, FTuple pos);
     public abstract Hit OnCollision(Object other, ITuple pos);
 }

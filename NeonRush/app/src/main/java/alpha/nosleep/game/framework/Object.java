@@ -46,8 +46,15 @@ public abstract class Object
         return collider;
     }
 
+    public FTuple getPosition()
+    {
+        return position;
+    }
+
     protected Game getGame()
     {
         return game;
     }
+
+
 }
