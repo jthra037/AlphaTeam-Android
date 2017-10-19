@@ -24,4 +24,25 @@ public class FTuple
     {
         return new FTuple(this.x + x, this.y + y);
     }
+
+    public FTuple Mul(float x)
+    {
+        return new FTuple(this.x * x, this.y * x);
+    }
+
+    public float LengthS()
+    {
+        return (this.x * this.x + this.y * this.y);
+    }
+
+    public float Length()
+    {
+        return (float)Math.sqrt(LengthS());
+    }
+
+    public FTuple Normalized()
+    {
+        float len = Length();
+        return new FTuple(this.x/len, this.y/len);
+    }
 }

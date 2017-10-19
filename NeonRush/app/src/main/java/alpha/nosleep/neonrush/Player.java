@@ -19,9 +19,10 @@ public class Player extends Ball
     private ITuple localCoord;
     private FTuple accel;
 
+    private float maxSpeed = 600;
     private Input i;
     private World world;
-    //private float friction = 0.6f;
+    private float damp = 2;
 
     public Player(World w)
     {
@@ -40,6 +41,17 @@ public class Player extends Ball
     public void update(float deltaTime)
     {
         super.update(deltaTime);
+        position.x %= world.getWidth();
+        position.y %= world.getHeight();
+        if(position.x < 0)
+        {
+            position.x = world.getWidth();
+        }
+        if (position.y < 0)
+        {
+            position.y = world.getHeight();
+        }
+        move(deltaTime);
         localCoord = world.toLocalCoord(position);
     }
 
@@ -60,12 +72,18 @@ public class Player extends Ball
     public void move(float deltaTime)
     {
         accel = new FTuple(i.getAccelX(), i.getAccelY());
-        float Fg = getMass() * world.getGravity();
-        float dx = Fg * accel.x;
-        float dy = Fg * accel.x;
+        float Fn = getMass() * -world.getGravity();
+        //float dx = Fn * accel.y * (accel.y / damp) * (accel.y / Math.abs(accel.y));
+        //float dy = Fn * accel.x * (accel.x / damp) * (accel.x / Math.abs(accel.x));
+        float dx = Fn * accel.y;
+        float dy = Fn * accel.x;
+        FTuple Fa = new FTuple(dx, dy);
 
-        AddForce(new FTuple(dx, dy), deltaTime);
-
+        AddForce(Fa);
+        if (velocity.LengthS() > maxSpeed * maxSpeed)
+        {
+            velocity = velocity.Normalized().Mul(maxSpeed);
+        }
         //System.out.println("Accel X: " + accel.x + "    Accel Y: " + accel.y);
         //System.out.println("********************************");
         //System.out.println("Velocity.x: " + velocity.x + "\n Velocity.y: " + velocity.y);

@@ -17,7 +17,7 @@ public class World
     private float worldWidth;
     private float worldHeight;
     private Player player;
-    private float gravity = -9.812f;
+    private float gravity = -8;
 
     public World(Game gm, Graphics graphics, float width, float height)
     {
@@ -45,7 +45,8 @@ public class World
 
     public void update(float deltaTime)
     {
-        player.move(deltaTime);
+        //player.move(deltaTime);
+        player.update(deltaTime);
         v.setPosition(player.position);
     }
 

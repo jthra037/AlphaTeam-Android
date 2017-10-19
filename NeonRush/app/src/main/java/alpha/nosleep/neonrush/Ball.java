@@ -28,7 +28,7 @@ public class Ball extends Object{
 
     @Override
     public void update(float deltaTime) {
-        position.Add(velocity);
+        position = position.Add(velocity.Mul(deltaTime));
     }
 
     @Override
@@ -62,7 +62,10 @@ public class Ball extends Object{
     }
 
     public void AddForce(FTuple force, float deltaTime) {
-        velocity.x += (force.x / mass) * deltaTime;
-        velocity.y += (force.y / mass) * deltaTime;
+        velocity = velocity.Add(force.Mul(1/mass).Mul(deltaTime));
+    }
+
+    public void AddForce(FTuple force) {
+        velocity = velocity.Add(force.Mul(1/mass));
     }
 }
