@@ -107,8 +107,6 @@ public class MainGameScreen extends Screen {
         textPaint.setTypeface(tf);
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(100);
-
-
     }
 
     @Override
@@ -138,9 +136,6 @@ public class MainGameScreen extends Screen {
     @Override
     public void present(float deltaTime)
     {
-
-
-
         switch(gamestate)
         {
             case Play:

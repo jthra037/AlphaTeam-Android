@@ -31,6 +31,11 @@ public class BoxCollider extends Collider {
     }
 
     @Override
+    public boolean OnOverlap(Object other, FTuple pos) {
+        return false;
+    }
+
+    @Override
     public Hit OnCollision(Object other, ITuple pos) {
         return null;
     }
