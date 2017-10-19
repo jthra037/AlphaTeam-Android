@@ -132,7 +132,7 @@ public class MainGameScreen extends Screen {
             }
         }
 
-        world.update();
+        world.update(deltaTime);
     }
 
     @Override
