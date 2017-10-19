@@ -16,21 +16,21 @@ import alpha.nosleep.game.framework.ITuple;
 
 public class Player extends Ball
 {
-    private ITuple localCoord;
     private FTuple accel;
 
+    private float maxSpeed = 600;
     private Input i;
     private World world;
-    //private float friction = 0.6f;
+    private float damp = 2;
 
     public Player(World w)
     {
-        super(w.game, 15);
+        super(w, 15);
         world = w;
         i = w.game.getInput();
 
+        color = Color.WHITE;
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
-        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
 
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);
@@ -40,35 +40,24 @@ public class Player extends Ball
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        localCoord = world.toLocalCoord(position);
-    }
-
-    @Override
-    public void present(float deltaTime)
-    {
-        if (img == null)
-        {
-            Graphics g = getGame().getGraphics();
-            g.drawCircle(localCoord.x, localCoord.y, getRadius(), Color.WHITE);
-        }
-        else
-        {
-            super.present(deltaTime);
-        }
+        move(deltaTime);
     }
 
     public void move(float deltaTime)
     {
         accel = new FTuple(i.getAccelX(), i.getAccelY());
-        float Fg = getMass() * world.getGravity();
-        float dx = Fg * accel.x;
-        float dy = Fg * accel.x;
+        float Fn = getMass() * -world.getGravity();
+        //float dx = Fn * accel.y * (accel.y / damp) * (accel.y / Math.abs(accel.y));
+        //float dy = Fn * accel.x * (accel.x / damp) * (accel.x / Math.abs(accel.x));
+        float dx = Fn * accel.y;
+        float dy = Fn * accel.x;
+        FTuple Fa = new FTuple(dx, dy);
 
-        AddForce(new FTuple(dx, dy), deltaTime);
-
-        //System.out.println("Accel X: " + accel.x + "    Accel Y: " + accel.y);
-        //System.out.println("********************************");
-        //System.out.println("Velocity.x: " + velocity.x + "\n Velocity.y: " + velocity.y);
+        AddForce(Fa); // Impulse plays more fun
+        if (velocity.LengthS() > maxSpeed * maxSpeed)
+        {
+            velocity = velocity.Normalized().Mul(maxSpeed);
+        }
     }
 
 
