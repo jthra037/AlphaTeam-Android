@@ -41,8 +41,6 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         v.setPosition(player.position);
-
-        new Enemy(this, 15);
     }
 
     public float getWidth()
