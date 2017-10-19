@@ -1,6 +1,9 @@
 package alpha.nosleep.androidgames.framework;
 
-public interface Game 
+import android.app.Activity;
+import android.content.Context;
+
+public interface Game
 {
     public Input getInput();
     public FileIO getFileIO();
@@ -9,5 +12,7 @@ public interface Game
     public void setScreen(Screen screen);
     public Screen getCurrentScreen();
     public Screen getStartScreen();
+    public Activity getActivity();
+    public Context getContext();
 }
 

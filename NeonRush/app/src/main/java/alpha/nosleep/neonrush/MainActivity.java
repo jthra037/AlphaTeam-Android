@@ -8,6 +8,7 @@ import alpha.nosleep.androidgames.framework.impl.AndroidGame;
 
 public class MainActivity extends AndroidGame {
 
+
     @Override
     public Screen getStartScreen()
     {
