@@ -3,7 +3,9 @@ package alpha.nosleep.neonrush;
 import android.graphics.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
@@ -28,13 +30,17 @@ public class World
     private float worldWidth;
     private float worldHeight;
     private Player player;
+    private Ball goal = null;
     private float gravity = -8;
     private List<Object> objects = new ArrayList<Object>();
     private List<Object> registryList = new ArrayList<Object>();
     private List<Object> deRegistryList = new ArrayList<Object>();
+    private long score = 0;
+    private long regTime = 0;
 
     public World(Game gm, Graphics graphics, float width, float height)
     {
+
         game = gm;
         g = graphics;
         worldWidth = width;
@@ -43,6 +49,7 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         v.setPosition(player.position);
+        regTime = System.currentTimeMillis()/1000;
     }
 
     public float getWidth()
@@ -61,17 +68,33 @@ public class World
     {
         //player.move(deltaTime);
         //player.update(deltaTime);
-        for (Object object : objects)
+        for (int i = 0; i < objects.size() - 1; i++)
         {
-            object.update(deltaTime);
-            for (Object other : objects)
+            for(int j = i + 1; j < objects.size(); j++)
             {
-                if (other != object)
+                Object object = objects.get(i);
+                Object other = objects.get(j);
+
+                List<String> tags = Arrays.asList(object.tag, other.tag);
+
+                if (!deRegistryList.contains(object) &&
+                        !deRegistryList.contains(other) &&
+                        object.getCollider().OnOverlap(other, object.getPosition()))
                 {
-                    if(object.getCollider().OnOverlap(other, object.position))
+                    Ball thisBall = (Ball)object;
+                    if (object.tag == other.tag)
+                    {
+                        thisBall.Combine((Ball)other);
+                    }
+                    else if (tags.contains("Player") && tags.contains("Goal"))
+                    {
+                        player.Combine(notPlayer(object, other));
+                    }
+                    else if (tags.contains("Player") && tags.contains("Enemy"))
                     {
                         unregister(object);
                         unregister(other);
+                        game.setGameState(Game.GAMESTATE.GameOver);
                     }
                 }
             }
@@ -83,6 +106,24 @@ public class World
         objects.removeAll(deRegistryList);
         deRegistryList.removeAll(deRegistryList);
 
+        for (Object object : objects)
+        {
+            object.update(deltaTime);
+            if (object == player)
+            {
+                score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+                regTime = System.currentTimeMillis()/1000;
+            }
+        }
+
+        if (!objects.contains(goal))
+        {
+            Random r = new Random();
+            FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
+                    (float)r.nextInt((int)getHeight()));
+            goal = new Goal(this, 15, pos);
+        }
+
         v.setPosition(player.position);
     }
 
@@ -92,6 +133,11 @@ public class World
         {
             object.present(deltaTime);
         }
+    }
+
+    private Ball notPlayer(Object one, Object two)
+    {
+        return one == player ? (Ball)two : (Ball)one;
     }
 
     //Change world coordinate to local on-screen coordinate.
@@ -114,6 +160,11 @@ public class World
 
     public Player getPlayer()
     { return player; }
+
+    public String getScore()
+    {
+        return String.valueOf(score);
+    }
 
     //This represents the viewport into the world that is visible on screen to the player.
     public class ViewableScreen

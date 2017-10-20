@@ -23,8 +23,7 @@ import alpha.nosleep.game.framework.FTuple;
  */
 
 public class MainGameScreen extends Screen {
-    public static enum GAMESTATE {Play,Pause}
-    GAMESTATE gamestate;
+
 
     private World world;
     private List<Button> buttons = new ArrayList<Button>();
@@ -36,6 +35,7 @@ public class MainGameScreen extends Screen {
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
+    private Pixmap replayButton;
 
     private int spawnWait = 2000;
     private long lastSpawn = 0;
@@ -48,7 +48,7 @@ public class MainGameScreen extends Screen {
         g = game.getGraphics();
         world = new World(game, g, g.getWidth(), g.getHeight());
 
-        background = g.newPixmap("gameui.png", Graphics.PixmapFormat.RGB565);
+        background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
 
         pauseButton = g.newPixmap("buttons/pausebutton.png", Graphics.PixmapFormat.ARGB4444);
@@ -57,7 +57,7 @@ public class MainGameScreen extends Screen {
         buttons.add(new Button(game,pauseButton, new Callable<Void>(){
             public Void call() {
 
-                gamestate = GAMESTATE.Pause;
+                game.setGameState(Game.GAMESTATE.Pause);
                 buttons.get(1).hide(false);
                 buttons.get(2).hide(false);
                 return null;
@@ -78,11 +78,14 @@ public class MainGameScreen extends Screen {
         quitButton = g.newPixmap("buttons/quitbutton.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(quitButton,200,80);
 
+        replayButton = g.newPixmap("buttons/replaybutton.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(replayButton,200,80);
+
         buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
                 buttons.get(1).hide(true);
                 buttons.get(2).hide(true);
-                gamestate = GAMESTATE.Play;
+                game.setGameState(Game.GAMESTATE.Play);
 
 
                 return null;
@@ -104,9 +107,22 @@ public class MainGameScreen extends Screen {
         buttons.get(2).resize(200,80);
         buttons.get(2).setPosition((g.getWidth()/2 - quitButton.getWidth()/2) ,g.getHeight()/2 + quitButton.getHeight());
 
+        buttons.add(new Button(game,replayButton, new Callable<Void>(){
+            public Void call() {
+
+                game.setScreen(new MainGameScreen(game));
+                return null;
+            }
+        }
+        ));
+        buttons.get(3).resize(200,80);
+        buttons.get(3).setPosition((g.getWidth()/2 - replayButton.getWidth()/2) ,g.getHeight()/2 - replayButton.getHeight());
+
+
         buttons.get(1).hide(true); //hiding the buttons after initialization so they don't show up immediately
         buttons.get(2).hide(true);
-        gamestate = GAMESTATE.Play;
+        buttons.get(3).hide(true);
+        game.setGameState(Game.GAMESTATE.Play);
 
         tf = Typeface.createFromAsset(g.getAssets(),"fonts/antoniobold.ttf");
         textPaint = new Paint();
@@ -139,40 +155,56 @@ public class MainGameScreen extends Screen {
             }
         }
 
-        world.update(deltaTime);
-
-        if (System.currentTimeMillis() > lastSpawn + spawnWait)
+        switch(game.getGameState())
         {
-            int x = 0;
-            int y = 0;
-            switch (random.nextInt(4))
-            {
-                case 0:
-                    x = 0;
-                    y = random.nextInt((int)world.getHeight());
-                    break;
-                case 1:
-                    x = (int)world.getWidth();
-                    y = random.nextInt((int)world.getHeight());
-                    break;
-                case 2:
-                    y = 0;
-                    x = random.nextInt((int)world.getWidth());
-                    break;
-                case 3:
-                    y = (int)world.getHeight();
-                    x = random.nextInt((int)world.getWidth());
-                    break;
-            }
-            lastSpawn = System.currentTimeMillis() + spawnWait;
-            new Enemy(world, 10, new FTuple(x, y));
+            case Play:
+
+                world.update(deltaTime);
+
+                if (System.currentTimeMillis() > lastSpawn + spawnWait)
+                {
+                    int x = 0;
+                    int y = 0;
+                    switch (random.nextInt(4))
+                    {
+                        case 0:
+                            x = 0;
+                            y = random.nextInt((int)world.getHeight());
+                            break;
+                        case 1:
+                            x = (int)world.getWidth();
+                            y = random.nextInt((int)world.getHeight());
+                            break;
+                        case 2:
+                            y = 0;
+                            x = random.nextInt((int)world.getWidth());
+                            break;
+                        case 3:
+                            y = (int)world.getHeight();
+                            x = random.nextInt((int)world.getWidth());
+                            break;
+                    }
+                    lastSpawn = System.currentTimeMillis() + spawnWait;
+                    new Enemy(world, 10, new FTuple(x, y));
+                }
+
+                break;
+            case Pause:
+
+
+
+                break;
+            case GameOver:
+                break;
         }
+
+
     }
 
     @Override
     public void present(float deltaTime)
     {
-        switch(gamestate)
+        switch(game.getGameState())
         {
             case Play:
 
@@ -190,6 +222,15 @@ public class MainGameScreen extends Screen {
                 createPauseMenu();
 
                 break;
+            case GameOver:
+                if (buttons.get(0).isClickable()) //don't want the player to be able to pause the game when they're dead...
+                    buttons.get(0).isClickable(false);
+
+                createGameOverScreen();
+                buttons.get(3).hide(false);
+                buttons.get(2).hide(false);
+
+                break;
         }
 
         for (Button button : buttons)
@@ -198,6 +239,11 @@ public class MainGameScreen extends Screen {
                 g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
 
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(50);
+        g.drawText(world.getScore(), g.getWidth()/2, 100, paint);
 
     }
 
@@ -225,6 +271,12 @@ public class MainGameScreen extends Screen {
     {
         g.drawARGBRect(screenRect,255,255,255,255);
         g.drawText("PAUSED",g.getWidth()/2 - 130,g.getHeight()/2 - 100, textPaint);
+    }
+
+    private void createGameOverScreen()
+    {
+        g.drawARGBRect(screenRect,255,255,0,0);
+        g.drawText("You are Dead.",g.getWidth()/2 - 250,g.getHeight()/2 - 100, textPaint);
     }
 
 
