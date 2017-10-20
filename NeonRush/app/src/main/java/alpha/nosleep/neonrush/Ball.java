@@ -91,4 +91,14 @@ public class Ball extends Object{
     public void AddForce(FTuple force) {
         velocity = velocity.Add(force.Mul(1/mass));
     }
+
+    public void Combine(Ball other)
+    {
+        radius += other.getRadius()/2;
+        mass += other.getMass();
+        CircleCollider thisCollider = (CircleCollider)collider;
+        thisCollider.setRadius(radius);
+
+        world.unregister(other);
+    }
 }

@@ -13,6 +13,7 @@ public abstract class Object
     protected Collider collider;
     protected Pixmap img;
     public FTuple position;
+    public String tag;
     private Game game;
 
     public Object(Game game)

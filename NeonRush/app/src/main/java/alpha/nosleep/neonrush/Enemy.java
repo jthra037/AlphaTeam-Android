@@ -21,8 +21,7 @@ public class Enemy extends Ball {
         this.color = world.Palette[r.nextInt(world.Palette.length)];
         this.position = position;
         this.player = world.getPlayer();
-
-        world.register(this);
+        tag = "Enemy";
     }
 
     public Enemy(World world, int radius) {
@@ -32,6 +31,7 @@ public class Enemy extends Ball {
         //this.color = Color.GRAY;
         this.position = new FTuple(0, 0);
         this.player = world.getPlayer();
+        tag = "Enemy";
     }
 
     @Override

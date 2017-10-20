@@ -239,6 +239,11 @@ public class MainGameScreen extends Screen {
                 g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
 
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(50);
+        g.drawText(world.getScore(), g.getWidth()/2, 100, paint);
 
     }
 
