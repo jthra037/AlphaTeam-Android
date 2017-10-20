@@ -3,6 +3,7 @@ package alpha.nosleep.neonrush;
 import android.graphics.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import alpha.nosleep.androidgames.framework.Game;
@@ -61,17 +62,33 @@ public class World
     {
         //player.move(deltaTime);
         //player.update(deltaTime);
-        for (Object object : objects)
+        for (int i = 0; i < objects.size() - 1; i++)
         {
-            object.update(deltaTime);
-            for (Object other : objects)
+            for(int j = i + 1; j < objects.size(); j++)
             {
-                if (other != object)
+                Object object = objects.get(i);
+                Object other = objects.get(j);
+
+                List<String> tags = Arrays.asList(object.tag, other.tag);
+
+                if (!deRegistryList.contains(object) &&
+                        !deRegistryList.contains(other) &&
+                        object.getCollider().OnOverlap(other, object.getPosition()))
                 {
-                    if(object.getCollider().OnOverlap(other, object.position))
+                    Ball thisBall = (Ball)object;
+                    if (object.tag == other.tag)
+                    {
+                        thisBall.Combine((Ball)other);
+                    }
+                    else if (tags.contains("Player") && tags.contains("Goal"))
+                    {
+                        player.Combine(notPlayer(object, other));
+                    }
+                    else if (tags.contains("Player") && tags.contains("Enemy"))
                     {
                         unregister(object);
                         unregister(other);
+                        //player = null;
                     }
                 }
             }
@@ -83,6 +100,11 @@ public class World
         objects.removeAll(deRegistryList);
         deRegistryList.removeAll(deRegistryList);
 
+        for (Object object : objects)
+        {
+            object.update(deltaTime);
+        }
+
         v.setPosition(player.position);
     }
 
@@ -92,6 +114,11 @@ public class World
         {
             object.present(deltaTime);
         }
+    }
+
+    private Ball notPlayer(Object one, Object two)
+    {
+        return one == player ? (Ball)two : (Ball)one;
     }
 
     //Change world coordinate to local on-screen coordinate.
