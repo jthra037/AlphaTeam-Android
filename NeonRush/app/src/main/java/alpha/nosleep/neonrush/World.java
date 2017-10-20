@@ -35,6 +35,7 @@ public class World
 
     public World(Game gm, Graphics graphics, float width, float height)
     {
+
         game = gm;
         g = graphics;
         worldWidth = width;
@@ -72,6 +73,7 @@ public class World
                     {
                         unregister(object);
                         unregister(other);
+                        game.setGameState(Game.GAMESTATE.GameOver);
                     }
                 }
             }

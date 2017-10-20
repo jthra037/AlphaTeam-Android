@@ -26,6 +26,7 @@ public abstract class AndroidGame extends Activity implements Game {
     FileIO fileIO;
     Screen screen;
     Context context;
+    private GAMESTATE gamestate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,4 +122,10 @@ public abstract class AndroidGame extends Activity implements Game {
     public Screen getCurrentScreen() {
         return screen;
     }
+
+    @Override
+    public GAMESTATE getGameState(){return gamestate;}
+
+    @Override
+    public void setGameState(GAMESTATE newGameState){gamestate = newGameState;}
 }
