@@ -19,6 +19,7 @@ public class Player extends Ball
     private FTuple accel;       //Current accelerometer values.
     private FTuple lastAccel = new FTuple(0.0f, 0.0f);   //Last frame's accelerometer values.
     private float speedScalar = 15.0f;
+    private FTuple startingAccel;
 
     private float maxSpeed = 600;
     private Input i;
@@ -34,6 +35,7 @@ public class Player extends Ball
         color = Color.WHITE;
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
         tag = "Player";
+        startingAccel = new FTuple(i.getAccelX(), i.getAccelY());
 
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);
@@ -48,7 +50,7 @@ public class Player extends Ball
 
     public void move(float deltaTime)
     {
-        accel = new FTuple(i.getAccelX(), i.getAccelY());
+        accel = new FTuple(i.getAccelX(), i.getAccelY()).Add(startingAccel.Mul(-1));
         float Fn = getMass() * -world.getGravity();
 
         float dx = Fn * (accel.y - lastAccel.y) * speedScalar;
