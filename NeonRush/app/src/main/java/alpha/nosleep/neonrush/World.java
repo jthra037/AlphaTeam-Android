@@ -46,12 +46,8 @@ public class World
         worldWidth = width;
         worldHeight = height;
 
-        System.out.println("==================================width: " + width);
-        System.out.println("==================================hegiht: " + height);
-
         player = new Player(this);
         v = new ViewableScreen(g);
-        v.setPosition(player.position);
         regTime = System.currentTimeMillis()/1000;
     }
 
@@ -127,7 +123,7 @@ public class World
             goal = new Goal(this, 15, pos);
         }
 
-        v.setPosition(player.position);
+        v.setPosition(player.position, deltaTime);
 
         System.out.println(".............. v.x: " + v.worldPosition.x);
 
@@ -199,27 +195,34 @@ public class World
         FTuple worldPosition;
         ITuple viewSize;
         int bufferSize = 50;
+        int maxFollowDistance = 200;
+        int camSpeedMaybe = 800;
 
 
         ViewableScreen(Graphics graphics)
         {
             g = graphics;
             viewSize = new ITuple(g.getWidth(), g.getHeight());
-            worldPosition = new FTuple(g.getWidth()/2, g.getHeight()/2);
+            worldPosition = new FTuple(player.position.x - viewSize.x / 2, player.position.y - viewSize.y / 2);
         }
 
-        public void setPosition(FTuple player)
+        public void setPosition(FTuple p, float dt)
         {
-            worldPosition.x = player.x - (viewSize.x / 2) - bufferSize;
-            worldPosition.y = player.y - (viewSize.y / 2) - bufferSize;
+            float follow = toLocalCoord(player.position).Add(-viewSize.x / 2, -viewSize.y / 2).Length() / maxFollowDistance;
+            FTuple playerDisplacement = toLocalCoord(player.position).Add(-viewSize.x / 2, -viewSize.y / 2).Normalized().Mul(camSpeedMaybe);
+            worldPosition.x += playerDisplacement.x * dt * follow;
+            worldPosition.y += playerDisplacement.y * dt * follow;
+            
+            worldPosition.x %= getWidth();
+            worldPosition.y %= getHeight();
 
             if(worldPosition.x < 0)
             {
-                worldPosition.x = getWidth() + worldPosition.x;
+                worldPosition.x = getWidth();
             }
             if (worldPosition.y < 0)
             {
-                worldPosition.y = getHeight() + worldPosition.y;
+                worldPosition.y = getHeight();
             }
         }
     }
