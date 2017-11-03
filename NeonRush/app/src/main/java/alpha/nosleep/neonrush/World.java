@@ -46,6 +46,9 @@ public class World
         worldWidth = width;
         worldHeight = height;
 
+        System.out.println("==================================width: " + width);
+        System.out.println("==================================hegiht: " + height);
+
         player = new Player(this);
         v = new ViewableScreen(g);
         v.setPosition(player.position);
@@ -125,6 +128,10 @@ public class World
         }
 
         v.setPosition(player.position);
+
+        System.out.println(".............. v.x: " + v.worldPosition.x);
+
+        System.out.println(".............. v.y: " + v.worldPosition.y);
     }
 
     public void present(float deltaTime)
@@ -143,8 +150,27 @@ public class World
     //Change world coordinate to local on-screen coordinate.
     public ITuple toLocalCoord(FTuple worldCoord)
     {
-        int x = (int)worldCoord.x;
-        int y = (int)worldCoord.y;
+        int x, y;
+
+        if((getWidth() - v.worldPosition.x < v.viewSize.x) &&
+                (worldCoord.x < (v.worldPosition.x + v.viewSize.x - getWidth())))
+        {
+            x = (int)(worldCoord.x + (getWidth() - v.worldPosition.x));
+        }
+        else
+        {
+            x = (int)(worldCoord.x - v.worldPosition.x);
+        }
+
+        if((getHeight() - v.worldPosition.y < v.viewSize.y) &&
+                (worldCoord.y < (v.worldPosition.y + v.viewSize.y - getHeight())))
+        {
+            y = (int)(worldCoord.y + (getHeight() - v.worldPosition.y));
+        }
+        else
+        {
+            y = (int)(worldCoord.y - v.worldPosition.y);
+        }
 
         ITuple local = new ITuple(x, y);
         return local;
@@ -186,6 +212,15 @@ public class World
         {
             worldPosition.x = player.x - (viewSize.x / 2) - bufferSize;
             worldPosition.y = player.y - (viewSize.y / 2) - bufferSize;
+
+            if(worldPosition.x < 0)
+            {
+                worldPosition.x = getWidth() + worldPosition.x;
+            }
+            if (worldPosition.y < 0)
+            {
+                worldPosition.y = getHeight() + worldPosition.y;
+            }
         }
     }
 }

@@ -46,7 +46,8 @@ public class MainGameScreen extends Screen {
     {
         super(game);
         g = game.getGraphics();
-        world = new World(game, g, g.getWidth(), g.getHeight());
+        //world = new World(game, g, g.getWidth(), g.getHeight());
+        world = new World(game, g, 3000, 3000);
 
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
