@@ -210,9 +210,11 @@ public class World
         {
             float follow = toLocalCoord(player.position).Add(-viewSize.x / 2, -viewSize.y / 2).Length() / maxFollowDistance;
             FTuple playerDisplacement = toLocalCoord(player.position).Add(-viewSize.x / 2, -viewSize.y / 2).Normalized().Mul(camSpeedMaybe);
+            //worldPosition.x += playerDisplacement.x * 0.032 * follow;
+            //worldPosition.y += playerDisplacement.y * 0.032 * follow;
             worldPosition.x += playerDisplacement.x * dt * follow;
             worldPosition.y += playerDisplacement.y * dt * follow;
-            
+
             worldPosition.x %= getWidth();
             worldPosition.y %= getHeight();
 
