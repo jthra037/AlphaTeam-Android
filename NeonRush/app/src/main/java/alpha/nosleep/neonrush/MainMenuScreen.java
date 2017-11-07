@@ -131,6 +131,8 @@ public class MainMenuScreen extends Screen {
         {
             g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
+
+
     }
 
     @Override

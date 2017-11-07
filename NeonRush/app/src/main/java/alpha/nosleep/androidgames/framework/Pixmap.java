@@ -20,5 +20,7 @@ public interface Pixmap
     public void setBitmap(Bitmap bitmap);
     public PixmapFormat getFormat();
     public void dispose();
+    public float getRotation();
+    public void setRotation(float val);
 }
 

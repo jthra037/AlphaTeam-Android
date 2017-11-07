@@ -9,6 +9,7 @@ import alpha.nosleep.androidgames.framework.Pixmap;
 public class AndroidPixmap implements Pixmap {
     Bitmap bitmap;
     PixmapFormat format;
+    float rotation;
     int x;
     int y;
     
@@ -58,6 +59,12 @@ public class AndroidPixmap implements Pixmap {
 
     @Override
     public void setBitmap(Bitmap bitmap){ this.bitmap = bitmap;}
+
+    @Override
+    public float getRotation(){return rotation;}
+
+    @Override
+    public void setRotation(float val){rotation = val;}
 
 
     @Override

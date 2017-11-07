@@ -187,6 +187,8 @@ public class World
     public Player getPlayer()
     { return player; }
 
+    public Ball getBall(){return goal;}
+
     public String getScore()
     {
         return String.valueOf(score);
