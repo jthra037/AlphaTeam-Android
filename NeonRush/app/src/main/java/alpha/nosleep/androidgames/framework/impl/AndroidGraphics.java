@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.Log;
 
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
@@ -77,13 +78,22 @@ public class AndroidGraphics implements Graphics {
     {
         Bitmap newBM = null;
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
+        //matrix.postRotate(angle);
         matrix.postRotate(angle,(pixmap.getWidth()/2),(pixmap.getHeight()/2)); //rotating around center of object
         matrix.postTranslate(pixmap.getX(),pixmap.getY());
         newBM = Bitmap.createBitmap(pixmap.getBitmap(), 0, 0, pixmap.getWidth(), pixmap.getHeight(), matrix, true);
         pixmap.setBitmap(newBM);
 
         pixmap.setRotation(angle);
+
+        return pixmap;
+    }
+
+    @Override
+    public Pixmap rotateAround(Pixmap pixmap, FTuple point,float angle)
+    {
+        Bitmap newBM = null;
+        Matrix matrix = new Matrix();
 
         return pixmap;
     }
@@ -99,7 +109,11 @@ public class AndroidGraphics implements Graphics {
         {
             angle = 360 - (-angle);
         }
-        rotatePixmap(pixmap,angle);
+        float difference = 0;
+        difference = angle - pixmap.getRotation();
+        Log.d("ANGLES","Angle: " + angle + ", Rotation: " + pixmap.getRotation() + ", Difference: " + difference);
+        if (difference != 0.0f)
+            rotatePixmap(pixmap,difference);
     }
 
 

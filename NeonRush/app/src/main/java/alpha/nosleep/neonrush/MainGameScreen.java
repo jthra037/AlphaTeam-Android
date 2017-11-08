@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class MainGameScreen extends Screen {
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
 
-        directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
-        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2);
+       /* directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
+        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2);*/ //FOR JACOB WHEN READY TO ROTATE 
 
         pauseButton = g.newPixmap("buttons/pausebutton.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(pauseButton,48,68);
@@ -222,11 +223,12 @@ public class MainGameScreen extends Screen {
 
                 count+= deltaTime;
 
-                if (count > 0.25f)
+                /*if (count > 0.25f)
                 {
-                    g.rotateToPoint(directionalArrow, world.getBall().getPosition());
+                    g.rotateToPoint(directionalArrow, world.getBall().getPosition()); //FOR JACOB WHEN READY TO ROTATE OBJECT
                     count = 0;
-                }
+
+                }*/
 
 
                 g.drawPixmap(directionalArrow);

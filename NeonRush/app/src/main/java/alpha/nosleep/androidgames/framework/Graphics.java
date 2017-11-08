@@ -18,6 +18,7 @@ public interface Graphics
     public Pixmap newPixmap(String fileName, PixmapFormat format);
     public Pixmap resizePixmap(Pixmap pixmap, int width, int height);
     public Pixmap rotatePixmap(Pixmap pixmap, float angle);
+    public Pixmap rotateAround(Pixmap pixmap, FTuple point,float angle);
     public void rotateToPoint(Pixmap pixmap, FTuple point);
     public void clear(int color);
     public void drawPixel(int x, int y, int color);
