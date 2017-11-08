@@ -41,6 +41,8 @@ public class World
     private long score = 0;
     private long regTime = 0;
 
+    private ObRectangle therect;
+
     public World(Game gm, Graphics graphics, int ws)
     {
 
@@ -57,6 +59,7 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
+        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(1000, 1000));
     }
 
     public float getWidth()
@@ -73,8 +76,9 @@ public class World
 
     public void update(float deltaTime)
     {
-        //player.move(deltaTime);
-        //player.update(deltaTime);
+        ///<summary>
+        /// Handles all collision interactions.
+        ///</summary>
         for (int i = 0; i < objects.size() - 1; i++)
         {
             for(int j = i + 1; j < objects.size(); j++)
@@ -84,7 +88,9 @@ public class World
 
                 List<String> tags = Arrays.asList(object.tag, other.tag);
 
-                if (!deRegistryList.contains(object) &&
+                //Ball Combining.
+                if (!tags.contains("Obstacle") &&
+                        !deRegistryList.contains(object) &&
                         !deRegistryList.contains(other) &&
                         object.getCollider().OnOverlap(other, object.getPosition()))
                 {
@@ -103,6 +109,17 @@ public class World
                         unregister(other);
                         game.setGameState(Game.GAMESTATE.GameOver);
                     }
+                }
+                else if (tags.contains("Obstacle") &&
+                        other.tag != "Obstacle" &&
+                        !deRegistryList.contains(object) &&
+                        !deRegistryList.contains(other) &&
+                        object.getCollider().OnOverlap(other, object.getPosition()))
+                {
+                    FTuple direction = object.position.Mul(-1).Add(other.position);
+                    Ball thisBall = (Ball)other;
+                    float scale = direction.Dot(thisBall.getVelocity());
+                    thisBall.AddForce(direction.Normalized().Mul(2 * scale));
                 }
             }
         }

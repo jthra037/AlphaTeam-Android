@@ -10,17 +10,19 @@ public class CircleCollider extends Collider {
     private int radius = 5;
     private ITuple offset = new ITuple(0,0);
 
-    public final ColliderFormat format = circle;
+    //public final ColliderFormat format = circle;
 
     public CircleCollider(int radius)
     {
         this.radius = radius;
+        format = circle;
     }
 
     public CircleCollider(int radius, ITuple offset)
     {
         this.radius = radius;
         this.offset = offset;
+        format = circle;
     }
 
     @Override

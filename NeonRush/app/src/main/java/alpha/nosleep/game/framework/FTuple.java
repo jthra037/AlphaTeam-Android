@@ -45,4 +45,9 @@ public class FTuple
         float len = Length();
         return new FTuple(this.x/len, this.y/len);
     }
+
+    public float Dot (FTuple other)
+    {
+        return x * other.x + y * other.y;
+    }
 }
