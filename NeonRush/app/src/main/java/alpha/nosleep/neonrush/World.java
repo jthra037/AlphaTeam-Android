@@ -9,6 +9,7 @@ import java.util.Random;
 
 import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
+import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.game.framework.FTuple;
 import alpha.nosleep.game.framework.ITuple;
 import alpha.nosleep.game.framework.Object;
@@ -27,28 +28,35 @@ public class World
     public Game game;
     public Graphics g;
     private ViewableScreen v;
+    private int worldSize;
     private float worldWidth;
     private float worldHeight;
     private Player player;
     private Ball goal = null;
     private float gravity = -8;
+    private Pixmap background;
     private List<Object> objects = new ArrayList<Object>();
     private List<Object> registryList = new ArrayList<Object>();
     private List<Object> deRegistryList = new ArrayList<Object>();
     private long score = 0;
     private long regTime = 0;
 
-    public World(Game gm, Graphics graphics, float width, float height)
+    public World(Game gm, Graphics graphics, int ws)
     {
 
         game = gm;
         g = graphics;
-        worldWidth = width;
-        worldHeight = height;
+        worldSize = ws;
+        worldWidth = worldSize * g.getWidth();
+        worldHeight = worldSize * g.getHeight();
+
+        background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
+        g.resizePixmap(background, g.getWidth(), g.getHeight());
 
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
+
     }
 
     public float getWidth()
@@ -132,6 +140,17 @@ public class World
 
     public void present(float deltaTime)
     {
+        for (int i = 0; i < worldSize; i++)
+        {
+            for (int j = 0; j < worldSize; j++)
+            {
+                FTuple pos = new FTuple(i * g.getWidth(), j * g.getHeight());
+                ITuple p = toLocalCoord(pos);
+                background.setPosition(p.x, p.y);
+                g.drawPixmap(background);
+            }
+        }
+
         for (Object object : objects)
         {
             object.present(deltaTime);
