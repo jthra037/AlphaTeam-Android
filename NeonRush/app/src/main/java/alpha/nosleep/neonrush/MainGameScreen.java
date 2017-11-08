@@ -227,11 +227,11 @@ public class MainGameScreen extends Screen {
                 {
                     g.rotateToPoint(directionalArrow, world.getBall().getPosition()); //FOR JACOB WHEN READY TO ROTATE OBJECT
                     count = 0;
-
+                    g.drawPixmap(directionalArrow);
                 }*/
 
 
-                g.drawPixmap(directionalArrow);
+
 
                 break;
             case Pause:
