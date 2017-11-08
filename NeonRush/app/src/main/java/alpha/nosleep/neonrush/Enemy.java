@@ -12,8 +12,8 @@ import alpha.nosleep.game.framework.FTuple;
 
 public class Enemy extends Ball {
     private Player player;
-    private float speed = 200;
-    private float F = 100;
+    private float speed = 350;
+    private float F = 60;
 
     public Enemy(World world, int radius, FTuple position) {
         super(world, radius);

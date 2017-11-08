@@ -32,13 +32,14 @@ public class MainGameScreen extends Screen {
     Typeface tf;
     Paint textPaint;
     private Rect screenRect;
-    private Pixmap background;
+    //private Pixmap background;
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
     private Pixmap replayButton;
     private Pixmap directionalArrow;
 
+    private int worldSize = 10;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
@@ -49,11 +50,10 @@ public class MainGameScreen extends Screen {
     {
         super(game);
         g = game.getGraphics();
-        //world = new World(game, g, g.getWidth(), g.getHeight());
-        world = new World(game, g, 3000, 3000);
+        world = new World(game, g, worldSize);
 
-        background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(background, g.getWidth(), g.getHeight());
+        //background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
+        //g.resizePixmap(background, g.getWidth(), g.getHeight());
 
        /* directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
         directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2);*/ //FOR JACOB WHEN READY TO ROTATE 
@@ -217,7 +217,7 @@ public class MainGameScreen extends Screen {
 
                 if (!buttons.get(0).isClickable())
                     buttons.get(0).isClickable(true);
-                g.drawPixmap(background);
+                //g.drawPixmap(background);
                 world.present(deltaTime);
 
 
