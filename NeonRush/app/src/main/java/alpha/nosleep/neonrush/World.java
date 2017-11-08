@@ -1,6 +1,7 @@
 package alpha.nosleep.neonrush;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,9 +134,9 @@ public class World
 
         v.setPosition(player.position, deltaTime);
 
-        System.out.println(".............. v.x: " + v.worldPosition.x);
+        Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
 
-        System.out.println(".............. v.y: " + v.worldPosition.y);
+        Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
     }
 
     public void present(float deltaTime)
@@ -201,6 +202,8 @@ public class World
 
     public Player getPlayer()
     { return player; }
+
+    public Ball getBall(){return goal;}
 
     public String getScore()
     {

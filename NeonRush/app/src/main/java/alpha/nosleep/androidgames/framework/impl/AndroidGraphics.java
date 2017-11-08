@@ -12,12 +12,15 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.Log;
 
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
+import alpha.nosleep.game.framework.FTuple;
 
 import static android.R.attr.y;
 
@@ -68,6 +71,49 @@ public class AndroidGraphics implements Graphics {
         resizedBitmap = Bitmap.createScaledBitmap(pixmap.getBitmap(), newWidth, newHeight, true);
         pixmap.setBitmap(resizedBitmap);
         return pixmap;
+    }
+
+    @Override
+    public Pixmap rotatePixmap(Pixmap pixmap, float angle)
+    {
+        Bitmap newBM = null;
+        Matrix matrix = new Matrix();
+        //matrix.postRotate(angle);
+        matrix.postRotate(angle,(pixmap.getWidth()/2),(pixmap.getHeight()/2)); //rotating around center of object
+        matrix.postTranslate(pixmap.getX(),pixmap.getY());
+        newBM = Bitmap.createBitmap(pixmap.getBitmap(), 0, 0, pixmap.getWidth(), pixmap.getHeight(), matrix, true);
+        pixmap.setBitmap(newBM);
+
+        pixmap.setRotation(angle);
+
+        return pixmap;
+    }
+
+    @Override
+    public Pixmap rotateAround(Pixmap pixmap, FTuple point,float angle)
+    {
+        Bitmap newBM = null;
+        Matrix matrix = new Matrix();
+
+        return pixmap;
+    }
+
+    @Override
+    public void rotateToPoint(Pixmap pixmap, FTuple point)
+    {
+        Bitmap newBM = null;
+        float angle = (float) Math.atan2(point.y-pixmap.getY(),point.x-pixmap.getX()); //getting angle between the two objects
+        angle = (float) (angle * (180.0f/Math.PI));
+
+        if(angle < 0)
+        {
+            angle = 360 - (-angle);
+        }
+        float difference = 0;
+        difference = angle - pixmap.getRotation();
+        Log.d("ANGLES","Angle: " + angle + ", Rotation: " + pixmap.getRotation() + ", Difference: " + difference);
+        if (difference != 0.0f)
+            rotatePixmap(pixmap,difference);
     }
 
 
