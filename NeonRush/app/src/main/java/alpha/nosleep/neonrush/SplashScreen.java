@@ -35,8 +35,20 @@ public class SplashScreen extends Screen {
     }
 
     @Override
+    public void destroy()
+    {
+
+    }
+
+    @Override
     public void onBackButton()
     {
+    }
+
+    @Override
+    public void restart()
+    {
+
     }
 
     @Override

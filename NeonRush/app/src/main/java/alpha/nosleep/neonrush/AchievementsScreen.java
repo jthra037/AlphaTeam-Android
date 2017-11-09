@@ -43,6 +43,17 @@ public class AchievementsScreen extends Screen {
     public void onBackButton()
     {
     }
+    @Override
+    public void restart()
+    {
+
+    }
+
+    @Override
+    public void destroy()
+    {
+
+    }
 
     @Override
     public void dispose() {

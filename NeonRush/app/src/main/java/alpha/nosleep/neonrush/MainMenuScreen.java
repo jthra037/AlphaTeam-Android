@@ -1,5 +1,6 @@
 package alpha.nosleep.neonrush;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.widget.Toast;
@@ -153,7 +154,21 @@ public class MainMenuScreen extends Screen {
     }
 
     @Override
+    public void destroy()
+    {
+
+    }
+
+    @Override
     public void onBackButton()
+    {
+        Activity a = game.getActivity();
+        a.finish();
+
+    }
+
+    @Override
+    public void restart()
     {
 
     }

@@ -139,6 +139,7 @@ public class SettingsScreen extends Screen {
     @Override
     public void onBackButton()
     {
+        game.setScreen(new MainMenuScreen(game));
     }
 
     @Override
@@ -175,6 +176,18 @@ public class SettingsScreen extends Screen {
 
     @Override
     public void dispose()
+    {
+
+    }
+
+    @Override
+    public void restart()
+    {
+
+    }
+
+    @Override
+    public void destroy()
     {
 
     }

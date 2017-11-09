@@ -1,5 +1,6 @@
 package alpha.nosleep.androidgames.framework.impl;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -101,6 +102,20 @@ public abstract class AndroidGame extends Activity implements Game {
     {
         //super.onBackPressed();
         screen.onBackButton();
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        screen.restart();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        screen.destroy();
     }
 
 

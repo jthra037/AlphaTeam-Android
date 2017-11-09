@@ -20,5 +20,6 @@ public interface Game
     public GAMESTATE getGameState();
     public void setGameState(GAMESTATE newGameState);
     public static final String Settings_Prefs = "Settingsprefsfile";
+    public static final String World_Prefs = "WorldPrefsFile";
 }
 

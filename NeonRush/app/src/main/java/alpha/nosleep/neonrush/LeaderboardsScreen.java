@@ -40,6 +40,18 @@ public class LeaderboardsScreen extends Screen {
     }
 
     @Override
+    public void restart()
+    {
+
+    }
+
+    @Override
+    public void destroy()
+    {
+
+    }
+
+    @Override
     public void resume() {
 
     }
