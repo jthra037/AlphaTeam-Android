@@ -35,6 +35,11 @@ public class LeaderboardsScreen extends Screen {
     }
 
     @Override
+    public void onBackButton()
+    {
+    }
+
+    @Override
     public void resume() {
 
     }

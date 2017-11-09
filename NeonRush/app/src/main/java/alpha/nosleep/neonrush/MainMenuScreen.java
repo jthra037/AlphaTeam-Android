@@ -153,6 +153,12 @@ public class MainMenuScreen extends Screen {
     }
 
     @Override
+    public void onBackButton()
+    {
+
+    }
+
+    @Override
     public void dispose() {
 
     }

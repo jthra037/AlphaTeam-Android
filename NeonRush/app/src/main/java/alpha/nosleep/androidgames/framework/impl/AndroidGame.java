@@ -97,6 +97,15 @@ public abstract class AndroidGame extends Activity implements Game {
     }
 
     @Override
+    public void onBackPressed()
+    {
+        //super.onBackPressed();
+        screen.onBackButton();
+    }
+
+
+
+    @Override
     public Input getInput() {
         return input;
     }
@@ -146,6 +155,8 @@ public abstract class AndroidGame extends Activity implements Game {
 
     @Override
     public SharedPreferences getSharedPreferences(){return settings;}
+
+
 
 
 }

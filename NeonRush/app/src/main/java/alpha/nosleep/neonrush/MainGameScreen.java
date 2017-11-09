@@ -268,7 +268,8 @@ public class MainGameScreen extends Screen {
     }
 
     @Override
-    public void pause() {
+    public void pause()
+    {
     }
 
     @Override
@@ -291,8 +292,16 @@ public class MainGameScreen extends Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
+    }
 
+    @Override
+    public void onBackButton()
+    {
+        game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
+        buttons.get(1).hide(false);
+        buttons.get(2).hide(false);
     }
 
     private void removeFromList(int i)

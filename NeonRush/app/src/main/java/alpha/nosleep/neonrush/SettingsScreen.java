@@ -137,6 +137,11 @@ public class SettingsScreen extends Screen {
     }
 
     @Override
+    public void onBackButton()
+    {
+    }
+
+    @Override
     public void present(float deltaTime)
     {
         g.drawRect(backGround, Color.BLACK );
