@@ -63,15 +63,6 @@ public abstract class AndroidGame extends Activity implements Game {
         settings = getSharedPreferences(Settings_Prefs,0);
         setContentView(renderView);
 
-        File f = new File("/data/data/alpha.nosleep.neonrush/shared_prefs/Settingsprefsfile.xml");
-        if (f.exists())
-            Log.d("TAG", "SharedPreferences Settingprefs : exist");
-        else {
-            Log.d("TAG", "Setup default preferences");
-            setupDefaultPreferences();
-        }
-
-
     }
 
     @Override
@@ -95,6 +86,14 @@ public abstract class AndroidGame extends Activity implements Game {
 
         if (isFinishing())
             screen.dispose();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if(!hasFocus) {
+            super.onWindowFocusChanged(hasFocus);
+            screen.focusChanged(hasFocus);
+        }
     }
 
     @Override
@@ -148,11 +147,5 @@ public abstract class AndroidGame extends Activity implements Game {
     @Override
     public SharedPreferences getSharedPreferences(){return settings;}
 
-    private void setupDefaultPreferences()
-    {
-       SharedPreferences.Editor editor = settings.edit();
-        editor.clear();
-        editor.putBoolean("handheldPlay", false);
-        editor.commit();//always has to be last in order for your preferences to be saved
-    }
+
 }

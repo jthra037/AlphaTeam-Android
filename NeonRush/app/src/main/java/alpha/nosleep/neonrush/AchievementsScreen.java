@@ -34,6 +34,12 @@ public class AchievementsScreen extends Screen {
     }
 
     @Override
+    public void focusChanged(boolean hasFocus)
+    {
+
+    }
+
+    @Override
     public void dispose() {
 
     }

@@ -74,88 +74,125 @@ public class World
 
     public void update(float deltaTime)
     {
-        //player.move(deltaTime);
-        //player.update(deltaTime);
-        for (int i = 0; i < objects.size() - 1; i++)
+
+        switch(game.getGameState())
         {
-            for(int j = i + 1; j < objects.size(); j++)
-            {
-                Object object = objects.get(i);
-                Object other = objects.get(j);
+            case Play:
 
-                List<String> tags = Arrays.asList(object.tag, other.tag);
-
-                if (!deRegistryList.contains(object) &&
-                        !deRegistryList.contains(other) &&
-                        object.getCollider().OnOverlap(other, object.getPosition()))
+                //player.move(deltaTime);
+                //player.update(deltaTime);
+                for (int i = 0; i < objects.size() - 1; i++)
                 {
-                    Ball thisBall = (Ball)object;
-                    if (object.tag == other.tag)
+                    for(int j = i + 1; j < objects.size(); j++)
                     {
-                        thisBall.Combine((Ball)other);
-                    }
-                    else if (tags.contains("Player") && tags.contains("Goal"))
-                    {
-                        player.Combine(notPlayer(object, other));
-                    }
-                    else if (tags.contains("Player") && tags.contains("Enemy"))
-                    {
-                        unregister(object);
-                        unregister(other);
-                        game.setGameState(Game.GAMESTATE.GameOver);
+                        Object object = objects.get(i);
+                        Object other = objects.get(j);
+
+                        List<String> tags = Arrays.asList(object.tag, other.tag);
+
+                        if (!deRegistryList.contains(object) &&
+                                !deRegistryList.contains(other) &&
+                                object.getCollider().OnOverlap(other, object.getPosition()))
+                        {
+                            Ball thisBall = (Ball)object;
+                            if (object.tag == other.tag)
+                            {
+                                thisBall.Combine((Ball)other);
+                            }
+                            else if (tags.contains("Player") && tags.contains("Goal"))
+                            {
+                                player.Combine(notPlayer(object, other));
+                            }
+                            else if (tags.contains("Player") && tags.contains("Enemy"))
+                            {
+                                unregister(object);
+                                unregister(other);
+                                game.setGameState(Game.GAMESTATE.GameOver);
+                            }
+                        }
                     }
                 }
-            }
+
+                objects.addAll(registryList);
+                registryList.removeAll(registryList);
+
+                objects.removeAll(deRegistryList);
+                deRegistryList.removeAll(deRegistryList);
+
+
+                    for (Object object : objects)
+                    {
+                        object.update(deltaTime);
+                        if (object == player)
+                        {
+                            score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+                            regTime = System.currentTimeMillis()/1000;
+                        }
+                    }
+
+
+
+                if (!objects.contains(goal))
+                {
+                    Random r = new Random();
+                    FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
+                            (float)r.nextInt((int)getHeight()));
+                    goal = new Goal(this, 15, pos);
+                }
+
+                v.setPosition(player.position, deltaTime);
+
+                Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+
+                Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+
+                break;
+            case Pause:
+                Log.i("gameState", "Paused!");
+
+
+                break;
+            case GameOver:
+                break;
         }
 
-        objects.addAll(registryList);
-        registryList.removeAll(registryList);
 
-        objects.removeAll(deRegistryList);
-        deRegistryList.removeAll(deRegistryList);
-
-        for (Object object : objects)
-        {
-            object.update(deltaTime);
-            if (object == player)
-            {
-                score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-                regTime = System.currentTimeMillis()/1000;
-            }
-        }
-
-        if (!objects.contains(goal))
-        {
-            Random r = new Random();
-            FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
-                    (float)r.nextInt((int)getHeight()));
-            goal = new Goal(this, 15, pos);
-        }
-
-        v.setPosition(player.position, deltaTime);
-
-        Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
-
-        Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
     }
 
     public void present(float deltaTime)
     {
-        for (int i = 0; i < worldSize; i++)
+
+        switch(game.getGameState())
         {
-            for (int j = 0; j < worldSize; j++)
-            {
-                FTuple pos = new FTuple(i * g.getWidth(), j * g.getHeight());
-                ITuple p = toLocalCoord(pos);
-                background.setPosition(p.x, p.y);
-                g.drawPixmap(background);
-            }
+            case Play:
+
+                for (int i = 0; i < worldSize; i++)
+                {
+                    for (int j = 0; j < worldSize; j++)
+                    {
+                        FTuple pos = new FTuple(i * g.getWidth(), j * g.getHeight());
+                        ITuple p = toLocalCoord(pos);
+                        background.setPosition(p.x, p.y);
+                        g.drawPixmap(background);
+                    }
+                }
+
+                for (Object object : objects)
+                {
+                    object.present(deltaTime);
+                }
+
+                break;
+            case Pause:
+
+
+
+                break;
+            case GameOver:
+                break;
         }
 
-        for (Object object : objects)
-        {
-            object.present(deltaTime);
-        }
+
     }
 
     private Ball notPlayer(Object one, Object two)

@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,9 @@ public class SettingsScreen extends Screen {
     private Pixmap checked;
     private Pixmap unchecked;
     private Pixmap handHeldPlayButton;
-    private Paint textPaint;
+    private Pixmap backButton;
+    private Paint titleTextPaint;
+    private Paint bodyTextPaint;
     Typeface tf;
     SharedPreferences settings; //the location in which all future user settings will be stored
     private List<Button> buttons = new ArrayList<Button>();
@@ -45,17 +48,19 @@ public class SettingsScreen extends Screen {
         g = game.getGraphics();
         backGround = new Rect(0,0,g.getWidth()+1,g.getHeight());
 
-        handHeldPlayButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
-        g.resizePixmap(handHeldPlayButton,125,125);
-
         settings = game.getSharedPreferences();
         handheldPlay = settings.getBoolean("handHeldPlay",false); //false is the value if shared preferences doesn't exist
+
+        handHeldPlayButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(handHeldPlayButton,125,125);
 
         unchecked = g.newPixmap("buttons/unchecked.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(unchecked,125,125);
 
         checked = g.newPixmap("buttons/checked.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(checked,125,125);
+
+        backButton = g.newPixmap("buttons/backbutton.png", Graphics.PixmapFormat.ARGB4444);
 
         if (handheldPlay)
             handHeldPlayButton.setBitmap(checked.getBitmap());
@@ -74,17 +79,25 @@ public class SettingsScreen extends Screen {
             }
         }
         ));
-
         buttons.get(0).resize(125,125);
-        buttons.get(0).setPosition(200,200);
+        buttons.get(0).setPosition(100,200);
 
-        tf = Typeface.createFromAsset(g.getAssets(),"fonts/antoniobold.ttf");
-        textPaint = new Paint();
-        textPaint.setTypeface(tf);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(100);
+        buttons.add(new Button(game,backButton, new Callable<Void>(){
+            public Void call() {
+                game.setScreen(new MainMenuScreen(game));
+                return null;
+            }
+        }
+        ));
+        buttons.get(1).resize(100,100);
+        buttons.get(1).setPosition(20, g.getHeight() - backButton.getHeight() - 20);
+
+
+        setupTypefaces();//moved to a function so as not to clutter the constructor
 
     }
+
+
 
 
     @Override
@@ -96,7 +109,8 @@ public class SettingsScreen extends Screen {
         for (int i = 0; i < len; i++)
         {
             Input.TouchEvent event = touchEvents.get(i);
-            if (event.type == Input.TouchEvent.TOUCH_DOWN) {
+            if (event.type == Input.TouchEvent.TOUCH_DOWN)
+            {
                 for (Button button : buttons)
                 {
                     if(inBounds(event, button.getX(), button.getY(),
@@ -106,15 +120,34 @@ public class SettingsScreen extends Screen {
                     }
                 }
             }
+            else if (event.type == KeyEvent.KEYCODE_BACK)
+            {
+                game.setScreen(new MainMenuScreen(game));
+            }
         }
 
+    }
+
+    @Override
+    public void focusChanged(boolean hasFocus) {
+        if(!hasFocus) {
+            game.setScreen(new MainMenuScreen(game));
+
+        }
     }
 
     @Override
     public void present(float deltaTime)
     {
         g.drawRect(backGround, Color.BLACK );
-        g.drawText("Settings",g.getWidth()/2 - 150, 125,textPaint);
+        g.drawText("Settings",g.getWidth()/2 - 150, 125, titleTextPaint);
+
+        g.drawText("Hand Held Play: Zeroes Accelerometer ",240,260, bodyTextPaint);
+        g.drawText("based on hand position as apposed to laying flat",240,315, bodyTextPaint);
+
+
+
+
         for (Button button : buttons)
         {
             g.drawPixmap(button.getImg(),button.getX(),button.getY());
@@ -123,13 +156,16 @@ public class SettingsScreen extends Screen {
     }
 
     @Override
-    public void pause() {
+    public void pause() //what is called when you leave/close the app
+    {
         toggleHandHeldPlay(handheldPlay);
     }
 
     @Override
-    public void resume() {
-        Log.i("state","gained focus");
+    public void resume() //what is called when you go back to the app
+
+    {
+
     }
 
     @Override
@@ -164,6 +200,20 @@ public class SettingsScreen extends Screen {
         editor.clear();
         editor.putBoolean("handHeldPlay", val);
         editor.commit();//always has to be last in order for your preferences to be saved
+    }
+
+    void setupTypefaces()
+    {
+        tf = Typeface.createFromAsset(g.getAssets(),"fonts/antoniobold.ttf");
+        titleTextPaint = new Paint();
+        titleTextPaint.setTypeface(tf);
+        titleTextPaint.setColor(Color.WHITE);
+        titleTextPaint.setTextSize(100);
+
+        bodyTextPaint = new Paint();
+        bodyTextPaint.setTypeface(tf);
+        bodyTextPaint.setColor(Color.WHITE);
+        bodyTextPaint.setTextSize(50);
     }
 
 }

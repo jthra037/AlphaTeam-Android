@@ -29,6 +29,12 @@ public class LeaderboardsScreen extends Screen {
     }
 
     @Override
+    public void focusChanged(boolean hasFocus)
+    {
+
+    }
+
+    @Override
     public void resume() {
 
     }

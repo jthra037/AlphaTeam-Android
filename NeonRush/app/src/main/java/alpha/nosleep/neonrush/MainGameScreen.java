@@ -221,9 +221,9 @@ public class MainGameScreen extends Screen {
                 world.present(deltaTime);
 
 
-                count+= deltaTime;
+                /*count+= deltaTime;
 
-                /*if (count > 0.25f)
+                if (count > 0.25f)
                 {
                     g.rotateToPoint(directionalArrow, world.getBall().getPosition()); //FOR JACOB WHEN READY TO ROTATE OBJECT
                     count = 0;
@@ -238,7 +238,7 @@ public class MainGameScreen extends Screen {
                 if (buttons.get(0).isClickable())
                     buttons.get(0).isClickable(false);
 
-                world.present(deltaTime);
+                //world.present(deltaTime);
                 createPauseMenu();
 
                 break;
@@ -269,11 +269,24 @@ public class MainGameScreen extends Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
+
+    }
+
+    @Override
+    public void focusChanged(boolean hasFocus)
+    {
+        if (!hasFocus)
+        {
+            game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
+            buttons.get(1).hide(false);
+            buttons.get(2).hide(false);
+        }
+
+
 
     }
 
