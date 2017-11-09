@@ -2,14 +2,18 @@ package alpha.nosleep.androidgames.framework.impl;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.io.File;
 
 import alpha.nosleep.androidgames.framework.Audio;
 import alpha.nosleep.androidgames.framework.FileIO;
@@ -26,6 +30,7 @@ public abstract class AndroidGame extends Activity implements Game {
     FileIO fileIO;
     Screen screen;
     Context context;
+    SharedPreferences settings;
     private GAMESTATE gamestate;
 
     @Override
@@ -55,7 +60,18 @@ public abstract class AndroidGame extends Activity implements Game {
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         screen = getStartScreen();
         context = getApplicationContext();
+        settings = getSharedPreferences(Settings_Prefs,0);
         setContentView(renderView);
+
+        File f = new File("/data/data/alpha.nosleep.neonrush/shared_prefs/Settingsprefsfile.xml");
+        if (f.exists())
+            Log.d("TAG", "SharedPreferences Settingprefs : exist");
+        else {
+            Log.d("TAG", "Setup default preferences");
+            setupDefaultPreferences();
+        }
+
+
     }
 
     @Override
@@ -128,4 +144,15 @@ public abstract class AndroidGame extends Activity implements Game {
 
     @Override
     public void setGameState(GAMESTATE newGameState){gamestate = newGameState;}
+
+    @Override
+    public SharedPreferences getSharedPreferences(){return settings;}
+
+    private void setupDefaultPreferences()
+    {
+       SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.putBoolean("handheldPlay", false);
+        editor.commit();//always has to be last in order for your preferences to be saved
+    }
 }

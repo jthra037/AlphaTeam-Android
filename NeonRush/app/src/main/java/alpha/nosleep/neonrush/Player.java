@@ -1,5 +1,6 @@
 package alpha.nosleep.neonrush;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 
 import java.util.List;
@@ -19,9 +20,11 @@ public class Player extends Ball
     private FTuple accel;       //Current accelerometer values.
     private FTuple lastAccel = new FTuple(0.0f, 0.0f);   //Last frame's accelerometer values.
     private float speedScalar = 15.0f;
-
+    private FTuple startingAccel;
+    private boolean handHeldPlay;
     private float maxSpeed = 600;
     private Input i;
+    SharedPreferences settings;
     private World world;
     private float damp = 2;
 
@@ -29,12 +32,13 @@ public class Player extends Ball
     {
         super(w, 15);
         world = w;
+        settings = w.game.getSharedPreferences();
         i = w.game.getInput();
-
+        startingAccel = new FTuple(i.getAccelX(), i.getAccelY());
         color = Color.WHITE;
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
         tag = "Player";
-
+        handHeldPlay = settings.getBoolean("handHeldPlay", false); //gets the value for handheld play. sets it to false if prefs doesn't exist.
         //img = world.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //world.g.resizePixmap(playerImg, xValue, yValue);
     }
@@ -48,7 +52,11 @@ public class Player extends Ball
 
     public void move(float deltaTime)
     {
-        accel = new FTuple(i.getAccelX(), i.getAccelY());
+        if (handHeldPlay)
+            accel = new FTuple(i.getAccelX(), i.getAccelY()).Add(startingAccel.Mul(-1));
+        else
+            accel = new FTuple(i.getAccelX(), i.getAccelY());
+
         float Fn = getMass() * -world.getGravity();
 
         float dx = Fn * (accel.y - lastAccel.y) * speedScalar;

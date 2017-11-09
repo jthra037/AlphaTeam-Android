@@ -71,8 +71,8 @@ public class MainMenuScreen extends Screen {
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
 
-                //game.setScreen(new SettingsScreen(game));
-                System.out.println("Settings have yet to be implemented. Please be patient!");
+                game.setScreen(new SettingsScreen(game));
+                //System.out.println("Settings have yet to be implemented. Please be patient!");
 
                 return null;
             }
