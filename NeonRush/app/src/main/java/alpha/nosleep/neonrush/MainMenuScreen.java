@@ -1,5 +1,6 @@
 package alpha.nosleep.neonrush;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.widget.Toast;
@@ -71,8 +72,8 @@ public class MainMenuScreen extends Screen {
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
 
-                //game.setScreen(new SettingsScreen(game));
-                System.out.println("Settings have yet to be implemented. Please be patient!");
+                game.setScreen(new SettingsScreen(game));
+                //System.out.println("Settings have yet to be implemented. Please be patient!");
 
                 return null;
             }
@@ -141,7 +142,34 @@ public class MainMenuScreen extends Screen {
     }
 
     @Override
-    public void resume() {
+    public void resume()
+    {
+
+    }
+
+    @Override
+    public void focusChanged(boolean hasFocus)
+    {
+
+    }
+
+    @Override
+    public void destroy()
+    {
+
+    }
+
+    @Override
+    public void onBackButton()
+    {
+        Activity a = game.getActivity();
+        a.finish();
+
+    }
+
+    @Override
+    public void restart()
+    {
 
     }
 
