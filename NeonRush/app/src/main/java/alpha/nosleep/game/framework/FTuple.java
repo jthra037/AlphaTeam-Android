@@ -24,14 +24,9 @@ public class FTuple
 
     public FTuple Div(float d){return new FTuple(this.x/d, this.y/d);}
 
-    public FTuple Add(float x, float y)
+    public FTuple Mul(float m)
     {
-        return new FTuple(this.x + x, this.y + y);
-    }
-
-    public FTuple Mul(float x)
-    {
-        return new FTuple(this.x * x, this.y * x);
+        return new FTuple(this.x * m, this.y * m);
     }
 
     public float LengthS()
@@ -39,7 +34,7 @@ public class FTuple
         return (this.x * this.x + this.y * this.y);
     }
 
-    public float Length()
+    public  float Length()
     {
         return (float)Math.sqrt(LengthS());
     }
@@ -94,8 +89,10 @@ public class FTuple
 
     public String ToString(){return ("X:" + this.x + ", Y:" + this.y);}
 
-
-
+    public static float Dot(FTuple lhs, FTuple rhs)
+    {
+        return lhs.x * rhs.x + lhs.y * rhs.y;
+    }
 
     public FTuple Normalized()
     {

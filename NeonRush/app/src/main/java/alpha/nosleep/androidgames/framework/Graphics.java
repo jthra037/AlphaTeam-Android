@@ -1,8 +1,6 @@
 package alpha.nosleep.androidgames.framework;
 
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 

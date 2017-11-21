@@ -8,10 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -21,8 +17,6 @@ import android.util.Log;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.game.framework.FTuple;
-
-import static android.R.attr.y;
 
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
