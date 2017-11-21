@@ -94,6 +94,11 @@ public class FTuple
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
+    public float Dot(FTuple in)
+    {
+        return this.x * in.x + this.y * in.y;
+    }
+
     public FTuple Normalized()
     {
         float len = Length();
