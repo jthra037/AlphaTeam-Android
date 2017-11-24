@@ -73,12 +73,16 @@ public class AndroidGraphics implements Graphics {
         Bitmap newBM = null;
         Matrix matrix = new Matrix();
         //matrix.postRotate(angle);
+        if (pixmap.getRotation() == (int)angle)
+        {
+            return pixmap;
+        }
         matrix.postRotate(angle,(pixmap.getWidth()/2),(pixmap.getHeight()/2)); //rotating around center of object
         matrix.postTranslate(pixmap.getX(),pixmap.getY());
         newBM = Bitmap.createBitmap(pixmap.getBitmap(), 0, 0, pixmap.getWidth(), pixmap.getHeight(), matrix, true);
         pixmap.setBitmap(newBM);
 
-        pixmap.setRotation(angle);
+        pixmap.setRotation((int)angle);
 
         return pixmap;
     }
@@ -93,21 +97,27 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
-    public void rotateToPoint(Pixmap pixmap, FTuple point)
+    public void rotateToPoint(Pixmap pixmap, FTuple a, FTuple point, float maxDegreesDelta)
     {
-        Bitmap newBM = null;
-        float angle = (float) Math.atan2(point.y-pixmap.getY(),point.x-pixmap.getX()); //getting angle between the two objects
-        angle = (float) (angle * (180.0f/Math.PI));
+        float targetAngle = (float)(Math.toDegrees((Math.atan2(a.y-point.y,a.x-point.x)))+270)%360;
+        float currentRotation = Math.abs(pixmap.getRotation()%360);
+        float angle = targetAngle-currentRotation;
 
-        if(angle < 0)
+        if(Math.abs(angle)<maxDegreesDelta)
         {
-            angle = 360 - (-angle);
+            pixmap.setRotation(pixmap.getRotation());
         }
-        float difference = 0;
-        difference = angle - pixmap.getRotation();
-        Log.d("ANGLES","Angle: " + angle + ", Rotation: " + pixmap.getRotation() + ", Difference: " + difference);
-        if (difference != 0.0f)
-            rotatePixmap(pixmap,difference);
+        else if(angle<0)
+        {
+            float currentrot = pixmap.getRotation();
+            pixmap.setRotation((currentrot-=maxDegreesDelta));
+        }
+        else
+        {
+            float currentrot1 = pixmap.getRotation();
+            pixmap.setRotation((currentrot1+=maxDegreesDelta));
+        }
+        //Log.d("positions", "Player: " + a.ToString() + ", Ball: " + point.ToString() + ", angle: " + angle);
     }
 
 
@@ -212,6 +222,10 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
+    public void drawPixmap(Pixmap pixmap, Matrix matrix)
+    {
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,matrix,null);
+    }
     public int getWidth() {
         return frameBuffer.getWidth();
     }

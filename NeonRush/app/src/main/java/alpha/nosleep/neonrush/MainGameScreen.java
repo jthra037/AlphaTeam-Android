@@ -2,6 +2,7 @@ package alpha.nosleep.neonrush;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -60,8 +61,8 @@ public class MainGameScreen extends Screen {
         //background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         //g.resizePixmap(background, g.getWidth(), g.getHeight());
 
-       /* directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
-        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2);*/ //FOR JACOB WHEN READY TO ROTATE
+        directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
+        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2); //FOR JACOB WHEN READY TO ROTATE
 
         settings = game.getSharedPreferences();
 
@@ -228,14 +229,11 @@ public class MainGameScreen extends Screen {
                 world.present(deltaTime);
 
 
-                /*count+= deltaTime;
-
-                if (count > 0.25f)
-                {
-                    g.rotateToPoint(directionalArrow, world.getBall().getPosition()); //FOR JACOB WHEN READY TO ROTATE OBJECT
-                    count = 0;
-                    g.drawPixmap(directionalArrow);
-                }*/
+                    g.rotateToPoint(directionalArrow,world.getPlayer().getPosition(), world.getBall().getPosition(),250*deltaTime);
+                Matrix matrix = new Matrix();
+                matrix.setRotate(directionalArrow.getRotation(),(directionalArrow.getWidth()/2),(directionalArrow.getHeight()/2));
+                matrix.postTranslate(directionalArrow.getX(),directionalArrow.getY());
+                    g.drawPixmap(directionalArrow,matrix);
 
 
 
