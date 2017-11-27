@@ -36,18 +36,15 @@ public class MainGameScreen extends Screen {
     Typeface tf;
     Paint textPaint;
     private Rect screenRect;
-    //private Pixmap background;
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
     private Pixmap replayButton;
-    private Pixmap directionalArrow;
 
     private int worldSize = 10;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
-    float count = 0;
 
     SharedPreferences settings;
 
@@ -57,12 +54,6 @@ public class MainGameScreen extends Screen {
         super(game);
         g = game.getGraphics();
         world = new World(game, g, worldSize);
-
-        //background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
-        //g.resizePixmap(background, g.getWidth(), g.getHeight());
-
-        directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
-        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2); //FOR JACOB WHEN READY TO ROTATE
 
         settings = game.getSharedPreferences();
 
@@ -228,13 +219,7 @@ public class MainGameScreen extends Screen {
                 //g.drawPixmap(background);
                 world.present(deltaTime);
 
-
-                    g.rotateToPoint(directionalArrow,world.getPlayer().getPosition(), world.getBall().getPosition(),250*deltaTime);
-                Matrix matrix = new Matrix();
-                matrix.setRotate(directionalArrow.getRotation(),(directionalArrow.getWidth()/2),(directionalArrow.getHeight()/2));
-                matrix.postTranslate(directionalArrow.getX(),directionalArrow.getY());
-                    g.drawPixmap(directionalArrow,matrix);
-
+                world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
 
 
 

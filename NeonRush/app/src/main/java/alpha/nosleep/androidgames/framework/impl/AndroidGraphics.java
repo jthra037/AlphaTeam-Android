@@ -88,40 +88,6 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
-    public Pixmap rotateAround(Pixmap pixmap, FTuple point,float angle)
-    {
-        Bitmap newBM = null;
-        Matrix matrix = new Matrix();
-
-        return pixmap;
-    }
-
-    @Override
-    public void rotateToPoint(Pixmap pixmap, FTuple a, FTuple point, float maxDegreesDelta)
-    {
-        float targetAngle = (float)(Math.toDegrees((Math.atan2(a.y-point.y,a.x-point.x)))+270)%360;
-        float currentRotation = Math.abs(pixmap.getRotation()%360);
-        float angle = targetAngle-currentRotation;
-
-        if(Math.abs(angle)<maxDegreesDelta)
-        {
-            pixmap.setRotation(pixmap.getRotation());
-        }
-        else if(angle<0)
-        {
-            float currentrot = pixmap.getRotation();
-            pixmap.setRotation((currentrot-=maxDegreesDelta));
-        }
-        else
-        {
-            float currentrot1 = pixmap.getRotation();
-            pixmap.setRotation((currentrot1+=maxDegreesDelta));
-        }
-        //Log.d("positions", "Player: " + a.ToString() + ", Ball: " + point.ToString() + ", angle: " + angle);
-    }
-
-
-    @Override
     public AssetManager getAssets()
     {
         return assets;
@@ -226,6 +192,7 @@ public class AndroidGraphics implements Graphics {
     {
         canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,matrix,null);
     }
+
     public int getWidth() {
         return frameBuffer.getWidth();
     }

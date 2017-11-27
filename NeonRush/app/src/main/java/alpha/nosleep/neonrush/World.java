@@ -34,6 +34,7 @@ public class World
     private float worldHeight;
     private Player player;
     private Ball goal = null;
+    private DirectionalArrow dArrow;
     private float gravity = -8;
     private Pixmap background;
     private List<Object> objects = new ArrayList<Object>();
@@ -50,7 +51,7 @@ public class World
         worldSize = ws;
         worldWidth = worldSize * g.getWidth();
         worldHeight = worldSize * g.getHeight();
-
+        dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
 
@@ -237,10 +238,11 @@ public class World
         deRegistryList.add(object);
     }
 
-    public Player getPlayer()
-    { return player; }
+    public Player getPlayer(){ return player; }
 
     public Ball getBall(){return goal;}
+
+    public DirectionalArrow getdArrow(){return dArrow;}
 
     public String getScore()
     {
