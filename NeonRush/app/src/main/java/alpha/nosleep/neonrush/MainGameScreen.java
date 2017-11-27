@@ -45,7 +45,6 @@ public class MainGameScreen extends Screen {
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
-
     SharedPreferences settings;
 
 
@@ -216,10 +215,11 @@ public class MainGameScreen extends Screen {
 
                 if (!buttons.get(0).isClickable())
                     buttons.get(0).isClickable(true);
-                //g.drawPixmap(background);
                 world.present(deltaTime);
 
                 world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
+                    g.setAlpha(world.getdArrow().getImg(),50);
+
 
 
 

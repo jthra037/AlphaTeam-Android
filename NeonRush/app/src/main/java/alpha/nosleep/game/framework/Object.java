@@ -58,6 +58,8 @@ public abstract class Object
         return game;
     }
 
+    public Pixmap getImg(){return img;}
+
     public void rotateToPoint(FTuple a, FTuple point, float maxDegreesDelta)
     {
         float targetAngle = (float)(Math.toDegrees((Math.atan2(a.y-point.y,a.x-point.x)))+270)%360;
