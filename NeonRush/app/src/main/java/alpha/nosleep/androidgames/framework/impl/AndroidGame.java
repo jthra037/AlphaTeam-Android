@@ -22,6 +22,10 @@ import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Input;
 import alpha.nosleep.androidgames.framework.Screen;
+import alpha.nosleep.game.framework.BaseGameActivity;
+import alpha.nosleep.game.framework.GameHelper;
+
+
 
 public abstract class AndroidGame extends Activity implements Game {
     AndroidFastRenderView renderView;
@@ -33,6 +37,13 @@ public abstract class AndroidGame extends Activity implements Game {
     Context context;
     SharedPreferences settings;
     private GAMESTATE gamestate;
+    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+    public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
+    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
+
+    protected GameHelper mHelper;
+    protected int mRequestedClients = CLIENT_GAMES;
+    protected boolean mDebugLog = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +75,19 @@ public abstract class AndroidGame extends Activity implements Game {
         settings = getSharedPreferences(Settings_Prefs,0);
         setContentView(renderView);
 
+    }
+
+    protected void setRequestedClients(int requestedClients){
+        mRequestedClients = requestedClients;
+    }
+
+    public GameHelper getGameHelper()
+    {
+        if (mHelper == null){
+            mHelper = new GameHelper(this,mRequestedClients);
+            mHelper.enableDebugLog(mDebugLog);
+        }
+        return mHelper;
     }
 
     @Override

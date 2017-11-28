@@ -29,4 +29,5 @@ dependencies {
     compile 'junit:junit:4.12'
     //compile 'com.google.code.gson:gson:2.8.2'
     compile files('libs/gson-2.8.2.jar')
+    compile 'com.google.android.gms:play-services:11.0.4'
 }
