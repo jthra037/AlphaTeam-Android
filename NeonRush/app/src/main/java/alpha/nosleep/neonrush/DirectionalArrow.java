@@ -2,8 +2,6 @@ package alpha.nosleep.neonrush;
 
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.util.Log;
-
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.game.framework.CircleCollider;
 import alpha.nosleep.game.framework.FTuple;
@@ -17,7 +15,6 @@ public class DirectionalArrow extends Object
 {
     World mWorld;
     Graphics g;
-
     public DirectionalArrow(World m_World, FTuple position)
     {
         super(m_World.game);
@@ -34,8 +31,6 @@ public class DirectionalArrow extends Object
     @Override
     public void update(float deltaTime)
     {
-        Log.d("rotation value", "Rotation: " + this.rotation);
-
     }
 
     @Override

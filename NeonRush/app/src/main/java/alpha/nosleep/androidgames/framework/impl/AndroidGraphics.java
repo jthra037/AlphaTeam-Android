@@ -17,6 +17,7 @@ import android.util.Log;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.game.framework.FTuple;
+import alpha.nosleep.neonrush.ILine;
 
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
@@ -139,7 +140,12 @@ public class AndroidGraphics implements Graphics {
         canvas.drawLine(x, y, x2, y2, paint);
     }
 
-
+    @Override
+    public void drawLine(ILine line, int color)
+    {
+        paint.setColor(color);
+        canvas.drawLine(line.x1,line.y1,line.x2,line.y2,paint);
+    }
 
     @Override
     public void drawARGBRect(Rect rect, int a, int r, int g, int b)
