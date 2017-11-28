@@ -1,6 +1,5 @@
 package alpha.nosleep.androidgames.framework.impl;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,11 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.File;
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
 
 import alpha.nosleep.androidgames.framework.Audio;
 import alpha.nosleep.androidgames.framework.FileIO;
@@ -22,12 +21,10 @@ import alpha.nosleep.androidgames.framework.Game;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Input;
 import alpha.nosleep.androidgames.framework.Screen;
-import alpha.nosleep.game.framework.BaseGameActivity;
-import alpha.nosleep.game.framework.GameHelper;
+import alpha.nosleep.neonrush.R;
 
 
-
-public abstract class AndroidGame extends Activity implements Game {
+public abstract class AndroidGame extends BaseGameActivity implements Game {
     AndroidFastRenderView renderView;
     Graphics graphics;
     Audio audio;
@@ -37,19 +34,14 @@ public abstract class AndroidGame extends Activity implements Game {
     Context context;
     SharedPreferences settings;
     private GAMESTATE gamestate;
-    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-    public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-
-    protected GameHelper mHelper;
-    protected int mRequestedClients = CLIENT_GAMES;
-    protected boolean mDebugLog = false;
+    static final int REQUEST_LEADERBOARD = 100;
+    static final int REQUEST_ACHIEVEMENTS = 200;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -77,18 +69,7 @@ public abstract class AndroidGame extends Activity implements Game {
 
     }
 
-    protected void setRequestedClients(int requestedClients){
-        mRequestedClients = requestedClients;
-    }
 
-    public GameHelper getGameHelper()
-    {
-        if (mHelper == null){
-            mHelper = new GameHelper(this,mRequestedClients);
-            mHelper.enableDebugLog(mDebugLog);
-        }
-        return mHelper;
-    }
 
     @Override
     public void onResume() {
@@ -194,6 +175,36 @@ public abstract class AndroidGame extends Activity implements Game {
 
     @Override
     public SharedPreferences getSharedPreferences(){return settings;}
+
+   @Override
+    public boolean isSignedIn()
+    {
+        return getGameHelper().isSignedIn();
+    }
+
+    @Override
+    public void signIn()
+    {
+        getGameHelper().beginUserInitiatedSignIn();
+    }
+
+    @Override
+    public void submitScore(int score)
+    {
+        Games.Leaderboards.submitScore(getGameHelper().getApiClient(),getString(R.string.Leaderboard_top_score),score);
+    }
+
+    @Override
+    public void showLeaderboard()
+    {
+        startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(),getString(R.string.Leaderboard_top_score)),REQUEST_LEADERBOARD);
+    }
+
+    @Override
+    public void showAchievements()
+    {
+        startActivityForResult(Games.Achievements.getAchievementsIntent(getApiClient()),REQUEST_ACHIEVEMENTS);
+    }
 
 
 

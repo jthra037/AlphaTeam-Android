@@ -19,6 +19,11 @@ public interface Game
     public Context getContext();
     public GAMESTATE getGameState();
     public void setGameState(GAMESTATE newGameState);
+    public boolean isSignedIn();
+    public void signIn();
+    public void submitScore(int score);
+    public void showLeaderboard();
+    public void showAchievements();
     public static final String Settings_Prefs = "Settingsprefsfile";
     public static final String World_Prefs = "WorldPrefsFile";
 }

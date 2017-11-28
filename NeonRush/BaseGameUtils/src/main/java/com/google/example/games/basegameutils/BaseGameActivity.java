@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package alpha.nosleep.game.framework;
+package com.google.example.games.basegameutils;
 
 import android.content.Intent;
 import android.os.Bundle;

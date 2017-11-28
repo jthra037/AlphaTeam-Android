@@ -1,4 +1,4 @@
-package alpha.nosleep.game.framework;
+package com.google.example.games.basegameutils;
 
 import android.app.Activity;
 import android.content.Context;
