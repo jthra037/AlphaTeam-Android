@@ -2,6 +2,10 @@
 <resources>
     <string name="app_id">1071681293300</string>
     <string name="package_name">com.alpha.nosleep.neonrush</string>
-    <string name="Babbys_First_Achievement">CgkI9Je7qZgfEAIQAw</string>
+    <string name="a_score_500">CgkI9Je7qZgfEAIQAw</string>
+    <string name="a_score_1000">CgkI9Je7qZgfEAIQBQ</string>
+    <string name="a_score_2000">CgkI9Je7qZgfEAIQBg</string>
+    <string name="a_score_3000">CgkI9Je7qZgfEAIQBw</string>
+    <string name="a_score_4000">CgkI9Je7qZgfEAIQCA</string>
     <string name="Leaderboard_top_score">CgkI9Je7qZgfEAIQAA</string>
 </resources>
