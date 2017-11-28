@@ -2,6 +2,7 @@ package alpha.nosleep.neonrush;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -35,19 +36,15 @@ public class MainGameScreen extends Screen {
     Typeface tf;
     Paint textPaint;
     private Rect screenRect;
-    //private Pixmap background;
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
     private Pixmap replayButton;
-    private Pixmap directionalArrow;
 
     private int worldSize = 10;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
-    float count = 0;
-
     SharedPreferences settings;
 
 
@@ -56,12 +53,6 @@ public class MainGameScreen extends Screen {
         super(game);
         g = game.getGraphics();
         world = new World(game, g, worldSize);
-
-        //background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
-        //g.resizePixmap(background, g.getWidth(), g.getHeight());
-
-       /* directionalArrow = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
-        directionalArrow.setPosition(g.getWidth()/2 - directionalArrow.getWidth()/2, g.getHeight()/2 - directionalArrow.getHeight()/2);*/ //FOR JACOB WHEN READY TO ROTATE
 
         settings = game.getSharedPreferences();
 
@@ -224,18 +215,10 @@ public class MainGameScreen extends Screen {
 
                 if (!buttons.get(0).isClickable())
                     buttons.get(0).isClickable(true);
-                //g.drawPixmap(background);
                 world.present(deltaTime);
 
-
-                /*count+= deltaTime;
-
-                if (count > 0.25f)
-                {
-                    g.rotateToPoint(directionalArrow, world.getBall().getPosition()); //FOR JACOB WHEN READY TO ROTATE OBJECT
-                    count = 0;
-                    g.drawPixmap(directionalArrow);
-                }*/
+                world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
+                    g.setAlpha(world.getdArrow().getImg(),50);
 
 
 

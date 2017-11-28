@@ -17,6 +17,7 @@ import android.util.Log;
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
 import alpha.nosleep.game.framework.FTuple;
+import alpha.nosleep.neonrush.ILine;
 
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
@@ -73,43 +74,42 @@ public class AndroidGraphics implements Graphics {
         Bitmap newBM = null;
         Matrix matrix = new Matrix();
         //matrix.postRotate(angle);
+        if (pixmap.getRotation() == (int)angle)
+        {
+            return pixmap;
+        }
         matrix.postRotate(angle,(pixmap.getWidth()/2),(pixmap.getHeight()/2)); //rotating around center of object
         matrix.postTranslate(pixmap.getX(),pixmap.getY());
         newBM = Bitmap.createBitmap(pixmap.getBitmap(), 0, 0, pixmap.getWidth(), pixmap.getHeight(), matrix, true);
         pixmap.setBitmap(newBM);
 
-        pixmap.setRotation(angle);
+        pixmap.setRotation((int)angle);
 
         return pixmap;
     }
 
     @Override
-    public Pixmap rotateAround(Pixmap pixmap, FTuple point,float angle)
+    public Pixmap setAlpha(Pixmap pixmap, int newAlpha)
     {
-        Bitmap newBM = null;
-        Matrix matrix = new Matrix();
-
-        return pixmap;
-    }
-
-    @Override
-    public void rotateToPoint(Pixmap pixmap, FTuple point)
-    {
-        Bitmap newBM = null;
-        float angle = (float) Math.atan2(point.y-pixmap.getY(),point.x-pixmap.getX()); //getting angle between the two objects
-        angle = (float) (angle * (180.0f/Math.PI));
-
-        if(angle < 0)
+        int pixel = pixmap.getBitmap().getPixel(pixmap.getWidth()/2,pixmap.getHeight()/2);
+        int alpha = Color.alpha(pixel);
+        if (newAlpha != alpha) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
         {
-            angle = 360 - (-angle);
+            Bitmap newBM = Bitmap.createBitmap(pixmap.getWidth(),pixmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas cc = new Canvas(newBM);
+            cc.drawARGB(0,0,0,0);
+            Paint newPaint = new Paint();
+            newPaint.setAlpha(newAlpha);
+            cc.drawBitmap(pixmap.getBitmap(), 0, 0, newPaint);
+            pixmap.setBitmap(newBM);
+            return pixmap;
         }
-        float difference = 0;
-        difference = angle - pixmap.getRotation();
-        Log.d("ANGLES","Angle: " + angle + ", Rotation: " + pixmap.getRotation() + ", Difference: " + difference);
-        if (difference != 0.0f)
-            rotatePixmap(pixmap,difference);
-    }
+        else
+        {
+            return pixmap;
+        }
 
+    }
 
     @Override
     public AssetManager getAssets()
@@ -140,7 +140,12 @@ public class AndroidGraphics implements Graphics {
         canvas.drawLine(x, y, x2, y2, paint);
     }
 
-
+    @Override
+    public void drawLine(ILine line, int color)
+    {
+        paint.setColor(color);
+        canvas.drawLine(line.x1,line.y1,line.x2,line.y2,paint);
+    }
 
     @Override
     public void drawARGBRect(Rect rect, int a, int r, int g, int b)
@@ -212,6 +217,11 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
+    public void drawPixmap(Pixmap pixmap, Matrix matrix)
+    {
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,matrix,null);
+    }
+
     public int getWidth() {
         return frameBuffer.getWidth();
     }

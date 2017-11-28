@@ -39,10 +39,6 @@ public class FTuple
         return (float)Math.sqrt(LengthS());
     }
 
-    public float magnitude(){return (float)Math.sqrt(this.x*this.x + this.y*this.y);}
-
-    public float SqrMagnitude(){return this.x * this.x + this.y * this.y;}
-
     public static FTuple Lerp(FTuple a, FTuple b, float t)
     {
         t = IMath.clamp01(t);
@@ -57,7 +53,7 @@ public class FTuple
     public static FTuple MoveTowards(FTuple current, FTuple target, float maxDistanceDelta)
     {
         FTuple a = target.Sub(current);
-        float magnitude = a.magnitude();
+        float magnitude = a.Length();
         FTuple result;
         if (magnitude <= maxDistanceDelta || magnitude == 0f)
         {
@@ -84,7 +80,7 @@ public class FTuple
 
     public float Distance(FTuple target)
     {
-        return this.Sub(target).magnitude();
+        return this.Sub(target).Length();
     }
 
     public String ToString(){return ("X:" + this.x + ", Y:" + this.y);}
@@ -104,4 +100,5 @@ public class FTuple
         float len = Length();
         return new FTuple(this.x/len, this.y/len);
     }
+
 }
