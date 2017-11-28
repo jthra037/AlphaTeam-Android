@@ -3,6 +3,7 @@ package alpha.nosleep.neonrush;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -107,20 +108,21 @@ public class MainMenuScreen extends Screen {
         List<Input.TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
         int len = touchEvents.size();
-        for (int i = 0; i < len; i++)
-        {
-            Input.TouchEvent event = touchEvents.get(i);
-            if (event.type == Input.TouchEvent.TOUCH_DOWN) {
-                for (Button button : buttons)
-                {
-                    if(inBounds(event, button.getX(), button.getY(),
-                            button.getWidth(), button.getHeight()))
+            for (int i = 0; i < len; i++)
+            {
+                Input.TouchEvent event = touchEvents.get(i);
+                if (event.type == Input.TouchEvent.TOUCH_DOWN) {
+                    for (Button button : buttons)
                     {
-                        button.onClick();
+                        if(inBounds(event, button.getX(), button.getY(),
+                                button.getWidth(), button.getHeight()))
+                        {
+                            button.onClick();
+                        }
                     }
                 }
             }
-        }
+
     }
 
     @Override

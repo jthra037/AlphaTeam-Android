@@ -6,6 +6,7 @@ import java.io.InputStream;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -110,6 +111,8 @@ public class AndroidGraphics implements Graphics {
         }
 
     }
+
+
 
     @Override
     public AssetManager getAssets()

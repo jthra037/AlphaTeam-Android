@@ -40,7 +40,6 @@ public class MainGameScreen extends Screen {
     private Pixmap playButton;
     private Pixmap quitButton;
     private Pixmap replayButton;
-
     private int worldSize = 10;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
@@ -218,7 +217,10 @@ public class MainGameScreen extends Screen {
                 world.present(deltaTime);
 
                 world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
-                    g.setAlpha(world.getdArrow().getImg(),50);
+
+
+
+
 
 
 

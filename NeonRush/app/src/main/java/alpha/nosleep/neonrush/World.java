@@ -51,13 +51,18 @@ public class World
         worldSize = ws;
         worldWidth = worldSize * g.getWidth();
         worldHeight = worldSize * g.getHeight();
-        dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
-
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
+
+
+        dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
+        //g.setAlpha(dArrow.getImg(),50);
+        dArrow.setBackgroundGlow(dArrow.getImg(),Color.CYAN);
+
+
 
     }
 
