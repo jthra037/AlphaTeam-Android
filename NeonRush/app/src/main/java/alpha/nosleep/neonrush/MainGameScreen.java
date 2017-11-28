@@ -102,7 +102,7 @@ public class MainGameScreen extends Screen {
 
         buttons.add(new Button(game,quitButton, new Callable<Void>(){
             public Void call() {
-
+                game.submitScore((int)world.getLScore());
                 game.setScreen(new MainMenuScreen(game));
 
                 return null;
@@ -114,7 +114,7 @@ public class MainGameScreen extends Screen {
 
         buttons.add(new Button(game,replayButton, new Callable<Void>(){
             public Void call() {
-
+                game.submitScore((int)world.getLScore());
                 game.setScreen(new MainGameScreen(game));
                 return null;
             }
@@ -239,6 +239,8 @@ public class MainGameScreen extends Screen {
                 createGameOverScreen();
                 buttons.get(3).hide(false);
                 buttons.get(2).hide(false);
+
+
 
                 break;
         }

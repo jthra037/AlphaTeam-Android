@@ -58,7 +58,8 @@ public class MainMenuScreen extends Screen {
             public Void call() {
 
                 //game.setScreen(new AchievementsScreen(game));
-                System.out.println("Achievements have yet to be implemented. Please be patient!");
+                //System.out.println("Achievements have yet to be implemented. Please be patient!");
+                game.showAchievements();
                 return null;
             }
         }
@@ -89,7 +90,8 @@ public class MainMenuScreen extends Screen {
             public Void call() {
 
                 //game.setScreen(new LeaderboardsScreen(game));
-                System.out.println("Leaderboards have yet to be implemented. Please be patient!");
+                //System.out.println("Leaderboards have yet to be implemented. Please be patient!");
+                game.showLeaderboard();
 
                 return null;
             }

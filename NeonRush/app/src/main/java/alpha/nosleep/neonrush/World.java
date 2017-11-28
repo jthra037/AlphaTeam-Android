@@ -154,6 +154,7 @@ public class World
 
                 break;
             case GameOver:
+
                 break;
         }
 
@@ -248,6 +249,8 @@ public class World
     {
         return String.valueOf(score);
     }
+
+    public long getLScore() {return score;}
 
     //This represents the viewport into the world that is visible on screen to the player.
     public class ViewableScreen
