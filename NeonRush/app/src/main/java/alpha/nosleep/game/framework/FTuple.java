@@ -46,6 +46,11 @@ public class FTuple
         return new FTuple(this.x/len, this.y/len);
     }
 
+    public ITuple ToITuple()
+    {
+        return new ITuple((int)x, (int)y);
+    }
+
     public float Dot (FTuple other)
     {
         return x * other.x + y * other.y;

@@ -72,6 +72,7 @@ public class Ball extends Object{
     }
 
     public FTuple getVelocity() { return velocity; }
+    public void setVelocity(FTuple velocity) {this.velocity = velocity; }
 
     public float getMass() {
         return mass;

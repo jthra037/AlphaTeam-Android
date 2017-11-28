@@ -40,4 +40,10 @@ public class ObRectangle extends Obstacle
         }
     }
 
+    public ITuple getSize()
+    {
+        return size;
+    }
+
+
 }

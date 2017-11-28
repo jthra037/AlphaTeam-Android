@@ -41,10 +41,12 @@ public class CircleCollider extends Collider {
     public boolean OnOverlap(Object other, FTuple pos) {
         Collider otherCollider = other.getCollider();
 
-        /*switch (otherCollider.format) {
+        switch (otherCollider.format) {
             case circle:
                 return circleCircleCollision(other, (CircleCollider) otherCollider, pos);
-        }*/
+            case rect:
+                return rectCircleCollision(other, (BoxCollider) otherCollider, pos.ToITuple()); // hard cast fuckit
+        }
 
         try{
             CircleCollider otherCircle = (CircleCollider)otherCollider;
@@ -86,6 +88,19 @@ public class CircleCollider extends Collider {
         float rs = (otherCollider.getRadius() * otherCollider.getRadius()) + (radius * radius);
 
         return ds < rs;
+    }
+
+    private boolean rectCircleCollision(Object other, BoxCollider otherCollider, ITuple pos)
+    {
+        float left = pos.x - otherCollider.getSize().x/2;
+        float right = pos.x + otherCollider.getSize().x/2;
+        float top = pos.y - otherCollider.getSize().y/2;
+        float bottom = pos.y + otherCollider.getSize().y/2;
+
+        return left <= other.position.x + getRadius() &&
+                other.position.x <= right - getRadius()&&
+                top <= other.position.y + getRadius()&&
+                other.position.y <= bottom - getRadius();
     }
 
     public ITuple getOffset() {

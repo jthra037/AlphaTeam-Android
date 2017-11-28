@@ -59,7 +59,7 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
-        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(1000, 1000));
+        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
     }
 
     public float getWidth()
@@ -88,6 +88,11 @@ public class World
 
                 List<String> tags = Arrays.asList(object.tag, other.tag);
 
+                if (tags.contains("Obstacle") && tags.contains("Player"))
+                {
+                    System.out.println("This one");
+                }
+
                 //Ball Combining.
                 if (!tags.contains("Obstacle") &&
                         !deRegistryList.contains(object) &&
@@ -111,15 +116,27 @@ public class World
                     }
                 }
                 else if (tags.contains("Obstacle") &&
-                        other.tag != "Obstacle" &&
+                        tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
                         !deRegistryList.contains(object) &&
                         !deRegistryList.contains(other) &&
                         object.getCollider().OnOverlap(other, object.getPosition()))
                 {
-                    FTuple direction = object.position.Mul(-1).Add(other.position);
-                    Ball thisBall = (Ball)other;
+                    ObRectangle thisRect;
+                    Ball thisBall;
+                    if (object.tag == "Obstacle") {
+                        thisBall = (Ball) other;
+                        thisRect = (ObRectangle) object;
+                    }else {
+                        thisBall = (Ball) object;
+                        thisRect = (ObRectangle) other;
+                    }
+                    FTuple direction = thisRect.position.Add(thisRect.getSize().x/2, thisRect.getSize().y/2);
+                    direction = thisBall.position.Add(direction.Mul(-1));
+                    direction = direction.Normalized();
+
                     float scale = direction.Dot(thisBall.getVelocity());
-                    thisBall.AddForce(direction.Normalized().Mul(2 * scale));
+                    //thisBall.AddForce(direction.Normalized().Mul(2 * scale));
+                    thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(2* Math.abs(scale))));
                 }
             }
         }
@@ -150,9 +167,9 @@ public class World
 
         v.setPosition(player.position, deltaTime);
 
-        System.out.println(".............. v.x: " + v.worldPosition.x);
+        //System.out.println(".............. v.x: " + v.worldPosition.x);
 
-        System.out.println(".............. v.y: " + v.worldPosition.y);
+        //System.out.println(".............. v.y: " + v.worldPosition.y);
     }
 
     public void present(float deltaTime)

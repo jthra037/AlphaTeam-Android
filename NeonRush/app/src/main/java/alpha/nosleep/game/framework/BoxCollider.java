@@ -43,6 +43,13 @@ public class BoxCollider extends Collider {
 
     @Override
     public boolean OnOverlap(Object other, FTuple pos) {
+        Collider otherCollider = other.getCollider();
+
+        switch (otherCollider.format) {
+            case circle:
+                return rectCircleCollision(other, (CircleCollider) otherCollider, pos.ToITuple()); // hard cast fuckit
+        }
+
         return false;
     }
 
