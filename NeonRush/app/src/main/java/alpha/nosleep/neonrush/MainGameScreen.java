@@ -65,6 +65,7 @@ public class MainGameScreen extends Screen {
                 game.setGameState(Game.GAMESTATE.Pause);
                 buttons.get(1).hide(false);
                 buttons.get(2).hide(false);
+                Log.i("Pause", "Pause Button Callable");
                 return null;
             }
         }
@@ -194,12 +195,13 @@ public class MainGameScreen extends Screen {
                 }
 
                 break;
+
             case Pause:
-
-
-
+                world.update(deltaTime);
                 break;
+
             case GameOver:
+                world.update(deltaTime);
                 break;
         }
 

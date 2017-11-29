@@ -120,17 +120,18 @@ public class World
                 objects.removeAll(deRegistryList);
                 deRegistryList.removeAll(deRegistryList);
 
+                //Run update for all registered objects.
+                for (Object object : objects)
+                {
+                    object.update(deltaTime);
 
-                    for (Object object : objects)
+                    //Add score to the player.
+                    if (object == player)
                     {
-                        object.update(deltaTime);
-                        if (object == player)
-                        {
-                            score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-                            regTime = System.currentTimeMillis()/1000;
-                        }
+                        score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+                        regTime = System.currentTimeMillis()/1000;
                     }
-
+                }
 
 
                 if (!objects.contains(goal))
@@ -150,6 +151,7 @@ public class World
                 break;
             case Pause:
                 Log.i("gameState", "Paused!");
+                regTime = System.currentTimeMillis()/1000;
 
 
                 break;
