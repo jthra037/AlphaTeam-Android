@@ -1,5 +1,7 @@
 package alpha.nosleep.game.framework;
 
+import alpha.nosleep.neonrush.Ball;
+
 import static alpha.nosleep.game.framework.Collider.ColliderFormat.circle;
 
 /**
@@ -9,13 +11,15 @@ import static alpha.nosleep.game.framework.Collider.ColliderFormat.circle;
 public class CircleCollider extends Collider {
     private int radius = 5;
     private ITuple offset = new ITuple(0,0);
+    private Object object;
 
     //public final ColliderFormat format = circle;
 
-    public CircleCollider(int radius)
+    public CircleCollider(int radius, Object object)
     {
         this.radius = radius;
         format = circle;
+        this.object = object;
     }
 
     public CircleCollider(int radius, ITuple offset)
@@ -92,10 +96,12 @@ public class CircleCollider extends Collider {
 
     private boolean rectCircleCollision(Object other, BoxCollider otherCollider, ITuple pos)
     {
-        float left = other.getPosition().x - radius;
-        float right = other.getPosition().x + otherCollider.getSize().x + radius;
-        float top = other.getPosition().y - radius;
-        float bottom = other.getPosition().y + otherCollider.getSize().y + radius;
+        Ball thisBall = (Ball) object;
+
+        float left = other.getPosition().x - radius - thisBall.getVelocity().x;
+        float right = other.getPosition().x + otherCollider.getSize().x + radius + thisBall.getVelocity().x;
+        float top = other.getPosition().y - radius - thisBall.getVelocity().y;
+        float bottom = other.getPosition().y + otherCollider.getSize().y + radius + thisBall.getVelocity().y;
 
         return left <= pos.x &&
                 pos.x <= right&&

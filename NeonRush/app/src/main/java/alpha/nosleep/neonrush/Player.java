@@ -69,10 +69,11 @@ public class Player extends Ball
         }
         else
         {
-            dx = Fn * (accel.y) * speedScalar;
+            /*dx = Fn * (accel.y) * speedScalar;
             dy = Fn * (accel.x) * speedScalar;
 
-            setVelocity(new FTuple(dx, dy));
+            setVelocity(new FTuple(dx, dy));*/
+            velocity = lastvelocity;
 
             notColliding = true;
         }
