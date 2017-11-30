@@ -348,21 +348,31 @@ public class MainGameScreen extends Screen {
         if (world.getLScore() >= milestone4)
         {
             game.unlockAchievement(R.string.a_score_4000);
+            game.unlockAchievement(R.string.a_score_3000);
+            game.unlockAchievement(R.string.a_score_2000);
+            game.unlockAchievement(R.string.a_score_1000);
+            game.unlockAchievement(R.string.a_score_500);
             Log.i("Achievement", "Unlocked a_4000!");
         }
         if (world.getLScore() >= milestone3 && world.getLScore() <= milestone4)
         {
             game.unlockAchievement(R.string.a_score_3000);
+            game.unlockAchievement(R.string.a_score_2000);
+            game.unlockAchievement(R.string.a_score_1000);
+            game.unlockAchievement(R.string.a_score_500);
             Log.i("Achievement", "Unlocked a_3000!");
         }
         if (world.getLScore() >= milestone2 && world.getLScore() <= milestone3)
         {
             game.unlockAchievement(R.string.a_score_2000);
+            game.unlockAchievement(R.string.a_score_1000);
+            game.unlockAchievement(R.string.a_score_500);
             Log.i("Achievement", "Unlocked a_2000!");
         }
         if (world.getLScore() >= milestone1 && world.getLScore() <= milestone2)
         {
             game.unlockAchievement(R.string.a_score_1000);
+            game.unlockAchievement(R.string.a_score_500);
             Log.i("Achievement", "Unlocked a_1000!");
         }
         if (world.getLScore() >= milestone0 && world.getLScore() <= milestone1)
