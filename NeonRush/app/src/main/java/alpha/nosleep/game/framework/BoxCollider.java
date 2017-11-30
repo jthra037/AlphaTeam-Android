@@ -60,14 +60,14 @@ public class BoxCollider extends Collider {
 
     private boolean rectCircleCollision(Object other, CircleCollider otherCollider, ITuple pos)
     {
-        float left = pos.x - size.x/2;
-        float right = pos.x + size.x/2;
-        float top = pos.y - size.y/2;
-        float bottom = pos.y + size.y/2;
+        float left = pos.x - otherCollider.getRadius();
+        float right = pos.x + size.x  + otherCollider.getRadius();
+        float top = pos.y - otherCollider.getRadius();
+        float bottom = pos.y + size.y + otherCollider.getRadius();
 
-        return left <= other.position.x + otherCollider.getRadius() &&
-                other.position.x <= right - otherCollider.getRadius()&&
-                top <= other.position.y + otherCollider.getRadius()&&
-                other.position.y <= bottom - otherCollider.getRadius();
+        return left <= other.position.x &&
+                other.position.x <= right &&
+                top <= other.position.y &&
+                other.position.y <= bottom;
     }
 }

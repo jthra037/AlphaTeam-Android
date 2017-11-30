@@ -88,11 +88,6 @@ public class World
 
                 List<String> tags = Arrays.asList(object.tag, other.tag);
 
-                if (tags.contains("Obstacle") && tags.contains("Player"))
-                {
-                    System.out.println("This one");
-                }
-
                 //Ball Combining.
                 if (!tags.contains("Obstacle") &&
                         !deRegistryList.contains(object) &&

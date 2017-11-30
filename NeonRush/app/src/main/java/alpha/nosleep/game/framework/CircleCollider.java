@@ -92,15 +92,15 @@ public class CircleCollider extends Collider {
 
     private boolean rectCircleCollision(Object other, BoxCollider otherCollider, ITuple pos)
     {
-        float left = pos.x - otherCollider.getSize().x/2;
-        float right = pos.x + otherCollider.getSize().x/2;
-        float top = pos.y - otherCollider.getSize().y/2;
-        float bottom = pos.y + otherCollider.getSize().y/2;
+        float left = other.getPosition().x - radius;
+        float right = other.getPosition().x + otherCollider.getSize().x + radius;
+        float top = other.getPosition().y - radius;
+        float bottom = other.getPosition().y + otherCollider.getSize().y + radius;
 
-        return left <= other.position.x + getRadius() &&
-                other.position.x <= right - getRadius()&&
-                top <= other.position.y + getRadius()&&
-                other.position.y <= bottom - getRadius();
+        return left <= pos.x &&
+                pos.x <= right&&
+                top <= pos.y &&
+                pos.y <= bottom - getRadius();
     }
 
     public ITuple getOffset() {
