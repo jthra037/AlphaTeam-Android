@@ -131,7 +131,13 @@ public class World
 
                     float scale = direction.Dot(thisBall.getVelocity());
                     //thisBall.AddForce(direction.Normalized().Mul(2 * scale));
-                    thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(2* Math.abs(scale))));
+                    thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(4f* Math.abs(scale)))); // This is jank, and should be fixed
+
+                    if (thisBall.tag == "Player")
+                    {
+                        Player fuckingPlayer = (Player) thisBall;
+                        fuckingPlayer.setCollision();
+                    }
                 }
             }
         }
