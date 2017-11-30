@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id">445753244763</string>
+    <string name="package_name">com.nosleep.neonrush</string>
+    <string name="a_score_500">CgkI2_jax_wMEAIQAQ</string>
+    <string name="a_score_1000">CgkI2_jax_wMEAIQAg</string>
+    <string name="a_score_2000">CgkI2_jax_wMEAIQAw</string>
+    <string name="a_score_3000">CgkI2_jax_wMEAIQBA</string>
+    <string name="a_score_4000">CgkI2_jax_wMEAIQBQ</string>
+    <string name="Leaderboard_top_score">CgkI2_jax_wMEAIQBg</string>
+</resources>
