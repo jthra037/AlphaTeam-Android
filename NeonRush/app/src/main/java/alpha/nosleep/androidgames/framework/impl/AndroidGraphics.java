@@ -8,18 +8,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.LightingColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.Log;
 
 import alpha.nosleep.androidgames.framework.Graphics;
 import alpha.nosleep.androidgames.framework.Pixmap;
-
-import static android.R.attr.y;
+import alpha.nosleep.game.framework.FTuple;
+import alpha.nosleep.neonrush.ILine;
 
 public class AndroidGraphics implements Graphics {
     AssetManager assets;
@@ -70,6 +68,48 @@ public class AndroidGraphics implements Graphics {
         return pixmap;
     }
 
+    @Override
+    public Pixmap rotatePixmap(Pixmap pixmap, float angle)
+    {
+        Bitmap newBM = null;
+        Matrix matrix = new Matrix();
+        //matrix.postRotate(angle);
+        if (pixmap.getRotation() == (int)angle)
+        {
+            return pixmap;
+        }
+        matrix.postRotate(angle,(pixmap.getWidth()/2),(pixmap.getHeight()/2)); //rotating around center of object
+        matrix.postTranslate(pixmap.getX(),pixmap.getY());
+        newBM = Bitmap.createBitmap(pixmap.getBitmap(), 0, 0, pixmap.getWidth(), pixmap.getHeight(), matrix, true);
+        pixmap.setBitmap(newBM);
+
+        pixmap.setRotation((int)angle);
+
+        return pixmap;
+    }
+
+    @Override
+    public Pixmap setAlpha(Pixmap pixmap, int newAlpha)
+    {
+        int pixel = pixmap.getBitmap().getPixel(pixmap.getWidth()/2,pixmap.getHeight()/2);
+        int alpha = Color.alpha(pixel);
+        if (newAlpha != alpha) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
+        {
+            Bitmap newBM = Bitmap.createBitmap(pixmap.getWidth(),pixmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas cc = new Canvas(newBM);
+            cc.drawARGB(0,0,0,0);
+            Paint newPaint = new Paint();
+            newPaint.setAlpha(newAlpha);
+            cc.drawBitmap(pixmap.getBitmap(), 0, 0, newPaint);
+            pixmap.setBitmap(newBM);
+            return pixmap;
+        }
+        else
+        {
+            return pixmap;
+        }
+
+    }
 
     @Override
     public AssetManager getAssets()
@@ -100,7 +140,12 @@ public class AndroidGraphics implements Graphics {
         canvas.drawLine(x, y, x2, y2, paint);
     }
 
-
+    @Override
+    public void drawLine(ILine line, int color)
+    {
+        paint.setColor(color);
+        canvas.drawLine(line.x1,line.y1,line.x2,line.y2,paint);
+    }
 
     @Override
     public void drawARGBRect(Rect rect, int a, int r, int g, int b)
@@ -172,6 +217,11 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
+    public void drawPixmap(Pixmap pixmap, Matrix matrix)
+    {
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,matrix,null);
+    }
+
     public int getWidth() {
         return frameBuffer.getWidth();
     }

@@ -1,9 +1,14 @@
 package alpha.nosleep.neonrush;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,25 +36,25 @@ public class MainGameScreen extends Screen {
     Typeface tf;
     Paint textPaint;
     private Rect screenRect;
-    private Pixmap background;
     private Pixmap pauseButton;
     private Pixmap playButton;
     private Pixmap quitButton;
     private Pixmap replayButton;
 
+    private int worldSize = 10;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
+    SharedPreferences settings;
 
 
     public MainGameScreen(final Game game)
     {
         super(game);
         g = game.getGraphics();
-        world = new World(game, g, g.getWidth(), g.getHeight());
+        world = new World(game, g, worldSize);
 
-        background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(background, g.getWidth(), g.getHeight());
+        settings = game.getSharedPreferences();
 
         pauseButton = g.newPixmap("buttons/pausebutton.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(pauseButton,48,68);
@@ -210,15 +215,20 @@ public class MainGameScreen extends Screen {
 
                 if (!buttons.get(0).isClickable())
                     buttons.get(0).isClickable(true);
-                g.drawPixmap(background);
                 world.present(deltaTime);
+
+                world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
+                    g.setAlpha(world.getdArrow().getImg(),50);
+
+
+
 
                 break;
             case Pause:
                 if (buttons.get(0).isClickable())
                     buttons.get(0).isClickable(false);
 
-                world.present(deltaTime);
+                //world.present(deltaTime);
                 createPauseMenu();
 
                 break;
@@ -248,18 +258,49 @@ public class MainGameScreen extends Screen {
     }
 
     @Override
-    public void pause() {
+    public void pause()
+    {
+    }
+
+    @Override
+    public void resume()
+    {
+    }
+
+    @Override
+    public void destroy()
+    {
 
     }
 
     @Override
-    public void resume() {
+    public void focusChanged(boolean hasFocus)
+    {
+        if (!hasFocus)
+        {
+            game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
+            buttons.get(1).hide(false);
+            buttons.get(2).hide(false);
+        }
+    }
+
+    @Override
+    public void restart()
+    {
+    }
+
+    @Override
+    public void dispose()
+    {
 
     }
 
     @Override
-    public void dispose() {
-
+    public void onBackButton()
+    {
+        game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
+        buttons.get(1).hide(false);
+        buttons.get(2).hide(false);
     }
 
     private void removeFromList(int i)

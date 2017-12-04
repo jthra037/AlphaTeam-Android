@@ -14,6 +14,10 @@ public abstract class Screen {
     public abstract void pause();
     public abstract void resume();
     public abstract void dispose();
+    public abstract void focusChanged(boolean hasFocus);
+    public abstract void onBackButton();
+    public abstract void restart();
+    public abstract void destroy();
 
     protected boolean inBounds(Input.TouchEvent event,
                              int x, int y,

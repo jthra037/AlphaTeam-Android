@@ -71,6 +71,8 @@ public class Ball extends Object{
         this.radius = radius;
     }
 
+    public FTuple getVelocity() { return velocity; }
+
     public float getMass() {
         return mass;
     }

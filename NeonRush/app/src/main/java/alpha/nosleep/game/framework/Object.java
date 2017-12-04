@@ -13,6 +13,7 @@ public abstract class Object
     protected Collider collider;
     protected Pixmap img;
     public FTuple position;
+    public float rotation;
     public String tag;
     private Game game;
 
@@ -55,6 +56,30 @@ public abstract class Object
     protected Game getGame()
     {
         return game;
+    }
+
+    public Pixmap getImg(){return img;}
+
+    public void rotateToPoint(FTuple a, FTuple point, float maxDegreesDelta)
+    {
+        float targetAngle = (float)(Math.toDegrees((Math.atan2(a.y-point.y,a.x-point.x)))+270)%360;
+        float currentRotation = Math.abs(this.rotation%360);
+        float angle = targetAngle-currentRotation;
+
+        if(Math.abs(angle)<maxDegreesDelta)
+        {
+            this.rotation = targetAngle;
+        }
+        else if(angle<0)
+        {
+            this.rotation -= maxDegreesDelta;
+        }
+        else
+        {
+            this.rotation += maxDegreesDelta;
+        }
+        //Log.d("positions", "Player: " + a.ToString() + ", Ball: " + point.ToString() + ", angle: " + angle);
+
     }
 
 

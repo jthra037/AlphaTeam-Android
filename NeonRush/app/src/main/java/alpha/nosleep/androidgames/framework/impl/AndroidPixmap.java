@@ -1,20 +1,22 @@
 package alpha.nosleep.androidgames.framework.impl;
 
 import android.graphics.Bitmap;
-import android.graphics.Paint;
 
 import alpha.nosleep.androidgames.framework.Graphics.PixmapFormat;
 import alpha.nosleep.androidgames.framework.Pixmap;
+import alpha.nosleep.game.framework.FTuple;
 
 public class AndroidPixmap implements Pixmap {
     Bitmap bitmap;
     PixmapFormat format;
+    float rotation;
     int x;
     int y;
     
     public AndroidPixmap(Bitmap bitmap, PixmapFormat format) {
         this.bitmap = bitmap;
         this.format = format;
+        this.rotation = 0.0f;
     }
 
     @Override
@@ -25,6 +27,12 @@ public class AndroidPixmap implements Pixmap {
 
     @Override
     public void setPosition(int x, int y){this.x = x; this.y = y;}
+
+    @Override
+    public void setPosition(FTuple in){this.x = (int)in.x; this.y = (int)in.y;}
+
+    @Override
+    public FTuple getPosition(){FTuple f = new FTuple(this.x, this.y); return  f;}
 
     @Override
     public void setX(int x) {this.x = x;}
@@ -58,6 +66,12 @@ public class AndroidPixmap implements Pixmap {
 
     @Override
     public void setBitmap(Bitmap bitmap){ this.bitmap = bitmap;}
+
+    @Override
+    public float getRotation(){return rotation;}
+
+    @Override
+    public void setRotation(float val){rotation = val;}
 
 
     @Override
