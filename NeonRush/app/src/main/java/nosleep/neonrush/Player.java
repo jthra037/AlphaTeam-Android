@@ -14,10 +14,12 @@ public class Player extends Ball
 {
     private FTuple accel;       //Current accelerometer values.
     private FTuple lastAccel = new FTuple(0.0f, 0.0f);   //Last frame's accelerometer values.
+    private FTuple lastvelocity = new FTuple(0, 0);
     private float speedScalar = 15.0f;
     private FTuple startingAccel;
     private boolean handHeldPlay;
-    private float maxSpeed = 600;
+    private boolean notColliding = true;
+    private float speed = 600;
     private Input i;
     SharedPreferences settings;
     private World mWorld;
@@ -57,23 +59,41 @@ public class Player extends Ball
         float dx = Fn * (accel.y - lastAccel.y) * speedScalar;
         float dy = Fn * (accel.x - lastAccel.x) * speedScalar;
 
-        //float dx = Fn * accel.y * (accel.y / damp) * (accel.y / Math.abs(accel.y));
-        //float dy = Fn * accel.x * (accel.x / damp) * (accel.x / Math.abs(accel.x));
+            //float dx = Fn * accel.y * (accel.y / damp) * (accel.y / Math.abs(accel.y));
+            //float dy = Fn * accel.x * (accel.x / damp) * (accel.x / Math.abs(accel.x));
 
         FTuple Fa = new FTuple(dx, dy);
 
-        AddForce(Fa); // Impulse plays more fun
-
-        /*
-        if (velocity.LengthS() > maxSpeed * maxSpeed)
-        {
-            velocity = velocity.Normalized().Mul(maxSpeed);
+        if (notColliding) {
+            AddForce(Fa); // Impulse plays more fun
+            lastvelocity = velocity;
         }
-        */
+        else
+        {
+            /*dx = Fn * (accel.y) * speedScalar;
+            dy = Fn * (accel.x) * speedScalar;
+
+            setVelocity(new FTuple(dx, dy));*/
+            velocity = lastvelocity;
+
+            notColliding = true;
+        }
+
+        if (velocity.LengthS() > speed * speed) {
+            velocity = velocity.Normalized().Mul(speed);
+        }
 
         lastAccel = accel;
+
+
+
     }
 
+
+    public void setCollision()
+    {
+        notColliding = false;
+    }
 
     public FTuple getWorldCoord()
     {

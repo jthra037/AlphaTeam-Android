@@ -43,6 +43,8 @@ public class World
     private long score = 0;
     private long regTime = 0;
 
+    private ObRectangle therect;
+
     public World(Game gm, Graphics graphics, int ws)
     {
 
@@ -59,6 +61,7 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
+        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
     }
 
     public float getWidth()
@@ -79,76 +82,108 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-
-                //player.move(deltaTime);
-                //player.update(deltaTime);
-                for (int i = 0; i < objects.size() - 1; i++)
-                {
-                    for(int j = i + 1; j < objects.size(); j++)
-                    {
-                        Object object = objects.get(i);
-                        Object other = objects.get(j);
-
-                        List<String> tags = Arrays.asList(object.tag, other.tag);
-
-                        if (!deRegistryList.contains(object) &&
-                                !deRegistryList.contains(other) &&
-                                object.getCollider().OnOverlap(other, object.getPosition()))
-                        {
-                            Ball thisBall = (Ball)object;
-                            if (object.tag == other.tag)
-                            {
-                                thisBall.Combine((Ball)other);
-                            }
-                            else if (tags.contains("Player") && tags.contains("Goal"))
-                            {
-                                player.Combine(notPlayer(object, other));
-                            }
-                            else if (tags.contains("Player") && tags.contains("Enemy"))
-                            {
-                                unregister(object);
-                                unregister(other);
-                                game.setGameState(Game.GAMESTATE.GameOver);
-                            }
-                        }
-                    }
-                }
-
-                objects.addAll(registryList);
-                registryList.removeAll(registryList);
-
-                objects.removeAll(deRegistryList);
-                deRegistryList.removeAll(deRegistryList);
-
-                //Run update for all registered objects.
-                for (Object object : objects)
-                {
-                    object.update(deltaTime);
-
-                    //Add score to the player.
-                    if (object == player)
-                    {
-                        score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-                        regTime = System.currentTimeMillis()/1000;
-                    }
-                }
-
-
-                if (!objects.contains(goal))
-                {
-                    Random r = new Random();
-                    FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
-                            (float)r.nextInt((int)getHeight()));
-                    goal = new Goal(this, 15, pos);
-                }
-
-                v.setPosition(player.position, deltaTime);
-
-                Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
-
-                Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
-
-                break;
+			///<summary>
+			/// Handles all collision interactions.
+			///</summary>
+			for (int i = 0; i < objects.size() - 1; i++)
+			{
+				for(int j = i + 1; j < objects.size(); j++)
+				{
+					Object object = objects.get(i);
+					Object other = objects.get(j);
+					List<String> tags = Arrays.asList(object.tag, other.tag);
+	
+					//Ball Combining.	
+					if (!deRegistryList.contains(object) &&
+						!deRegistryList.contains(other) &&
+						object.getCollider().OnOverlap(other, object.getPosition()))
+					{
+						Ball thisBall = (Ball)object;
+						if (object.tag == other.tag)
+						{
+							thisBall.Combine((Ball)other);
+						}
+						else if (tags.contains("Player") && tags.contains("Goal"))
+						{
+							player.Combine(notPlayer(object, other));
+						}
+						else if (tags.contains("Player") && tags.contains("Enemy"))
+						{
+							unregister(object);
+							unregister(other);
+							game.setGameState(Game.GAMESTATE.GameOver);
+						}
+					}
+					else if (tags.contains("Obstacle") &&
+						tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
+						!deRegistryList.contains(object) &&
+						!deRegistryList.contains(other) &&
+						object.getCollider().OnOverlap(other, object.getPosition()))
+					{
+						ObRectangle thisRect;
+						Ball thisBall;
+						if (object.tag == "Obstacle") 
+						{
+							thisBall = (Ball) other;
+							thisRect = (ObRectangle) object;
+						}
+						else 
+						{
+							thisBall = (Ball) object;
+							thisRect = (ObRectangle) other;
+						}
+						FTuple direction = thisRect.position.Add(thisRect.getSize().x/2, thisRect.getSize().y/2);
+						direction = thisBall.position.Add(direction.Mul(-1));
+						direction = direction.Normalized();
+	
+						float scale = direction.Dot(thisBall.getVelocity());
+						//thisBall.AddForce(direction.Normalized().Mul(2 * scale));
+						thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(4f* Math.abs(scale)))); // This is jank, and should be fixed
+	
+						if (thisBall.tag == "Player")
+						{
+							Player fuckingPlayer = (Player) thisBall;
+							fuckingPlayer.setCollision();
+						}
+					}
+	
+					objects.addAll(registryList);
+					registryList.removeAll(registryList);
+	
+					objects.removeAll(deRegistryList);
+					deRegistryList.removeAll(deRegistryList);
+	
+					//Run update for all registered objects.
+					for (Object object : objects)
+					{
+						object.update(deltaTime);
+	
+						//Add score to the player.
+						if (object == player)
+						{
+							score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+							regTime = System.currentTimeMillis()/1000;
+						}
+					}
+				}
+			}
+	
+	
+			if (!objects.contains(goal))
+			{
+				Random r = new Random();
+				FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
+						(float)r.nextInt((int)getHeight()));
+				goal = new Goal(this, 15, pos);
+			}
+	
+			v.setPosition(player.position, deltaTime);
+	
+			Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+	
+			Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+	
+			break;
             case Pause:
                 Log.i("gameState", "Paused!");
                 regTime = System.currentTimeMillis()/1000;
@@ -159,8 +194,6 @@ public class World
 
                 break;
         }
-
-
     }
 
     public void present(float deltaTime)
@@ -195,8 +228,6 @@ public class World
             case GameOver:
                 break;
         }
-
-
     }
 
     private Ball notPlayer(Object one, Object two)

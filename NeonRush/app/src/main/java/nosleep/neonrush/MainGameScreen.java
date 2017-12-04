@@ -42,7 +42,7 @@ public class MainGameScreen extends Screen {
     private Pixmap quitButton;
     private Pixmap replayButton;
 
-    private int worldSize = 10;
+    private int worldSize = 2;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;

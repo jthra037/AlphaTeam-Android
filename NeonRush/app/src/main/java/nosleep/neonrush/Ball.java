@@ -29,7 +29,7 @@ public class Ball extends Object{
         this.world = world;
 
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
-        collider = new CircleCollider(radius);
+        collider = new CircleCollider(radius, this);
         world.register(this);
     }
 
@@ -72,6 +72,7 @@ public class Ball extends Object{
     }
 
     public FTuple getVelocity() { return velocity; }
+    public void setVelocity(FTuple velocity) {this.velocity = velocity; }
 
     public float getMass() {
         return mass;

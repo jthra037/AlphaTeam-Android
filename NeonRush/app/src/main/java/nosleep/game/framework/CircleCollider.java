@@ -1,5 +1,6 @@
 package nosleep.game.framework;
 
+import nosleep.neonrush.Ball;
 import static nosleep.game.framework.Collider.ColliderFormat.circle;
 
 /**
@@ -9,18 +10,22 @@ import static nosleep.game.framework.Collider.ColliderFormat.circle;
 public class CircleCollider extends Collider {
     private int radius = 5;
     private ITuple offset = new ITuple(0,0);
+    private Object object;
 
-    public final ColliderFormat format = circle;
+    //public final ColliderFormat format = circle;
 
-    public CircleCollider(int radius)
+    public CircleCollider(int radius, Object object)
     {
         this.radius = radius;
+        format = circle;
+        this.object = object;
     }
 
     public CircleCollider(int radius, ITuple offset)
     {
         this.radius = radius;
         this.offset = offset;
+        format = circle;
     }
 
     @Override
@@ -39,10 +44,12 @@ public class CircleCollider extends Collider {
     public boolean OnOverlap(Object other, FTuple pos) {
         Collider otherCollider = other.getCollider();
 
-        /*switch (otherCollider.format) {
+        switch (otherCollider.format) {
             case circle:
                 return circleCircleCollision(other, (CircleCollider) otherCollider, pos);
-        }*/
+            case rect:
+                return rectCircleCollision(other, (BoxCollider) otherCollider, pos.ToITuple()); // hard cast fuckit
+        }
 
         try{
             CircleCollider otherCircle = (CircleCollider)otherCollider;
@@ -84,6 +91,21 @@ public class CircleCollider extends Collider {
         float rs = (otherCollider.getRadius() * otherCollider.getRadius()) + (radius * radius);
 
         return ds < rs;
+    }
+
+    private boolean rectCircleCollision(Object other, BoxCollider otherCollider, ITuple pos)
+    {
+        Ball thisBall = (Ball) object;
+
+        float left = other.getPosition().x - radius - thisBall.getVelocity().x;
+        float right = other.getPosition().x + otherCollider.getSize().x + radius + thisBall.getVelocity().x;
+        float top = other.getPosition().y - radius - thisBall.getVelocity().y;
+        float bottom = other.getPosition().y + otherCollider.getSize().y + radius + thisBall.getVelocity().y;
+
+        return left <= pos.x &&
+                pos.x <= right&&
+                top <= pos.y &&
+                pos.y <= bottom - getRadius();
     }
 
     public ITuple getOffset() {
