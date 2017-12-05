@@ -20,6 +20,8 @@ public class FTuple
         return new FTuple(this.x + in.x, this.y + in.y);
     }
 
+    public FTuple Add(float x, float y) { return new FTuple(this.x + x, this.y + y);}
+
     public FTuple Sub(FTuple in){return new FTuple(this.x - in.x,this.y - in.y);}
 
     public FTuple Div(float d){return new FTuple(this.x/d, this.y/d);}
@@ -99,6 +101,11 @@ public class FTuple
     {
         float len = Length();
         return new FTuple(this.x/len, this.y/len);
+    }
+
+    public ITuple ToITuple()
+    {
+        return new ITuple((int)x, (int)y);
     }
 
 }

@@ -12,11 +12,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import android.util.Log;
 
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Pixmap;
-import nosleep.game.framework.FTuple;
 import nosleep.neonrush.ILine;
 
 public class AndroidGraphics implements Graphics {

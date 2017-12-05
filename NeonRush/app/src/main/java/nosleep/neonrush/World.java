@@ -92,8 +92,8 @@ public class World
 					Object object = objects.get(i);
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
-	
-					//Ball Combining.	
+
+					//Ball Combining.
 					if (!deRegistryList.contains(object) &&
 						!deRegistryList.contains(other) &&
 						object.getCollider().OnOverlap(other, object.getPosition()))
@@ -122,51 +122,52 @@ public class World
 					{
 						ObRectangle thisRect;
 						Ball thisBall;
-						if (object.tag == "Obstacle") 
+						if (object.tag == "Obstacle")
 						{
 							thisBall = (Ball) other;
 							thisRect = (ObRectangle) object;
 						}
-						else 
+						else
 						{
 							thisBall = (Ball) object;
 							thisRect = (ObRectangle) other;
 						}
-						FTuple direction = thisRect.position.Add(thisRect.getSize().x/2, thisRect.getSize().y/2);
+						FTuple direction = thisRect.position.Add((thisRect.getSize().x/2), (thisRect.getSize().y/2));
 						direction = thisBall.position.Add(direction.Mul(-1));
 						direction = direction.Normalized();
-	
+
 						float scale = direction.Dot(thisBall.getVelocity());
 						//thisBall.AddForce(direction.Normalized().Mul(2 * scale));
 						thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(4f* Math.abs(scale)))); // This is jank, and should be fixed
-	
+
 						if (thisBall.tag == "Player")
 						{
 							Player fuckingPlayer = (Player) thisBall;
 							fuckingPlayer.setCollision();
 						}
 					}
-	
-					objects.addAll(registryList);
-					registryList.removeAll(registryList);
-	
-					objects.removeAll(deRegistryList);
-					deRegistryList.removeAll(deRegistryList);
-	
-					//Run update for all registered objects.
-					for (Object object : objects)
-					{
-						object.update(deltaTime);
-	
-						//Add score to the player.
-						if (object == player)
-						{
-							score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-							regTime = System.currentTimeMillis()/1000;
-						}
-					}
+
 				}
 			}
+
+                objects.addAll(registryList);
+                registryList.removeAll(registryList);
+
+                objects.removeAll(deRegistryList);
+                deRegistryList.removeAll(deRegistryList);
+
+                //Run update for all registered objects.
+                for (Object object : objects)
+                {
+                    object.update(deltaTime);
+
+                    //Add score to the player.
+                    if (object == player)
+                    {
+                        score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+                        regTime = System.currentTimeMillis()/1000;
+                    }
+                }
 	
 	
 			if (!objects.contains(goal))

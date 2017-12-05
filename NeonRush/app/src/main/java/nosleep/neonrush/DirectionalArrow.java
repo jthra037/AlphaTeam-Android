@@ -3,11 +3,10 @@ package nosleep.neonrush;
 import android.graphics.Color;
 import android.graphics.Matrix;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
 /**
@@ -26,7 +25,7 @@ public class DirectionalArrow extends Object
         this.position = position;
         this.mWorld = m_World;
         this.rotation = 0;
-        this.collider = new CircleCollider(20);
+        this.collider = new CircleCollider(20, new ITuple(0,0));
         this.tag = "dArrow";
         mWorld.register(this);
     }

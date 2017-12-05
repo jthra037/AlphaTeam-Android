@@ -1,13 +1,13 @@
-package alpha.nosleep.neonrush;
+package nosleep.neonrush;
 
 import android.graphics.Color;
 
 import java.util.concurrent.Callable;
 
-import alpha.nosleep.androidgames.framework.Game;
-import alpha.nosleep.game.framework.FTuple;
-import alpha.nosleep.game.framework.ITuple;
-import alpha.nosleep.game.framework.Object;
+import nosleep.androidgames.framework.Game;
+import nosleep.game.framework.FTuple;
+import nosleep.game.framework.ITuple;
+import nosleep.game.framework.Object;
 
 /**
  * Created by Mark- on 08-Nov-17.

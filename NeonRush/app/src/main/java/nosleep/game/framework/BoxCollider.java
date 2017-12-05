@@ -1,6 +1,6 @@
 package nosleep.game.framework;
 
-import static alpha.nosleep.game.framework.Collider.ColliderFormat.rect;
+import static nosleep.game.framework.Collider.ColliderFormat.rect;
 
 /**
  * Created by John on 2017-10-12.

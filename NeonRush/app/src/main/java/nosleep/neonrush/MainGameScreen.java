@@ -2,14 +2,10 @@ package nosleep.neonrush;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
-
-import com.google.android.gms.games.Games;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;

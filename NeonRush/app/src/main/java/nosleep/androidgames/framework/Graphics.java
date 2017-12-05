@@ -5,7 +5,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import nosleep.game.framework.FTuple;
 import nosleep.neonrush.ILine;
 
 public interface Graphics

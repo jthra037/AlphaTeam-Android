@@ -1,10 +1,10 @@
-package alpha.nosleep.neonrush;
+package nosleep.neonrush;
 
-import alpha.nosleep.androidgames.framework.Game;
-import alpha.nosleep.androidgames.framework.Graphics;
-import alpha.nosleep.game.framework.BoxCollider;
-import alpha.nosleep.game.framework.FTuple;
-import alpha.nosleep.game.framework.ITuple;
+import nosleep.androidgames.framework.Game;
+import nosleep.androidgames.framework.Graphics;
+import nosleep.game.framework.BoxCollider;
+import nosleep.game.framework.ITuple;
+import nosleep.game.framework.FTuple;
 
 /**
  * Created by Mark- on 08-Nov-17.

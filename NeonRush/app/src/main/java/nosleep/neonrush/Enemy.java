@@ -1,7 +1,5 @@
 package nosleep.neonrush;
 
-import android.graphics.Color;
-
 import java.util.Random;
 
 import nosleep.game.framework.FTuple;

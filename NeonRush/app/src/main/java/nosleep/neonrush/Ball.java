@@ -2,11 +2,9 @@ package nosleep.neonrush;
 
 import android.graphics.Color;
 
-import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
-import nosleep.game.framework.IPhysics;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
