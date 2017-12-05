@@ -48,7 +48,6 @@ public class MainGameScreen extends Screen {
     private Random random;
     SharedPreferences settings;
 
-    boolean achievCheck; //boolean for checking whether or not achievements have been unlocked
     int milestone0 = 500; //milestones to check against for unlocking achievements
     int milestone1 = 1000;
     int milestone2 = 2000;
@@ -63,7 +62,6 @@ public class MainGameScreen extends Screen {
         world = new World(game, g, worldSize);
 
         settings = game.getSharedPreferences();
-        achievCheck = false;
         pauseButton = g.newPixmap("buttons/pausebutton.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(pauseButton,48,68);
 
@@ -110,8 +108,11 @@ public class MainGameScreen extends Screen {
 
         buttons.add(new Button(game,quitButton, new Callable<Void>(){
             public Void call() {
-                game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
-                milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
+                if (game.isSignedIn())
+                {
+                    game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
+                    milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
+                }
                 game.setScreen(new MainMenuScreen(game));
 
                 return null;
@@ -123,8 +124,12 @@ public class MainGameScreen extends Screen {
 
         buttons.add(new Button(game,replayButton, new Callable<Void>(){
             public Void call() {
-                game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
-                milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
+                if (game.isSignedIn())
+                {
+                    game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
+                    milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
+                }
+
                 game.setScreen(new MainGameScreen(game));
                 return null;
             }
@@ -213,13 +218,6 @@ public class MainGameScreen extends Screen {
 
                 break;
             case GameOver:
-
-                if (!achievCheck)
-                {
-                    achievCheck = true;
-
-
-                }
 
                 break;
         }

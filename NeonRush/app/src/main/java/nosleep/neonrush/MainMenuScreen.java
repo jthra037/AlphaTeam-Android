@@ -59,7 +59,9 @@ public class MainMenuScreen extends Screen {
 
                 //game.setScreen(new AchievementsScreen(game));
                 //System.out.println("Achievements have yet to be implemented. Please be patient!");
-                game.showAchievements();
+                if (game.isSignedIn())
+                    game.showAchievements();
+
                 return null;
             }
         }
@@ -91,7 +93,8 @@ public class MainMenuScreen extends Screen {
 
                 //game.setScreen(new LeaderboardsScreen(game));
                 //System.out.println("Leaderboards have yet to be implemented. Please be patient!");
-                game.showLeaderboard();
+                if (game.isSignedIn())
+                    game.showLeaderboard();
 
                 return null;
             }
