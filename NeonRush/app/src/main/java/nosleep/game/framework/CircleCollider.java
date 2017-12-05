@@ -97,6 +97,9 @@ public class CircleCollider extends Collider {
     {
         Ball thisBall = (Ball) object;
 
+        if (thisBall == null)
+            return false;
+
         float left = other.getPosition().x - radius - thisBall.getVelocity().x;
         float right = other.getPosition().x + otherCollider.getSize().x + radius + thisBall.getVelocity().x;
         float top = other.getPosition().y - radius - thisBall.getVelocity().y;

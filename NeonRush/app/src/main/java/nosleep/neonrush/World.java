@@ -96,10 +96,14 @@ public class World
 					//Ball Combining.
 					if (!deRegistryList.contains(object) &&
 						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()))
-					{
+						object.getCollider().OnOverlap(other, object.getPosition()) &&
+                            object instanceof Ball &&
+                            other instanceof Ball)
+                    {
+
 						Ball thisBall = (Ball)object;
-						if (object.tag == other.tag)
+
+						if (object != null && object.tag == other.tag)
 						{
 							thisBall.Combine((Ball)other);
 						}
@@ -114,7 +118,7 @@ public class World
 							game.setGameState(Game.GAMESTATE.GameOver);
 						}
 					}
-					else if (tags.contains("Obstacle") &&
+					/*else if (tags.contains("Obstacle") &&
 						tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
 						!deRegistryList.contains(object) &&
 						!deRegistryList.contains(other) &&
@@ -145,7 +149,7 @@ public class World
 							Player fuckingPlayer = (Player) thisBall;
 							fuckingPlayer.setCollision();
 						}
-					}
+					}*/
 
 				}
 			}
