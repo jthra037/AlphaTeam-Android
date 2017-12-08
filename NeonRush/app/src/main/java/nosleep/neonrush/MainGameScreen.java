@@ -233,7 +233,10 @@ public class MainGameScreen extends Screen {
                 world.present(deltaTime);
 
                 world.getdArrow().rotateToPoint(world.getPlayer().getPosition(),world.getBall().getPosition(),250*deltaTime);
-                    g.setAlpha(world.getdArrow().getImg(),50);
+
+
+
+
 
 
 

@@ -53,15 +53,14 @@ public class World
         worldSize = ws;
         worldWidth = worldSize * g.getWidth();
         worldHeight = worldSize * g.getHeight();
-        dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
-
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
         therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
+        dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
     }
 
     public float getWidth()
@@ -172,8 +171,8 @@ public class World
                         regTime = System.currentTimeMillis()/1000;
                     }
                 }
-	
-	
+
+
 			if (!objects.contains(goal))
 			{
 				Random r = new Random();
@@ -181,13 +180,13 @@ public class World
 						(float)r.nextInt((int)getHeight()));
 				goal = new Goal(this, 15, pos);
 			}
-	
+
 			v.setPosition(player.position, deltaTime);
-	
+
 			Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
-	
+
 			Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
-	
+
 			break;
             case Pause:
                 Log.i("gameState", "Paused!");

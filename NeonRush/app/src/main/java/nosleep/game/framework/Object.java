@@ -14,6 +14,7 @@ public abstract class Object
     protected Pixmap img;
     public FTuple position;
     public float rotation;
+    public int glowColor = 0;
     public String tag;
     private Game game;
 
@@ -79,6 +80,89 @@ public abstract class Object
             this.rotation += maxDegreesDelta;
         }
         //Log.d("positions", "Player: " + a.ToString() + ", Ball: " + point.ToString() + ", angle: " + angle);
+
+    }
+
+    public Pixmap setBackgroundGlow(Pixmap pixmap,int r,int g,int b)
+    {
+        int mGlowColor = Color.rgb(r, g, b);
+        if (glowColor != mGlowColor)
+        {
+            // An added margin to the initial image
+            int margin = 24;
+            int halfMargin = margin / 2;
+            // the glow radius
+            int mGlowRadius = 40;
+
+            // the glow color
+
+
+            // extract the alpha from the source image
+            Bitmap alpha = pixmap.getBitmap().extractAlpha();
+
+            // The output bitmap (with the icon + glow)
+            Bitmap bmp =  Bitmap.createBitmap(pixmap.getWidth() + margin, pixmap.getHeight() + margin, Bitmap.Config.ARGB_8888);
+            // The canvas to paint on the image
+            Canvas canvas = new Canvas(bmp);
+
+            Paint paint = new Paint();
+            paint.setColor(mGlowColor);
+            glowColor = mGlowColor;
+            // outer glow
+            paint.setMaskFilter(new BlurMaskFilter(mGlowRadius, BlurMaskFilter.Blur.OUTER));//For Inner glow set Blur.INNER
+            canvas.drawBitmap(alpha, halfMargin, halfMargin, paint);
+
+            // original icon
+            canvas.drawBitmap(pixmap.getBitmap(), halfMargin, halfMargin, null);
+            pixmap.setBitmap(bmp);
+            return pixmap;
+        }
+        else
+        {
+            return pixmap;
+        }
+
+
+
+
+    }
+
+    public Pixmap setBackgroundGlow(Pixmap pixmap,int color)
+    {
+        if(glowColor != color)
+        {
+            // An added margin to the initial image
+            int margin = 0;
+            int halfMargin = margin / 2;
+            // the glow radius
+            int mGlowRadius = 20;
+            glowColor = color;
+
+            // extract the alpha from the source image
+            Bitmap alpha = pixmap.getBitmap().extractAlpha();
+
+            // The output bitmap (with the icon + glow)
+            Bitmap bmp =  Bitmap.createBitmap(pixmap.getWidth() + margin, pixmap.getHeight() + margin, Bitmap.Config.ARGB_8888);
+            // The canvas to paint on the image
+            Canvas canvas = new Canvas(bmp);
+
+            Paint paint = new Paint();
+            paint.setColor(color);
+
+            // outer glow
+            paint.setMaskFilter(new BlurMaskFilter(mGlowRadius, BlurMaskFilter.Blur.OUTER));//For Inner glow set Blur.INNER
+            canvas.drawBitmap(alpha, halfMargin, halfMargin, paint);
+
+            // original icon
+            canvas.drawBitmap(pixmap.getBitmap(), halfMargin, halfMargin, null);
+
+            pixmap.setBitmap(bmp);
+            return pixmap;
+        }
+        else
+        {
+            return pixmap;
+        }
 
     }
 

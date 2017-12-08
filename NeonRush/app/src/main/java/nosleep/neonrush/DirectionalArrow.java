@@ -1,5 +1,6 @@
 package nosleep.neonrush;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 
@@ -38,12 +39,13 @@ public class DirectionalArrow extends Object
     @Override
     public void present(float deltaTime)
     {
+
         if (img != null)
         {
             Matrix matrix = new Matrix();
             matrix.setRotate(this.rotation,(this.img.getWidth()/2),(this.img.getHeight()/2));
             matrix.postTranslate(this.position.x,this.position.y);
-            g.drawPixmap(this.img, matrix);
+            g.drawPixmap(img,matrix);
         }
         else
         {
