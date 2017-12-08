@@ -1,5 +1,11 @@
 package nosleep.game.framework;
 
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Pixmap;
@@ -12,6 +18,7 @@ public abstract class Object
 {
     protected Collider collider;
     protected Pixmap img;
+    private Bitmap backupImg;
     public FTuple position;
     public float rotation;
     public int glowColor = 0;
