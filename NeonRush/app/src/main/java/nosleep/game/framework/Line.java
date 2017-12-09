@@ -6,6 +6,7 @@ package nosleep.game.framework;
 
 public class Line {
     private FTuple point;
+    private FTuple endpoint;
     private FTuple direction;
     private FTuple normal;
 
@@ -13,6 +14,7 @@ public class Line {
     {
         point = new FTuple(0, 0);
         direction = new FTuple(1, 0);
+        endpoint = point.Add(direction);
         CalcNormal();
     }
 
@@ -20,6 +22,7 @@ public class Line {
     {
         this.point = point;
         this.direction = direction;
+        endpoint = point.Add(direction);
         CalcNormal();
     }
 
@@ -28,12 +31,14 @@ public class Line {
         if (flag) {
             point = first;
             direction = second;
+            endpoint = first.Add(second);
             CalcNormal();
         }
         else
         {
             point = first;
             direction = second.Sub(first);
+            endpoint = second;
             CalcNormal();
         }
     }
@@ -46,6 +51,9 @@ public class Line {
     private FTuple getPoint(){return point; }
     private void setPoint(FTuple point){this.point = point; }
 
+    private FTuple getEndpoint(){return endpoint; }
+    private void setEndpoint(FTuple endpoint){this.endpoint = endpoint; }
+
     private FTuple getDirection(){return direction; }
     private void setDirection(FTuple direction){this.direction = direction; }
 
@@ -53,6 +61,7 @@ public class Line {
     {
         point = head;
         direction = tail.Sub(head);
+        endpoint = tail;
         CalcNormal();
     }
 
@@ -68,15 +77,44 @@ public class Line {
         return point.x + (t * direction.x);
     }
 
+    private FTuple FindPointAt(float t)
+    {
+        float x = point.x + (t * direction.x);
+        float y = point.y + (t * direction.y);
+
+        return new FTuple(x, y);
+    }
+
     private boolean IntersectsWith(Line other)
     {
-        float minX = Math.min(direction.x, other.direction.x);
-        float minY = Math.min(direction.y, other.direction.y);
-        float maxX = Math.max(direction.x, other.direction.x);
-        float maxY = Math.max(direction.y, other.direction.y);
+        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) < 0.00001f;
+    }
 
-        return maxX % minX != 0 ||
-                maxY % minY != 0;
+    private Hit FindIntersection(Line other, FTuple segmentEnd)
+    {
+        Hit output = new Hit();
+
+        if (IntersectsWith(other))
+        {
+            float ax = point.x;
+            float ay = point.y;
+            float bx = direction.x;
+            float by = direction.y;
+            float cx = other.point.x;
+            float cy = other.point.y;
+            float dx = other.direction.x;
+            float dy = other.direction.y;
+
+            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx);
+            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx);
+
+            boolean hitOccurred = 0 <= u && u <= 1 &&
+                    0 <= t && t <= 1;
+
+            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, t);
+        }
+
+        return output;
     }
 
 }
