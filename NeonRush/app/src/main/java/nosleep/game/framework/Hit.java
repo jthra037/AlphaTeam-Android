@@ -8,24 +8,25 @@ public class Hit
 {
     private boolean hitOccurred;
     private int framesUntilHit;
-    private float tStep;
+    public float tStep;
     private Runtime runtime;
     private ITuple screenSpaceLocation;
-    private FTuple worldSpaceLocation;
+    public FTuple worldSpaceLocation;
     private FTuple normal;
     private FTuple tangent;
+    private Object collidedWith;
 
 
     public Hit()
     {
         hitOccurred = false;
-        worldSpaceLocation = new FTuple(0, 0);
+        worldSpaceLocation = new FTuple(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
         normal = new FTuple(0, 1);
         tangent = new FTuple(1, 0);
-        tStep = 0;
+        tStep = Float.POSITIVE_INFINITY;
 
         runtime = Runtime.getRuntime();
-        framesUntilHit = 0;
+        framesUntilHit = (int)tStep;
     }
 
     public Hit(boolean hitOccurred, ITuple hitLocation)

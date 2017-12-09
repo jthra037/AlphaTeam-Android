@@ -23,6 +23,7 @@ public abstract class Object
     public float rotation;
     public int glowColor = 0;
     public String tag;
+    private Hit collision;
     private Game game;
 
     public Object(Game game)
@@ -103,7 +104,6 @@ public abstract class Object
 
             // the glow color
 
-
             // extract the alpha from the source image
             Bitmap alpha = pixmap.getBitmap().extractAlpha();
 
@@ -128,10 +128,6 @@ public abstract class Object
         {
             return pixmap;
         }
-
-
-
-
     }
 
     public Pixmap setBackgroundGlow(Pixmap pixmap,int color)
@@ -173,5 +169,17 @@ public abstract class Object
 
     }
 
+    public void SetCollision(Hit collision)
+    {
+        if (collision.tStep < this.collision.tStep)
+        {
+            this.collision = collision;
+        }
+    }
+
+    public Hit GetCollision()
+    {
+        return collision;
+    }
 
 }
