@@ -43,7 +43,7 @@ public class World
     private long score = 0;
     private long regTime = 0;
 
-    private ObRectangle therect;
+    private LevelGenerator levelGenerator;
 
     public World(Game gm, Graphics graphics, int ws)
     {
@@ -58,9 +58,12 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
-
-        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
+
+
+
+        //Level Generation Things.
+        levelGenerator = new LevelGenerator(this);
     }
 
     public float getWidth()
@@ -183,9 +186,8 @@ public class World
 
 			v.setPosition(player.position, deltaTime);
 
-			Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
-
-			Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
 
 			break;
             case Pause:

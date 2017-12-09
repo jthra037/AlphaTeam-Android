@@ -32,10 +32,11 @@ public class ObRectangle extends Obstacle
         if (img == null)
         {
             Graphics g = getGame().getGraphics();
-            g.drawRect(localCoord.x, localCoord.y, size.x, size.y, color);
+            g.drawRect((localCoord.x - size.x / 2), (localCoord.y - size.y / 2), size.x, size.y, color);
         }
         else
         {
+            // may need to adjust draw location here too, like done above.
             super.present(localCoord.x, localCoord.y, deltaTime);
         }
     }
