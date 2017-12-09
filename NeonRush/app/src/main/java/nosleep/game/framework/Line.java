@@ -112,7 +112,7 @@ public class Line {
             float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx); // Parameter for this line
             float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for the other line
 
-            // Assumes "direction" of each line brought it from its Start to its End 
+            // Assumes "direction" of each line brought it from its Start to its End
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
