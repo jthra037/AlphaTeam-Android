@@ -85,14 +85,18 @@ public class Line {
         return new FTuple(x, y);
     }
 
+
+    // Checks if the slopes of each line are the same
     private boolean IntersectsWith(Line other)
     {
-        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) < 0.00001f;
+        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) < 0.00001f; // Should replace with a real/better epsilon
     }
 
+
+    // Find the intersection of some other line and this line
     private Hit FindIntersection(Line other, FTuple segmentEnd)
     {
-        Hit output = new Hit();
+        Hit output;
 
         if (IntersectsWith(other))
         {
@@ -105,13 +109,18 @@ public class Line {
             float dx = other.direction.x;
             float dy = other.direction.y;
 
-            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx);
-            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx);
+            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx); // Parameter for this line
+            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for the other line
 
+            // Assumes "direction" of each line brought it from its Start to its End 
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
             output = new Hit(hitOccurred, FindPointAt(u), normal, direction, t);
+        }
+        else
+        {
+            output = new Hit();
         }
 
         return output;
