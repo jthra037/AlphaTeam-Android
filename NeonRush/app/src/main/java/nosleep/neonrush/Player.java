@@ -64,7 +64,7 @@ public class Player extends Ball
 
         FTuple Fa = new FTuple(dx, dy);
 
-        if (notColliding) {
+        if (collision.isHitOccurred()) {
             AddForce(Fa); // Impulse plays more fun
             lastvelocity = velocity;
         }

@@ -45,7 +45,7 @@ public class LinesCollider extends Collider {
         for (Line line : lines)
         {
             Hit thisHit = line.FindIntersection(other);
-            if (thisHit.tStep < output.tStep)
+            if (thisHit.GetTStep() < output.GetTStep())
                 output = thisHit;
         }
 

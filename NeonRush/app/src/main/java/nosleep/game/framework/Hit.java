@@ -8,7 +8,7 @@ public class Hit
 {
     private boolean hitOccurred;
     private int framesUntilHit;
-    public float tStep;
+    private float tStep;
     private Runtime runtime;
     private ITuple screenSpaceLocation;
     public FTuple worldSpaceLocation;
@@ -59,5 +59,21 @@ public class Hit
 
     public Runtime getRuntime() {
         return runtime;
+    }
+
+    public float GetTStep()
+    {
+        return tStep;
+    }
+
+    public void SetTStep(float tStep)
+    {
+        this.tStep = tStep;
+        framesUntilHit = (int) tStep;
+    }
+
+    public int GetFramesUntilHit()
+    {
+        return framesUntilHit;
     }
 }
