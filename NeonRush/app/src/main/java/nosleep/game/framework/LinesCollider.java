@@ -3,18 +3,22 @@ package nosleep.game.framework;
 import java.util.ArrayList;
 import java.util.List;
 
+import nosleep.neonrush.Ball;
+
 /**
  * Created by John on 12/9/2017.
  */
 
 public class LinesCollider extends Collider {
 
+    private Object parent;
     private FTuple[] points;
     private List<Line> lines = new ArrayList<Line>();
 
-    private LinesCollider(FTuple[] points)
+    private LinesCollider(FTuple[] points, Object parent)
     {
         this.points = points;
+        this.parent = parent;
 
         for (int i = 0; i < points.length; i++)
         {
@@ -36,6 +40,20 @@ public class LinesCollider extends Collider {
     @Override
     public Hit OnCollision(Object other, ITuple pos) {
         return null;
+    }
+
+    public Hit CheckCollision(Object other, FTuple pos)
+    {
+        if (!(other instanceof Ball) || !(parent instanceof Ball))
+        {
+            return new Hit();
+        }
+
+        Ball otherBall = (Ball) other;
+
+        FTuple relVelocity = ((Ball) other).getVelocity()
+
+        return LineOverlap(new Line())
     }
 
     public Hit LineOverlap(Line other)
