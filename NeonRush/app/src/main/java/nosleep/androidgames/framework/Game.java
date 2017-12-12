@@ -27,6 +27,9 @@ public interface Game
     public void showLeaderboard();
     public void showAchievements();
     public void unlockAchievement(int achievmentToUnlock);
+    public void showInterstitialAd();
+    public void showBanner();
+    public void hideBanner();
     public void incrementAchievement(int achievement, int value);
     public static final String Settings_Prefs = "Settingsprefsfile";
     public static final String World_Prefs = "WorldPrefsFile";

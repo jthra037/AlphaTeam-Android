@@ -61,6 +61,8 @@ public class World
 
         therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
+
+        game.showBanner();//for ads
     }
 
     public float getWidth()
@@ -183,9 +185,9 @@ public class World
 
 			v.setPosition(player.position, deltaTime);
 
-			Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
 
-			Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
 
 			break;
             case Pause:
@@ -195,6 +197,7 @@ public class World
 
                 break;
             case GameOver:
+                Integer newint = null;
 
                 break;
         }
@@ -230,6 +233,8 @@ public class World
 
                 break;
             case GameOver:
+
+
                 break;
         }
     }

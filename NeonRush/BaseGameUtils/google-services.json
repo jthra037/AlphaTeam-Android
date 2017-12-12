@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "445753244763",
+    "firebase_url": "https://neon-rush-7048884.firebaseio.com",
+    "project_id": "neon-rush-7048884",
+    "storage_bucket": "neon-rush-7048884.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445753244763:android:6153104c3e484063",
+        "android_client_info": {
+          "package_name": "com.google.example.games.basegameutils"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445753244763-kpbnm0n1ql8mpn8nv1q6afd3n4e2d9bh.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "445753244763-7firvkrsgnopotrprlvcni44eaq91bfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nosleep.neonrush",
+            "certificate_hash": "d3c698c109150ee2a846c82d97688018d4f2249c"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF0h_drgVstVBNZt3kTf0RBjprs4EW_zk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445753244763-kpbnm0n1ql8mpn8nv1q6afd3n4e2d9bh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
