@@ -5,6 +5,7 @@ import android.graphics.Color;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.Hit;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
@@ -18,6 +19,7 @@ public class Ball extends Object{
     private int radius = 500;
     private float mass = 1;
     protected int color = Color.BLACK;
+    protected Hit collision;
     protected FTuple velocity = new FTuple(0, 0);
 
     public Ball(World world, int radius)
@@ -101,5 +103,24 @@ public class Ball extends Object{
         thisCollider.setRadius(radius);
 
         world.unregister(other);
+    }
+
+    public void CollisionCheck(Object other)
+    {
+
+    }
+
+
+    public void SetCollision(Hit collision)
+    {
+        if (collision.GetTStep() < this.collision.GetTStep())
+        {
+            this.collision = collision;
+        }
+    }
+
+    public Hit GetCollision()
+    {
+        return collision;
     }
 }

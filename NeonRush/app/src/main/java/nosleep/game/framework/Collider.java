@@ -8,7 +8,7 @@ public abstract class Collider
 {
     public static enum ColliderFormat
     {
-        circle, rect;
+        circle, rect, lines;
     }
     
     public ColliderFormat format = null;

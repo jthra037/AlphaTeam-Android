@@ -1,7 +1,5 @@
 package nosleep.game.framework;
 
-import static nosleep.game.framework.Collider.ColliderFormat.rect;
-
 /**
  * Created by John on 2017-10-12.
  */
@@ -12,13 +10,13 @@ public class BoxCollider extends Collider {
     public BoxCollider(FTuple size)
     {
         this.size = size;
-        format = rect;
+        format = ColliderFormat.rect;
     }
 
     public BoxCollider(float x, float y)
     {
         this.size = new FTuple(x, y);
-        format = rect;
+        format = ColliderFormat.rect;
     }
 
     public FTuple getSize() {

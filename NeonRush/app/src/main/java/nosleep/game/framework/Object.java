@@ -23,7 +23,6 @@ public abstract class Object
     public float rotation;
     public int glowColor = 0;
     public String tag;
-    protected Hit collision;
     private Game game;
 
     public Object(Game game)
@@ -168,18 +167,4 @@ public abstract class Object
         }
 
     }
-
-    public void SetCollision(Hit collision)
-    {
-        if (collision.GetTStep() < this.collision.GetTStep())
-        {
-            this.collision = collision;
-        }
-    }
-
-    public Hit GetCollision()
-    {
-        return collision;
-    }
-
 }

@@ -117,6 +117,21 @@ public class World
 							game.setGameState(Game.GAMESTATE.GameOver);
 						}
 					}
+                    else if (tags.contains("Obstacle") &&
+                            tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
+                            !deRegistryList.contains(object) &&
+                            !deRegistryList.contains(other))
+                    {
+                        if (object instanceof Ball)
+                        {
+                            ((Ball) object).CollisionCheck(other);
+                        }
+                        else if (other instanceof Ball)
+                        {
+                            ((Ball) other).CollisionCheck(object);
+                        }
+                    }
+
 					/*else if (tags.contains("Obstacle") &&
 						tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
 						!deRegistryList.contains(object) &&

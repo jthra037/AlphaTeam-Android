@@ -19,6 +19,7 @@ public class LinesCollider extends Collider {
     {
         this.points = points;
         this.parent = parent;
+        this.format = ColliderFormat.lines;
 
         for (int i = 0; i < points.length; i++)
         {
@@ -44,16 +45,14 @@ public class LinesCollider extends Collider {
 
     public Hit CheckCollision(Object other, FTuple pos)
     {
-        if (!(other instanceof Ball) || !(parent instanceof Ball))
+        if (!(other instanceof Ball))
         {
             return new Hit();
         }
 
-        Ball otherBall = (Ball) other;
+        FTuple relVelocity = ((Ball) other).getVelocity();
 
-        FTuple relVelocity = ((Ball) other).getVelocity()
-
-        return LineOverlap(new Line())
+        return LineOverlap(new Line(pos, relVelocity));
     }
 
     public Hit LineOverlap(Line other)
