@@ -47,7 +47,6 @@ public class World
 
     public World(Game gm, Graphics graphics, int ws)
     {
-
         game = gm;
         g = graphics;
         worldSize = ws;
@@ -63,7 +62,7 @@ public class World
 
 
         //Level Generation Things.
-        levelGenerator = new LevelGenerator(this);
+        levelGenerator = new LevelGenerator(this, 3);
     }
 
     public float getWidth()
