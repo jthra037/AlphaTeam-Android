@@ -29,7 +29,7 @@ public class World
     public Game game;
     public Graphics g;
     private ViewableScreen v;
-    private int worldSize;
+    public int worldSize;
     private float worldWidth;
     private float worldHeight;
     private Player player;
@@ -62,7 +62,7 @@ public class World
 
 
         //Level Generation Things.
-        levelGenerator = new LevelGenerator(this, 3);
+        levelGenerator = new LevelGenerator(this, 7);
     }
 
     public float getWidth()

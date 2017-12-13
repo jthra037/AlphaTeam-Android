@@ -13,12 +13,10 @@ import nosleep.game.framework.ITuple;
 
 public class LevelGenerator
 {
-    float mindistscalar = 100.0f;
-    int maxIterations = 50;
-
     ///<Summary>
-    /// density: scale value which modifies the minimum distance apart obstacles will spawn at.
-    ///     Lower values accept denser randomization, large values are stricter and require more distance between obstacles.
+    /// density: Scale value which modifies the minimum distance apart obstacles will spawn at.
+    ///     Higher values create a denser level with more obstacles and less distance between them.
+    ///     Lower values create a sparcer level with less obstacles and more distance between them.
     ///</Summary>
     LevelGenerator(World w, int density)
     {
@@ -26,25 +24,26 @@ public class LevelGenerator
         ITuple screenSize = new ITuple(w.g.getWidth(), w.g.getHeight());
         FTuple worldSize = new FTuple (w.getWidth(), w.getHeight());
         List<Obstacle> placedObstacles = new ArrayList<>();
+        int maxIterations = 50;
 
         //Add a mock obstacle at player location for the purpose of not spawning proceeding obstacles nearby.
         //Size of slightly smaller than the screen size. Immediately deregister from world.
         placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10))));
         w.unregister(placedObstacles.get(0));
-        System.out.println("Initial Player Obstacle: x: " + placedObstacles.get(0).position.x + " y: " + placedObstacles.get(0).position.y);
 
-        int minObstacleCount = 15;
-        int maxObstacleCount = 16;
+        int minObstacleCount = w.worldSize * density * 2;
+        int maxObstacleCount = (int)(minObstacleCount * 1.5f);
         int rangeObstacleCount = maxObstacleCount - minObstacleCount;
-        int minObSize = 50;
-        int maxObSize = 151;
+        int minObSize = w.worldSize * 25;
+        int maxObSize = (minObSize * 2) + (density * 25);
         int rangeObSize = maxObSize - minObSize;
 
         //r.nextInt produces an int between 0 inclusive and (n) EXCLUSIVE, hence the +1 on max arguments.
         int obstacleCount = r.nextInt(rangeObstacleCount) + minObstacleCount;
         System.out.println("Number of obstacles: " + obstacleCount);
 
-        float mindist = density * mindistscalar;
+        float mindistscalar = w.worldSize * 100;
+        float mindist = mindistscalar * (1.0f / (density * 0.2f));
         System.out.println("Minimum distance: " + mindist);
 
         //Place the determined amount of objects in the world.
