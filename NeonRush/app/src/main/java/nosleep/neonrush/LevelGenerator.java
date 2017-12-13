@@ -1,5 +1,7 @@
 package nosleep.neonrush;
 
+import android.graphics.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +15,8 @@ import nosleep.game.framework.ITuple;
 
 public class LevelGenerator
 {
+    public List<Obstacle> placedObstacles;
+
     ///<Summary>
     /// density: Scale value which modifies the minimum distance apart obstacles will spawn at.
     ///     Higher values create a denser level with more obstacles and less distance between them.
@@ -23,12 +27,12 @@ public class LevelGenerator
         Random r = new Random();
         ITuple screenSize = new ITuple(w.g.getWidth(), w.g.getHeight());
         FTuple worldSize = new FTuple (w.getWidth(), w.getHeight());
-        List<Obstacle> placedObstacles = new ArrayList<>();
+        placedObstacles = new ArrayList<>();
         int maxIterations = 50;
 
         //Add a mock obstacle at player location for the purpose of not spawning proceeding obstacles nearby.
         //Size of slightly smaller than the screen size. Immediately deregister from world.
-        placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10))));
+        placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10)), Color.WHITE));
         w.unregister(placedObstacles.get(0));
 
         int minObstacleCount = w.worldSize * density * 2;
@@ -78,7 +82,8 @@ public class LevelGenerator
             ITuple size = new ITuple(r.nextInt(rangeObSize) + minObSize, r.nextInt(rangeObSize) + minObSize);
 
             //Place the obstacle.
-            placedObstacles.add(new ObRectangle(w.game, w, pos, size));
+            int color = r.nextInt(w.Palette.length);
+            placedObstacles.add(new ObRectangle(w.game, w, pos, size, w.Palette[color]));
             System.out.println("Obstacle " + (i + 1) + "- Size x: " + size.x + ", Size y: " + size.y + ", Pos x: " + pos.x + ", Pos y: " + pos.y);
         }
     }

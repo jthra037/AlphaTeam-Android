@@ -22,13 +22,14 @@ public class Obstacle extends Object
     protected int maxSpeed = 0;
     protected Callable<Void> action;
 
-    public Obstacle (Game game, World world, FTuple pos)
+    public Obstacle (Game game, World world, FTuple pos, int col)
     {
         super(game);
         tag = "Obstacle";
         w = world;
         position = pos;
         localCoord = w.toLocalCoord(position);
+        color = col;
         world.register(this);
     }
 

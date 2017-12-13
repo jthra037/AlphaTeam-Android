@@ -14,9 +14,9 @@ public class ObRectangle extends Obstacle
 {
     private ITuple size;
 
-    public ObRectangle(Game game, World world, FTuple pos, ITuple s)
+    public ObRectangle(Game game, World world, FTuple pos, ITuple s, int color)
     {
-        super(game, world, pos);
+        super(game, world, pos, color);
         size = s;
         collider = new BoxCollider(size.x, size.y);
     }
