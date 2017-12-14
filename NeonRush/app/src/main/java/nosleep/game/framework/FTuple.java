@@ -82,7 +82,8 @@ public class FTuple
 
     public float Distance(FTuple target)
     {
-        return this.Sub(target).Length();
+        FTuple diff = this.Sub(target);
+        return diff.Length();
     }
 
     public String ToString(){return ("X:" + this.x + ", Y:" + this.y);}
