@@ -62,12 +62,11 @@ public class World
 
 
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 3);
+        LevelGenny = new LevelGenerator(this, 7);
 
         game.showBanner();//for ads
 
-        dArrow.setAlpha(50);
-        dArrow.setAlpha(100);
+        dArrow.setAlpha(49);
     }
 
     public float getWidth()

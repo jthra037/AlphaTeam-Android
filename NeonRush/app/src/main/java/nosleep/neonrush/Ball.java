@@ -1,6 +1,10 @@
 package nosleep.neonrush;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
 
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
@@ -18,6 +22,7 @@ public class Ball extends Object{
     private int radius = 500;
     private float mass = 1;
     protected int color = Color.BLACK;
+    private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
 
     public Ball(World world, int radius)
@@ -54,6 +59,7 @@ public class Ball extends Object{
         {
             Graphics g = getGame().getGraphics();
             g.drawCircle(localCoord.x, localCoord.y, radius, color);
+
         }
         else
         {

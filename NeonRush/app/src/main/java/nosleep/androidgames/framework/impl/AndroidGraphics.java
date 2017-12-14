@@ -56,6 +56,14 @@ public class AndroidGraphics implements Graphics {
         return new AndroidPixmap(bitmap, format);
     }
 
+
+
+    @Override
+    public Pixmap newPixmap(Bitmap bitmap, PixmapFormat format)
+    {
+        return new AndroidPixmap(bitmap, format);
+    }
+
     @Override
     public Pixmap resizePixmap(Pixmap pixmap, int newWidth, int newHeight) {
         Bitmap resizedBitmap = null;
@@ -163,6 +171,13 @@ public class AndroidGraphics implements Graphics {
     {
         paint.setColor(color);
         paint.setStyle(Style.FILL);
+        canvas.drawCircle(x, y, radius, paint);
+    }
+
+    @Override
+    public void drawCircle(int x, int y, int radius, Paint newPaint)
+    {
+        newPaint.setStyle(Style.FILL);
         canvas.drawCircle(x, y, radius, paint);
     }
 

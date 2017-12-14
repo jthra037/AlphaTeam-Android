@@ -23,7 +23,7 @@ public class DirectionalArrow extends Object
         super(m_World.game);
         this.g = m_World.game.getGraphics();
         this.img = g.newPixmap("directionalarrow.png", Graphics.PixmapFormat.ARGB4444);
-        setBackupImg(img);
+        this.backupImg = g.newPixmap(img.getBitmap(),img.getFormat());
         this.position = position;
         this.mWorld = m_World;
         this.rotation = 0;

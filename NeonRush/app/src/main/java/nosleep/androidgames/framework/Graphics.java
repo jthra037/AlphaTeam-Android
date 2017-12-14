@@ -1,6 +1,7 @@
 package nosleep.androidgames.framework;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -15,6 +16,7 @@ public interface Graphics
     }
 
     public Pixmap newPixmap(String fileName, PixmapFormat format);
+    public Pixmap newPixmap(Bitmap bitmap, PixmapFormat format);
     public Pixmap resizePixmap(Pixmap pixmap, int width, int height);
     public Pixmap rotatePixmap(Pixmap pixmap, float angle);
     public void clear(int color);
@@ -23,6 +25,7 @@ public interface Graphics
     public void drawLine(ILine line,int color);
     public void drawRect(int x, int y, int width, int height, int color);
     public void drawCircle(int x, int y, int radius, int color);
+    public void drawCircle(int x, int y, int radius, Paint newPaint);
     public void drawARGBRect(Rect rect, int a, int r, int g, int b);
     public void drawRect(Rect rect, int color);
     public Rect setRectPosition(Rect rect,int x, int y);
