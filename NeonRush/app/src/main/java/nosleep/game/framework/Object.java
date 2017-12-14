@@ -178,27 +178,23 @@ public abstract class Object
     }
 
 
-    public Pixmap setAlpha(float newAlpha) //integer between 0-100
+    public void setAlpha(float newAlpha) //integer between 0-100
     {
 
 
         if (newAlpha != alpha) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
         {
-            float test = newAlpha/100.0f;
+            float test = newAlpha / 100.0f;
             float test2 = test * 255;
             alpha = test2;
-            Bitmap newBM = Bitmap.createBitmap(backupImg.getBitmap().getWidth(),backupImg.getBitmap().getHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap newBM = Bitmap.createBitmap(backupImg.getBitmap().getWidth(), backupImg.getBitmap().getHeight(), Bitmap.Config.ARGB_8888);
             Canvas cc = new Canvas(newBM);
-            cc.drawARGB(0,0,0,0);
+            cc.drawARGB(0, 0, 0, 0);
             Paint newPaint = new Paint();
-            newPaint.setAlpha((int)test2);
+            //img.setBitmap(null);
+            newPaint.setAlpha((int) test2);
             cc.drawBitmap(backupImg.getBitmap(), 0, 0, newPaint);
             img.setBitmap(newBM);
-            return img;
-        }
-        else
-        {
-            return img;
         }
 
     }

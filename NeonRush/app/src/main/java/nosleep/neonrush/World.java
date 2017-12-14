@@ -65,6 +65,7 @@ public class World
         game.showBanner();//for ads
 
         dArrow.setAlpha(50);
+        dArrow.setAlpha(100);
     }
 
     public float getWidth()
@@ -102,6 +103,7 @@ public class World
                             object instanceof Ball &&
                             other instanceof Ball)
                     {
+
 
 						Ball thisBall = (Ball)object;
 

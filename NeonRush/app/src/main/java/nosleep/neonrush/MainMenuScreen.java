@@ -137,7 +137,8 @@ public class MainMenuScreen extends Screen {
 
         for (Button button : buttons)
         {
-            g.drawPixmap(button.getImg(),button.getX(),button.getY());
+            if (!buttons.isEmpty())
+                g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
 
 
