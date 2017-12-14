@@ -30,6 +30,45 @@ public class IMath {
         }
 
         return result;
+    }
+
+    public static float Clamp(float value, float min, float max)
+    {
+        if (value < min)
+        {
+            value = min;
+        }
+        else if (value > max)
+        {
+            value = max;
+        }
+        return value;
+    }
+
+    public static int Clamp(int value, int min, int max)
+    {
+        if (value < min)
+        {
+            value = min;
+        }
+        else if (value > max)
+        {
+            value = max;
+        }
+        return value;
+    }
+
+    public static float Repeat(float t, float length)
+    {
+        return Clamp(t - (float)(Math.floor((t / length) * length)), 0f, length);
+    }
+
+    public static float PingPong(float t, float length)
+    {
+        t = Repeat(t, length * 2f);
+        return length - Math.abs(t - length);
 
     }
+
+
 }

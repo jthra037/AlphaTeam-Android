@@ -5,6 +5,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
@@ -18,11 +19,12 @@ public abstract class Object
 {
     protected Collider collider;
     protected Pixmap img;
-    private Bitmap backupImg;
+    private Pixmap backupImg;
     public FTuple position;
     public float rotation;
     public int glowColor = 0;
     public String tag;
+    public float alpha = 100.0f;
     private Game game;
 
     public Object(Game game)
@@ -67,6 +69,8 @@ public abstract class Object
     }
 
     public Pixmap getImg(){return img;}
+
+    public void setBackupImg(Pixmap backup){this.backupImg = backup;}
 
     public void rotateToPoint(FTuple a, FTuple point, float maxDegreesDelta)
     {
@@ -172,6 +176,29 @@ public abstract class Object
         }
 
     }
+
+
+    public void setAlpha(float newAlpha) //integer between 0-100
+    {
+
+
+        if (newAlpha != alpha) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
+        {
+            float test = newAlpha / 100.0f;
+            float test2 = test * 255;
+            alpha = test2;
+            Bitmap newBM = Bitmap.createBitmap(backupImg.getBitmap().getWidth(), backupImg.getBitmap().getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas cc = new Canvas(newBM);
+            cc.drawARGB(0, 0, 0, 0);
+            Paint newPaint = new Paint();
+            //img.setBitmap(null);
+            newPaint.setAlpha((int) test2);
+            cc.drawBitmap(backupImg.getBitmap(), 0, 0, newPaint);
+            img.setBitmap(newBM);
+        }
+
+    }
+
 
 
 }

@@ -63,6 +63,11 @@ public class World
 
         //Level Generation Things.
         LevelGenny = new LevelGenerator(this, 7);
+
+        game.showBanner();//for ads
+
+        dArrow.setAlpha(50);
+        dArrow.setAlpha(100);
     }
 
     public float getWidth()
@@ -83,7 +88,6 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-			///<summary>
 			/// Handles all collision interactions.
 			///</summary>
 			for (int i = 0; i < objects.size() - 1; i++)
@@ -101,6 +105,7 @@ public class World
                             object instanceof Ball &&
                             other instanceof Ball)
                     {
+
 
 						Ball thisBall = (Ball)object;
 
@@ -188,6 +193,7 @@ public class World
                     inside = false;
                     pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
 
+<<<<<<< HEAD
                     for(Obstacle ob : LevelGenny.placedObstacles)
                     {
                         ObRectangle rect = (ObRectangle) ob;
@@ -208,6 +214,11 @@ public class World
 			}
 
 			v.setPosition(player.position, deltaTime);
+=======
+			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+
+			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+>>>>>>> origin/AD_Integration
 
 			break;
             case Pause:
@@ -217,6 +228,7 @@ public class World
 
                 break;
             case GameOver:
+                Integer newint = null;
 
                 break;
         }
@@ -252,6 +264,8 @@ public class World
 
                 break;
             case GameOver:
+
+
                 break;
         }
     }

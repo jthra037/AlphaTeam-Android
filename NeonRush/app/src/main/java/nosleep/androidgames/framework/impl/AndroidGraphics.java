@@ -87,28 +87,6 @@ public class AndroidGraphics implements Graphics {
         return pixmap;
     }
 
-    @Override
-    public Pixmap setAlpha(Pixmap pixmap, int newAlpha)
-    {
-        int pixel = pixmap.getBitmap().getPixel(pixmap.getWidth()/2,pixmap.getHeight()/2);
-        int alpha = Color.alpha(pixel);
-        if (newAlpha != alpha) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
-        {
-            Bitmap newBM = Bitmap.createBitmap(pixmap.getWidth(),pixmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas cc = new Canvas(newBM);
-            cc.drawARGB(0,0,0,0);
-            Paint newPaint = new Paint();
-            newPaint.setAlpha(newAlpha);
-            cc.drawBitmap(pixmap.getBitmap(), 0, 0, newPaint);
-            pixmap.setBitmap(newBM);
-            return pixmap;
-        }
-        else
-        {
-            return pixmap;
-        }
-
-    }
 
 
 
