@@ -63,6 +63,8 @@ public class World
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
 
         game.showBanner();//for ads
+
+        dArrow.setAlpha(50);
     }
 
     public float getWidth()
@@ -83,7 +85,6 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-			///<summary>
 			/// Handles all collision interactions.
 			///</summary>
 			for (int i = 0; i < objects.size() - 1; i++)
