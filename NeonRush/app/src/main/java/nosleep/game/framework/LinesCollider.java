@@ -50,6 +50,11 @@ public class LinesCollider extends Collider {
             return new Hit();
         }
 
+        if (other instanceof Ball)
+        {
+            return LineOverlap((Ball) other);
+        }
+
         FTuple relVelocity = ((Ball) other).getVelocity();
 
         return LineOverlap(new Line(pos, relVelocity));
@@ -62,6 +67,24 @@ public class LinesCollider extends Collider {
         for (Line line : lines)
         {
             Hit thisHit = line.FindIntersection(other);
+            if (thisHit.GetTStep() < output.GetTStep())
+                output = thisHit;
+        }
+
+        return output;
+    }
+
+    public Hit LineOverlap(Ball other)
+    {
+        Hit output = new Hit();
+
+        for (Line line : lines)
+        {
+            FTuple loi = other.getPosition().Add(line.getNormal().Mul(-other.getRadius()));
+            // One day we will need relative velocity here
+            Line otherLine = new Line(loi, other.getVelocity());
+
+            Hit thisHit = line.FindIntersection(otherLine);
             if (thisHit.GetTStep() < output.GetTStep())
                 output = thisHit;
         }

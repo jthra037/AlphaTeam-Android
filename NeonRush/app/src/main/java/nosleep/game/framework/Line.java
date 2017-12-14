@@ -158,4 +158,8 @@ public class Line {
 
         return output;
     }
+
+    public FTuple getNormal()
+    {return normal;}
+
 }

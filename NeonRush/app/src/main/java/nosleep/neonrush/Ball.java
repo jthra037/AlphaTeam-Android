@@ -1,9 +1,11 @@
 package nosleep.neonrush;
 
 import android.graphics.Color;
+import android.widget.Switch;
 
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
+import nosleep.game.framework.Collider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.Hit;
 import nosleep.game.framework.ITuple;
@@ -107,7 +109,13 @@ public class Ball extends Object{
 
     public void CollisionCheck(Object other)
     {
+        Collider otherCollider = other.getCollider();
 
+        switch (otherCollider.format)
+        {
+            case lines:
+
+        }
     }
 
 
