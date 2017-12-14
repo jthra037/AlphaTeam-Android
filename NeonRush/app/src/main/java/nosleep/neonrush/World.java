@@ -62,7 +62,7 @@ public class World
 
 
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 7);
+        LevelGenny = new LevelGenerator(this, 3);
 
         game.showBanner();//for ads
 
@@ -193,7 +193,7 @@ public class World
                     inside = false;
                     pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
 
-<<<<<<< HEAD
+
                     for(Obstacle ob : LevelGenny.placedObstacles)
                     {
                         ObRectangle rect = (ObRectangle) ob;
@@ -214,11 +214,11 @@ public class World
 			}
 
 			v.setPosition(player.position, deltaTime);
-=======
+
 			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
 
 			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
->>>>>>> origin/AD_Integration
+
 
 			break;
             case Pause:
