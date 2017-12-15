@@ -59,7 +59,7 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
-        therect = new ObRectangle(game, this, new FTuple(0, 0), new ITuple(500, 500));
+        therect = new ObRectangle(game, this, new FTuple(25, 25), new ITuple(500, 500));
 
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
     }
@@ -108,7 +108,7 @@ public class World
                             thisBall = (Ball) other;
                         }
 
-                        FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(deltaTime));
+                        FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(0.05f));
 
                         if (nextPosition.x < 500 && nextPosition.x > 0 && nextPosition.y < 500 && nextPosition.y > 0)
                         {
