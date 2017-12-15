@@ -42,7 +42,7 @@ public class Ball extends Object{
         {
             //Move forward until collision time
             //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
-            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius));
+            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
             FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
             position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
 

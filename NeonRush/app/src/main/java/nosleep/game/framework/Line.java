@@ -92,7 +92,7 @@ public class Line {
         if (direction.x == 0 ||
             other.direction.x == 0)
         {
-            return direction.x == other.direction.x;
+            return false;
         }
         else
         {
@@ -139,8 +139,8 @@ public class Line {
     {
         Hit output;
 
-        if (IntersectsWith(other))
-        {
+        //if (IntersectsWith(other))
+        //{
             float ax = point.x;
             float ay = point.y;
             float bx = direction.x;
@@ -158,11 +158,11 @@ public class Line {
                     0 <= t && t <= 1;
 
             output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
-        }
+        /*}
         else
         {
             output = new Hit();
-        }
+        }*/
 
         return output;
     }

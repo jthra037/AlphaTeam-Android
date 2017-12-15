@@ -78,7 +78,8 @@ public class LinesCollider extends Collider {
             Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f)); // this should be replaced with something other than a hardcoded approximation
 
             Hit thisHit = line.FindIntersection(otherLine);
-            if (thisHit.GetTStep() < output.GetTStep())
+            if (thisHit.isHitOccurred() &&
+                    thisHit.GetTStep() < output.GetTStep())
                 output = thisHit;
         }
 
