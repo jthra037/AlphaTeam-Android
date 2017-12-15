@@ -154,7 +154,7 @@ public class Line {
             float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for this(?) line
 
             // Assumes "direction" of each line brought it from its Start to its End
-            boolean hitOccurred = 0 <= u && u <= 1 &&
+            boolean hitOccurred = 0 <= u && u <= 1.1 && // this should be 1, but works better around here
                     0 <= t && t <= 1;
 
             output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
