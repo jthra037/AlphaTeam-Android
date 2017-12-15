@@ -136,7 +136,9 @@ public class Ball extends Object{
 
     public void SetCollision(Hit collision)
     {
-        if (collision.GetTStep() >= 0 && collision.GetTStep() < this.collision.GetTStep())
+        if (collision.isHitOccurred() &&
+                collision.GetTStep() >= 0 &&
+                collision.GetTStep() < this.collision.GetTStep())
         {
             this.collision = collision;
         }
