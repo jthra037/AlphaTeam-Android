@@ -78,4 +78,5 @@ public class Hit
     }
 
     public FTuple GetTangent() {return tangent; }
+    public FTuple GetNormal() {return normal;}
 }

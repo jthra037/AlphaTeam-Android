@@ -45,7 +45,7 @@ public class Line {
 
     private void CalcNormal()
     {
-        normal = new FTuple(-direction.y, direction.x).Normalized();
+        normal = new FTuple(direction.y, -direction.x).Normalized();
     }
 
     public FTuple getPoint(){return point; }
@@ -157,7 +157,7 @@ public class Line {
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
-            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, u);
+            output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
         }
         else
         {

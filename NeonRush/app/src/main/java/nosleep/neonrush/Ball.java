@@ -41,7 +41,8 @@ public class Ball extends Object{
         if (collision.isHitOccurred())
         {
             //Move forward until collision time
-            position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+            //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius));
             FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
             position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
 
