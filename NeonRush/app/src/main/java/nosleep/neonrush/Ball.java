@@ -29,6 +29,7 @@ public class Ball extends Object{
         super(world.game);
         this.radius = radius;
         this.world = world;
+        this.collision = new Hit();
 
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius, this);

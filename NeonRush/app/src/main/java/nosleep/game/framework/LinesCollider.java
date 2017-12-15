@@ -11,14 +11,14 @@ import nosleep.neonrush.Ball;
 
 public class LinesCollider extends Collider {
 
-    private Object parent;
+    //private Object parent;
     private FTuple[] points;
     private List<Line> lines = new ArrayList<Line>();
 
-    private LinesCollider(FTuple[] points, Object parent)
+    public LinesCollider(FTuple[] points/*, Object parent*/)
     {
         this.points = points;
-        this.parent = parent;
+        //this.parent = parent;
         this.format = ColliderFormat.lines;
 
         for (int i = 0; i < points.length; i++)
