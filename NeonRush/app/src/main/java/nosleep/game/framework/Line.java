@@ -45,7 +45,7 @@ public class Line {
 
     private void CalcNormal()
     {
-        normal = new FTuple(direction.y, -direction.x);
+        normal = new FTuple(-direction.y, direction.x).Normalized();
     }
 
     public FTuple getPoint(){return point; }
@@ -89,7 +89,13 @@ public class Line {
     // Checks if the slopes of each line are the same
     public boolean IntersectsWith(Line other)
     {
-        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) < 0.00001f; // Should replace with a real/better epsilon
+        if (direction.x == 0 ||
+            other.direction.x == 0)
+        {
+            return direction.x == other.direction.x;
+        }
+
+        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) > 0.00001f; // Should replace with a real/better epsilon
     }
 
 
