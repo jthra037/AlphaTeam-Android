@@ -85,6 +85,7 @@ public class World
 			///<summary>
 			/// Handles all collision interactions.
 			///</summary>
+
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
 				for(int j = i + 1; j < objects.size(); j++)
@@ -92,6 +93,28 @@ public class World
 					Object object = objects.get(i);
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
+
+
+                    if (tags.contains("Player"))
+                    {
+                        Ball thisBall;
+
+                        if (tags.indexOf("Player") == 0)
+                        {
+                            thisBall = (Ball) object;
+                        }
+                        else
+                        {
+                            thisBall = (Ball) other;
+                        }
+
+                        FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(deltaTime));
+
+                        if (nextPosition.x < 500 && nextPosition.x > 0 && nextPosition.y < 500 && nextPosition.y > 0)
+                        {
+                            System.out.println("This should be a collision with the box");
+                        }
+                    }
 
 					//Ball Combining.
 					if (!deRegistryList.contains(object) &&
