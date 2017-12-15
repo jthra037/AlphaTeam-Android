@@ -41,9 +41,9 @@ public class Ball extends Object{
         if (collision.isHitOccurred())
         {
             //Move forward until collision time
-            position = position.Add(velocity.Mul(collision.GetTStep()));
+            position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
             FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
-            position = position.Add(velocityRelTangent.Mul(1 - collision.GetTStep()));
+            position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
 
             // Hit resolved; clear the hit
             collision = new Hit();
@@ -135,7 +135,7 @@ public class Ball extends Object{
 
     public void SetCollision(Hit collision)
     {
-        if (collision.GetTStep() < this.collision.GetTStep())
+        if (collision.GetTStep() >= 0 && collision.GetTStep() < this.collision.GetTStep())
         {
             this.collision = collision;
         }

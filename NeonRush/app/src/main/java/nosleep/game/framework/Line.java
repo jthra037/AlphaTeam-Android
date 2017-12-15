@@ -94,8 +94,10 @@ public class Line {
         {
             return direction.x == other.direction.x;
         }
-
-        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) > 0.00001f; // Should replace with a real/better epsilon
+        else
+        {
+            return Math.abs((direction.y / direction.x) - (other.direction.y / other.direction.x)) > 0.00001f; // Should replace with a real/better epsilon
+        }
     }
 
 
@@ -122,7 +124,7 @@ public class Line {
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
-            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, t);
+            output = new Hit(hitOccurred, FindPointAt(u), normal, direction.Normalized(), t);
         }
         else
         {
@@ -148,14 +150,14 @@ public class Line {
             float dx = other.direction.x;
             float dy = other.direction.y;
 
-            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx); // Parameter for this line
-            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for the other line
+            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx); // Parameter for other line
+            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for this(?) line
 
             // Assumes "direction" of each line brought it from its Start to its End
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
-            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, t);
+            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, u);
         }
         else
         {
