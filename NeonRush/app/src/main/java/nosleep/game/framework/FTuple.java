@@ -97,6 +97,11 @@ public class FTuple
         return this.x * in.x + this.y * in.y;
     }
 
+    public FTuple ProjectedOnto(FTuple in)
+    {
+        return in.Mul((Dot(this, in))/(Dot(in, in)));
+    }
+
     public FTuple Normalized()
     {
         float len = Length();

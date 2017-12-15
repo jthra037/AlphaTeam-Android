@@ -40,24 +40,17 @@ public class LinesCollider extends Collider {
 
     @Override
     public Hit OnCollision(Object other, ITuple pos) {
-        return null;
+        return CheckCollision(other);
     }
 
-    public Hit CheckCollision(Object other, FTuple pos)
+    public Hit CheckCollision(Object other)
     {
-        if (!(other instanceof Ball))
-        {
-            return new Hit();
-        }
-
         if (other instanceof Ball)
         {
             return LineOverlap((Ball) other);
         }
 
-        FTuple relVelocity = ((Ball) other).getVelocity();
-
-        return LineOverlap(new Line(pos, relVelocity));
+        return new Hit();
     }
 
     public Hit LineOverlap(Line other)

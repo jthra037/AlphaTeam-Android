@@ -76,4 +76,6 @@ public class Hit
     {
         return framesUntilHit;
     }
+
+    public FTuple GetTangent() {return tangent; }
 }

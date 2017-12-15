@@ -37,15 +37,27 @@ public class Ball extends Object{
 
     @Override
     public void update(float deltaTime) {
-        position = position.Add(velocity.Mul(deltaTime));
+        if (collision.isHitOccurred())
+        {
+            //Move forward until collision time
+            position = position.Add(velocity.Mul(collision.GetTStep()));
+            FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+            position = position.Add(velocityRelTangent.Mul(1 - collision.GetTStep()));
+
+            // Hit resolved; clear the hit
+            collision = new Hit();
+        }
+        else
+        {
+            position = position.Add(velocity.Mul(deltaTime));
+        }
+
         position.x %= world.getWidth();
         position.y %= world.getHeight();
-        if(position.x < 0)
-        {
+        if (position.x < 0) {
             position.x = world.getWidth();
         }
-        if (position.y < 0)
-        {
+        if (position.y < 0) {
             position.y = world.getHeight();
         }
         localCoord = world.toLocalCoord(position);
@@ -114,7 +126,8 @@ public class Ball extends Object{
         switch (otherCollider.format)
         {
             case lines:
-
+                SetCollision(otherCollider.OnCollision(this, localCoord));
+                break;
         }
     }
 
