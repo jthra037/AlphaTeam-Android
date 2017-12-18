@@ -59,7 +59,7 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
 
-        therect = new ObRectangle(game, this, new FTuple(25, 250), new ITuple(500, 500));
+        therect = new ObRectangle(game, this, new FTuple(0, 20), new ITuple(500, 500));
 
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
     }
@@ -327,6 +327,35 @@ public class World
     }
 
     public long getLScore() {return score;}
+
+    public boolean IsValidPosition(FTuple point)
+    {
+        return point.x >= 0 && point.x <= worldWidth &&
+                point.y >= 0 && point.y <= worldHeight;
+    }
+
+    public void ConvertToWorldSpace(FTuple point)
+    {
+        if (point.x < 0)
+        {
+            point.x = worldWidth + point.x;
+            ConvertToWorldSpace(point);
+        }
+        if (point.x > worldWidth)
+        {
+            point.x %= worldWidth;
+        }
+        if (point.y < 0)
+        {
+            point.y = worldHeight + point.y;
+            ConvertToWorldSpace(point);
+        }
+        if (point.y > worldHeight)
+        {
+            point.y %= worldHeight;
+        }
+    }
+
 
     //This represents the viewport into the world that is visible on screen to the player.
     public class ViewableScreen

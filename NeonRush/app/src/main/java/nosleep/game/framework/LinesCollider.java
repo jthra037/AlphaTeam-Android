@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nosleep.neonrush.Ball;
+import nosleep.neonrush.World;
 
 /**
  * Created by John on 12/9/2017.
@@ -11,19 +12,33 @@ import nosleep.neonrush.Ball;
 
 public class LinesCollider extends Collider {
 
-    //private Object parent;
+    World w;
+    private Object parent;
     private FTuple[] points;
     private List<Line> lines = new ArrayList<Line>();
 
-    public LinesCollider(FTuple[] points/*, Object parent*/)
+    public LinesCollider(FTuple[] points , Object parent)
     {
         this.points = points;
-        //this.parent = parent;
+        this.parent = parent;
         this.format = ColliderFormat.lines;
 
         for (int i = 0; i < points.length; i++)
         {
             lines.add(new Line(points[i], points[(i + 1) % points.length], false));
+        }
+    }
+
+    public LinesCollider(FTuple[] points , Object parent, World world)
+    {
+        this.points = points;
+        this.parent = parent;
+        this.format = ColliderFormat.lines;
+        this.w = world;
+
+        for (int i = 0; i < points.length; i++)
+        {
+            lines.add(new Line(points[i], points[(i + 1) % points.length], false, world));
         }
     }
 
@@ -75,7 +90,7 @@ public class LinesCollider extends Collider {
         {
             FTuple loi = other.getPosition().Add(line.getNormal().Mul(-other.getRadius()));
             // One day we will need relative velocity here
-            Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f)); // this should be replaced with something other than a hardcoded approximation
+            Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // this should be replaced with something other than a hardcoded approximation
 
             Hit thisHit = line.FindIntersection(otherLine);
             if (thisHit.isHitOccurred() &&
@@ -94,18 +109,20 @@ public class LinesCollider extends Collider {
                 FTuple otherVelTangent = new FTuple(otherVelNormal.y, -otherVelNormal.x);
 
                 // make the lines
-                Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f)); // need a real number here too
+                Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // need a real number here too
                 FTuple direction = otherVelTangent.Normalized().Mul(other.getRadius());
-                Line thisLine = new Line (point.Sub(direction), direction.Mul(2));
+                Line thisLine = new Line (point.Sub(direction), direction.Mul(2), w);
 
 
                 Hit thisHit = thisLine.FindIntersection(otherLine);
                 if (thisHit.isHitOccurred() &&
                         thisHit.GetTStep() < output.GetTStep())
                     output = thisHit;
+
             }
         }
 
+        output.SetCollidedWith(parent);
         return output;
     }
 

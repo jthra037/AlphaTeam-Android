@@ -1,10 +1,13 @@
 package nosleep.game.framework;
 
+import nosleep.neonrush.World;
+
 /**
  * Created by John on 12/7/2017.
  */
 
 public class Line {
+    private World world;
     private FTuple point;
     private FTuple endpoint;
     private FTuple direction;
@@ -26,8 +29,36 @@ public class Line {
         CalcNormal();
     }
 
+    public Line(FTuple point, FTuple direction, World world)
+    {
+        this.point = point;
+        this.direction = direction;
+        endpoint = point.Add(direction);
+        CalcNormal();
+        this.world = world;
+    }
+
     public Line(FTuple first, FTuple second, boolean flag)
     {
+        if (flag) {
+            point = first;
+            direction = second;
+            endpoint = first.Add(second);
+            CalcNormal();
+        }
+        else
+        {
+            point = first;
+            direction = second.Sub(first);
+            endpoint = second;
+            CalcNormal();
+        }
+    }
+
+    public Line(FTuple first, FTuple second, boolean flag, World world)
+    {
+        this.world = world;
+
         if (flag) {
             point = first;
             direction = second;
@@ -49,7 +80,11 @@ public class Line {
     }
 
     public FTuple getPoint(){return point; }
-    public void setPoint(FTuple point){this.point = point; }
+    public void setPoint(FTuple point)
+    {
+        this.point = point;
+        endpoint = point.Add(direction);
+    }
 
     public FTuple getEndpoint(){return endpoint; }
     public void setEndpoint(FTuple endpoint){this.endpoint = endpoint; }
@@ -102,7 +137,7 @@ public class Line {
 
 
     // Find the intersection of some other line and this line
-    public Hit FindIntersection(Line other, FTuple segmentEnd)
+    /*public Hit FindIntersection(Line other, FTuple segmentEnd)
     {
         Hit output;
 
@@ -139,12 +174,18 @@ public class Line {
         }
 
         return output;
-    }
+    }*/
 
     // Find the intersection of some other line and this line
     public Hit FindIntersection(Line other)
     {
         Hit output;
+
+        if (!world.IsValidPosition(other.getEndpoint()))
+        {
+            world.ConvertToWorldSpace(other.endpoint);
+            other.setPoint(other.getEndpoint().Sub(other.getDirection()));
+        }
 
         //if (IntersectsWith(other))
         //{
@@ -163,15 +204,6 @@ public class Line {
             // Assumes "direction" of each line brought it from its Start to its End
             boolean hitOccurred = 0 <= u && u <= 1.1 && // this should be 1, but works better around here
                     0 <= t && t <= 1;
-
-        float offset = 15/500f;
-
-        if (!hitOccurred &&
-                0 <= u && u <= 1.1 &&
-                0 - offset <= t && t <= 1+offset)
-        {
-            System.out.println("A corner is here");
-        }
 
             output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
         /*}

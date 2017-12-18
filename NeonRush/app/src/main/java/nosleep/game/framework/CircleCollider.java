@@ -50,12 +50,10 @@ public class CircleCollider extends Collider {
                 return rectCircleCollision(other, (BoxCollider) otherCollider, pos.ToITuple()); // hard cast fuckit
         }
 
-        try{
-            CircleCollider otherCircle = (CircleCollider)otherCollider;
-            return circleCircleCollision(other, otherCircle, pos);
-        }catch (Exception e)
+        if (otherCollider instanceof CircleCollider)
         {
-            System.out.println(e);
+            CircleCollider otherCircle = (CircleCollider) otherCollider;
+            return circleCircleCollision(other, otherCircle, pos);
         }
 
         return false;

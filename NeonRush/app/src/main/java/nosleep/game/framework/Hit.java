@@ -53,6 +53,9 @@ public class Hit
         runtime = Runtime.getRuntime();
     }
 
+    public void SetCollidedWith(Object in) {this.collidedWith = in; }
+    public Object GetCollidedWith() {return collidedWith; }
+
     public boolean isHitOccurred() {
         return hitOccurred;
     }
