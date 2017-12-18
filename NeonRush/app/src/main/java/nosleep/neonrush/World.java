@@ -42,6 +42,9 @@ public class World
     private List<Object> deRegistryList = new ArrayList<Object>();
     private long score = 0;
     private long regTime = 0;
+    private Random r;
+    private int spawnWait = 2000;
+    private long lastSpawn = 0;
 
     private LevelGenerator LevelGenny;
 
@@ -58,11 +61,11 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
-
-
+        r = new Random();
+        lastSpawn = System.currentTimeMillis();
 
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 7);
+        LevelGenny = new LevelGenerator(this, 5);
 
         game.showBanner();//for ads
 
@@ -87,8 +90,8 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-			/// Handles all collision interactions.
-			///</summary>
+
+			// Handles all collision interactions.
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
 				for(int j = i + 1; j < objects.size(); j++)
@@ -104,8 +107,6 @@ public class World
                             object instanceof Ball &&
                             other instanceof Ball)
                     {
-
-
 						Ball thisBall = (Ball)object;
 
 						if (object != null && object.tag == other.tag)
@@ -123,66 +124,34 @@ public class World
 							game.setGameState(Game.GAMESTATE.GameOver);
 						}
 					}
-					/*else if (tags.contains("Obstacle") &&
-						tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
-						!deRegistryList.contains(object) &&
-						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()))
-					{
-						ObRectangle thisRect;
-						Ball thisBall;
-						if (object.tag == "Obstacle")
-						{
-							thisBall = (Ball) other;
-							thisRect = (ObRectangle) object;
-						}
-						else
-						{
-							thisBall = (Ball) object;
-							thisRect = (ObRectangle) other;
-						}
-						FTuple direction = thisRect.position.Add((thisRect.getSize().x/2), (thisRect.getSize().y/2));
-						direction = thisBall.position.Add(direction.Mul(-1));
-						direction = direction.Normalized();
-
-						float scale = direction.Dot(thisBall.getVelocity());
-						//thisBall.AddForce(direction.Normalized().Mul(2 * scale));
-						thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(4f* Math.abs(scale)))); // This is jank, and should be fixed
-
-						if (thisBall.tag == "Player")
-						{
-							Player fuckingPlayer = (Player) thisBall;
-							fuckingPlayer.setCollision();
-						}
-					}*/
-
 				}
 			}
 
-                objects.addAll(registryList);
-                registryList.removeAll(registryList);
+			//Add all objects to the registry that are in queue.
+			objects.addAll(registryList);
+			registryList.removeAll(registryList);
 
-                objects.removeAll(deRegistryList);
-                deRegistryList.removeAll(deRegistryList);
+			//Remove all objects from the registry that are in queue.
+			objects.removeAll(deRegistryList);
+			deRegistryList.removeAll(deRegistryList);
 
-                //Run update for all registered objects.
-                for (Object object : objects)
+			//Run update for all registered objects.
+			for (Object object : objects)
+            {
+                object.update(deltaTime);
+
+                //Add score to the player.
+                if (object == player)
                 {
-                    object.update(deltaTime);
-
-                    //Add score to the player.
-                    if (object == player)
-                    {
-                        score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-                        regTime = System.currentTimeMillis()/1000;
-                    }
+                    score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
+                    regTime = System.currentTimeMillis()/1000;
                 }
+            }
 
-
+            //If the player has reached the goal, spawn a new one.
 			if (!objects.contains(goal))
 			{
-				Random r = new Random();
-                FTuple pos = new FTuple(0.0f, 0.0f);
+				FTuple pos = new FTuple(0.0f, 0.0f);
                 int radius = 15;
                 boolean inside = true;
 
@@ -212,12 +181,46 @@ public class World
 				goal = new Goal(this, radius, pos);
 			}
 
-			v.setPosition(player.position, deltaTime);
+			//Spawn enemies at appropriate time.
+			if (System.currentTimeMillis() > lastSpawn + spawnWait)
+            {
+                FTuple pos = new FTuple(0.0f, 0.0f);
+                int radius = 10;
+                boolean inside = true;
 
-			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+                //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
+                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 1);
+                unregister(playerOb);
+                LevelGenny.placedObstacles.set(0, playerOb);
 
-			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+                //Check against obstacle list to avoid spawning enemies inside obstacles.
+                while(inside)
+                {
+                    inside = false;
+                    pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
 
+                    for(Obstacle ob : LevelGenny.placedObstacles)
+                    {
+                        ObRectangle rect = (ObRectangle) ob;
+
+                        if ((pos.x + radius) > (rect.position.x - rect.getSize().x) &&
+                                (pos.x - radius) < (rect.position.x + rect.getSize().x) &&
+                                (pos.y + radius) > (rect.position.y - rect.getSize().y) &&
+                                (pos.y + radius) < (rect.position.y + rect.getSize().y))
+                        {
+                            inside = true;
+                            System.out.println("TRIED TO PLACE ENEMY INSIDE OBSTACLE.");
+                            break;
+                        }
+                    }
+                }
+
+                lastSpawn = System.currentTimeMillis() + spawnWait;
+                new Enemy(this, radius, pos);
+            }
+
+            //Set the screen position to that of the player.
+            v.setPosition(player.position, deltaTime);
 
 			break;
             case Pause:

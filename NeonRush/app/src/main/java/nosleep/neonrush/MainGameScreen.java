@@ -39,10 +39,8 @@ public class MainGameScreen extends Screen {
     private Pixmap quitButton;
     private Pixmap replayButton;
 
-    private int worldSize = 3;
-    private int spawnWait = 2000;
-    private long lastSpawn = 0;
-    private Random random;
+    private int worldSize = 2;
+    //private Random random;
     SharedPreferences settings;
 
     int milestone0 = 500; //milestones to check against for unlocking achievements
@@ -145,7 +143,6 @@ public class MainGameScreen extends Screen {
         buttons.get(3).resize(200,80);
         buttons.get(3).setPosition((g.getWidth()/2 - replayButton.getWidth()/2) ,g.getHeight()/2 - replayButton.getHeight());
 
-
         buttons.get(1).hide(true); //hiding the buttons after initialization so they don't show up immediately
         buttons.get(2).hide(true);
         buttons.get(3).hide(true);
@@ -157,12 +154,7 @@ public class MainGameScreen extends Screen {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(100);
 
-        lastSpawn = System.currentTimeMillis();
-        random = new Random();
-
         countBeforeAd = settings.getInt("adCount", 0);
-
-
     }
 
     @Override
@@ -191,36 +183,6 @@ public class MainGameScreen extends Screen {
             case Play:
 
                 world.update(deltaTime);
-
-
-
-
-                if (System.currentTimeMillis() > lastSpawn + spawnWait)
-                {
-                    int x = 0;
-                    int y = 0;
-                    switch (random.nextInt(4))
-                    {
-                        case 0:
-                            x = 0;
-                            y = random.nextInt((int)world.getHeight());
-                            break;
-                        case 1:
-                            x = (int)world.getWidth();
-                            y = random.nextInt((int)world.getHeight());
-                            break;
-                        case 2:
-                            y = 0;
-                            x = random.nextInt((int)world.getWidth());
-                            break;
-                        case 3:
-                            y = (int)world.getHeight();
-                            x = random.nextInt((int)world.getWidth());
-                            break;
-                    }
-                    lastSpawn = System.currentTimeMillis() + spawnWait;
-                    new Enemy(world, 10, new FTuple(x, y));
-                }
 
                 break;
             case Pause:

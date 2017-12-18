@@ -56,6 +56,7 @@ public class LevelGenerator
             System.out.println("Placed Obstacle Count: " + placedObstacles.size());
             FTuple pos = new FTuple(0.0f, 0.0f);
             boolean invalidPlacement = true;
+            int iterations = 0;
 
             //If the randomized placement is invalid, regenerate a new one and test again.
             while(invalidPlacement)
@@ -67,14 +68,26 @@ public class LevelGenerator
                 //Check the distance to all other obstacles that have been placed.
                 for (Obstacle ob : placedObstacles)
                 {
+                    //Increases density after enough iterations being unable to place an obstacle.
+                    if (iterations > maxIterations)
+                    {
+                        iterations = 0;
+                        density++;
+                        mindist = mindistscalar * (1.0f / (density * 0.2f));
+                        System.out.println("Density increased after " + maxIterations + " iterations without successful placement.");
+                    }
+
                     //If the random position is too close to another obstacle, break and reattempt.
                     float distTo = pos.Distance(ob.position);
                     if (distTo < mindist)
                     {
                         invalidPlacement = true;
                         System.out.println("=== INVALID PLACEMENT, DistTo: " + distTo + " ===");
+                        iterations++;
                         break;
                     }
+
+                    iterations = 0;
                 }
             }
 
