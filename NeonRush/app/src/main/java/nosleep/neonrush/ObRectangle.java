@@ -15,9 +15,9 @@ public class ObRectangle extends Obstacle
 {
     private ITuple size;
 
-    public ObRectangle(Game game, World world, FTuple pos, ITuple s)
+    public ObRectangle(Game game, World world, FTuple pos, ITuple s, int color)
     {
-        super(game, world, pos);
+        super(game, world, pos, color);
         size = s;
         FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
         //collider = new BoxCollider(size.x, size.y);
@@ -35,10 +35,11 @@ public class ObRectangle extends Obstacle
         if (img == null)
         {
             Graphics g = getGame().getGraphics();
-            g.drawRect(localCoord.x, localCoord.y, size.x, size.y, color);
+            g.drawRect((localCoord.x - size.x / 2), (localCoord.y - size.y / 2), size.x, size.y, color);
         }
         else
         {
+            // may need to adjust draw location here too, like done above.
             super.present(localCoord.x, localCoord.y, deltaTime);
         }
     }

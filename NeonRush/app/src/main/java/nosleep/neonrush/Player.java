@@ -32,7 +32,7 @@ public class Player extends Ball
         settings = w.game.getSharedPreferences();
         i = w.game.getInput();
         startingAccel = new FTuple(i.getAccelX(), i.getAccelY());
-        color = Color.WHITE;
+        this.color = Color.WHITE;
         position = new FTuple(mWorld.getWidth() / 2, mWorld.getHeight() / 2);
         tag = "Player";
         handHeldPlay = settings.getBoolean("handHeldPlay", false); //gets the value for handheld play. sets it to false if prefs doesn't exist.

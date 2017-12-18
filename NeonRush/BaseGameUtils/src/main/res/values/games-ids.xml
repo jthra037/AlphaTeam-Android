@@ -8,4 +8,6 @@
     <string name="a_score_3000">CgkI2_jax_wMEAIQBA</string>
     <string name="a_score_4000">CgkI2_jax_wMEAIQBQ</string>
     <string name="Leaderboard_top_score">CgkI2_jax_wMEAIQBg</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-4948492122982090/8040676786</string>
+    <string name="banner_ad_unit_id">ca-app-pub-4948492122982090/3491057680</string>
 </resources>

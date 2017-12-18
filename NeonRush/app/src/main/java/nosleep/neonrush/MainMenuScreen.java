@@ -78,7 +78,7 @@ public class MainMenuScreen extends Screen {
 
                 game.setScreen(new SettingsScreen(game));
                 //System.out.println("Settings have yet to be implemented. Please be patient!");
-
+                game.showBanner();
                 return null;
             }
         }
@@ -137,7 +137,8 @@ public class MainMenuScreen extends Screen {
 
         for (Button button : buttons)
         {
-            g.drawPixmap(button.getImg(),button.getX(),button.getY());
+            if (!buttons.isEmpty())
+                g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
 
 

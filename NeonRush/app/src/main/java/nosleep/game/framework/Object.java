@@ -5,6 +5,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
@@ -17,22 +18,27 @@ import nosleep.androidgames.framework.Pixmap;
 public abstract class Object
 {
     protected Collider collider;
-    protected Pixmap img;
-    private Bitmap backupImg;
+    Graphics g;
     public FTuple position;
     public float rotation;
     public int glowColor = 0;
     public String tag;
+    public float alpha = 100.0f;
     private Game game;
+    protected Pixmap img;
+    protected Pixmap backupImg;
+
 
     public Object(Game game)
     {
         this.game = game;
+        g = game.getGraphics();
+
     }
 
     public void present(float deltaTime)
     {
-        Graphics g = game.getGraphics();
+
 
         if (img != null)
         {
@@ -42,7 +48,6 @@ public abstract class Object
 
     public void present(int x, int y, float deltaTime)
     {
-        Graphics g = game.getGraphics();
 
         if (img != null)
         {
@@ -164,6 +169,33 @@ public abstract class Object
         else
         {
             return pixmap;
+        }
+
+    }
+
+    public void setAlpha(float newAlpha) //integer between 0-100
+    {
+
+
+        if (newAlpha != alpha && img != null) //to check if the current alpha value of the image is equal to your desired alpha. to avoid always halving you alpha value
+        {
+            float percent = newAlpha / 100.0f; //converting desired alpha to number between 0-255
+            float intValue = percent * 255;
+            alpha = intValue;
+
+            Bitmap newBM = Bitmap.createBitmap(backupImg.getBitmap().getWidth(), backupImg.getBitmap().getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas cc = new Canvas(newBM);
+            cc.drawARGB(0, 0, 0, 0);
+            Paint newPaint = new Paint();
+            newPaint.setAlpha((int) intValue);
+            cc.drawBitmap(backupImg.getBitmap(), 0, 0, newPaint);
+            img.setBitmap(newBM);
+        }
+        else if (newAlpha != alpha && img == null)
+        {
+            float percent = newAlpha / 100.0f; //converting desired alpha to number between 0-255
+            float intValue = percent * 255;
+            alpha = intValue;
         }
 
     }

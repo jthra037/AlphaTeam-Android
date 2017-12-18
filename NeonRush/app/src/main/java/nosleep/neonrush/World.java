@@ -29,7 +29,7 @@ public class World
     public Game game;
     public Graphics g;
     private ViewableScreen v;
-    private int worldSize;
+    public int worldSize;
     private float worldWidth;
     private float worldHeight;
     private Player player;
@@ -43,11 +43,10 @@ public class World
     private long score = 0;
     private long regTime = 0;
 
-    private ObRectangle therect;
+    private LevelGenerator LevelGenny;
 
     public World(Game gm, Graphics graphics, int ws)
     {
-
         game = gm;
         g = graphics;
         worldSize = ws;
@@ -58,10 +57,14 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
-
-        therect = new ObRectangle(game, this, new FTuple(0, 200), new ITuple(500, 500));
-
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
+
+        //Level Generation Things.
+        LevelGenny = new LevelGenerator(this, 7);
+
+        game.showBanner();//for ads
+
+        dArrow.setAlpha(49);
     }
 
     public float getWidth()
@@ -82,7 +85,6 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-			///<summary>
 			/// Handles all collision interactions.
 			///</summary>
 
@@ -123,6 +125,7 @@ public class World
                             object instanceof Ball &&
                             other instanceof Ball)
                     {
+
 
 						Ball thisBall = (Ball)object;
 
@@ -215,16 +218,42 @@ public class World
 			if (!objects.contains(goal))
 			{
 				Random r = new Random();
-				FTuple pos = new FTuple((float)r.nextInt((int)getWidth()),
-						(float)r.nextInt((int)getHeight()));
-				goal = new Goal(this, 15, pos);
+                FTuple pos = new FTuple(0.0f, 0.0f);
+                int radius = 15;
+                boolean inside = true;
+
+                //Check against obstacle list to avoid spawning goals inside obstacles.
+                while(inside)
+                {
+                    inside = false;
+                    pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+
+
+                    for(Obstacle ob : LevelGenny.placedObstacles)
+                    {
+                        ObRectangle rect = (ObRectangle) ob;
+
+                        if ((pos.x + radius) > (rect.position.x - rect.getSize().x) &&
+                            (pos.x - radius) < (rect.position.x + rect.getSize().x) &&
+                            (pos.y + radius) > (rect.position.y - rect.getSize().y) &&
+                            (pos.y + radius) < (rect.position.y + rect.getSize().y))
+                        {
+                            inside = true;
+                            System.out.println("TRIED TO PLACE GOAL INSIDE OBSTACLE.");
+                            break;
+                        }
+                    }
+                }
+
+				goal = new Goal(this, radius, pos);
 			}
 
 			v.setPosition(player.position, deltaTime);
 
-			Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
+			//Log.i("Velocity X: ","v.x: " + v.worldPosition.x);
 
-			Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+			//Log.i("Velocity Y: ","v.y: " + v.worldPosition.y);
+
 
 			break;
             case Pause:
@@ -234,6 +263,7 @@ public class World
 
                 break;
             case GameOver:
+                Integer newint = null;
 
                 break;
         }
@@ -269,6 +299,8 @@ public class World
 
                 break;
             case GameOver:
+
+
                 break;
         }
     }

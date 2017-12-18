@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.view.ViewDebug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MainGameScreen extends Screen {
     private Pixmap quitButton;
     private Pixmap replayButton;
 
-    private int worldSize = 2;
+    private int worldSize = 3;
     private int spawnWait = 2000;
     private long lastSpawn = 0;
     private Random random;
@@ -49,6 +50,8 @@ public class MainGameScreen extends Screen {
     int milestone2 = 2000;
     int milestone3 = 3000;
     int milestone4 = 4000;
+    private int adDisplayCount = 4;
+    private int countBeforeAd;
 
 
     public MainGameScreen(final Game game)
@@ -76,8 +79,6 @@ public class MainGameScreen extends Screen {
 
         screenRect = new Rect(0,0,800,400);
         screenRect.set(g.getWidth()/2- screenRect.right/2,g.getHeight()/2-screenRect.bottom/2,screenRect.right,screenRect.bottom);
-
-
 
         playButton = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(playButton,200,80);
@@ -109,8 +110,12 @@ public class MainGameScreen extends Screen {
                     game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
                 }
-                game.setScreen(new MainMenuScreen(game));
 
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("adCount", countBeforeAd+=1);
+                editor.commit();
+
+                game.setScreen(new MainMenuScreen(game));
                 return null;
             }
         }
@@ -125,6 +130,12 @@ public class MainGameScreen extends Screen {
                     game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
                 }
+
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("adCount", countBeforeAd+=1);
+                editor.commit();
+
+
 
                 game.setScreen(new MainGameScreen(game));
                 return null;
@@ -148,6 +159,10 @@ public class MainGameScreen extends Screen {
 
         lastSpawn = System.currentTimeMillis();
         random = new Random();
+
+        countBeforeAd = settings.getInt("adCount", 0);
+
+
     }
 
     @Override
@@ -214,7 +229,14 @@ public class MainGameScreen extends Screen {
 
                 break;
             case GameOver:
-
+                if (adDisplayCount <= countBeforeAd)
+                {
+                    game.showInterstitialAd();
+                    countBeforeAd = 0;
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("adCount", 0);
+                    editor.commit();
+                }
                 break;
         }
     }
@@ -294,7 +316,7 @@ public class MainGameScreen extends Screen {
     @Override
     public void focusChanged(boolean hasFocus)
     {
-        if (!hasFocus)
+        if (!hasFocus && game.getGameState() != Game.GAMESTATE.GameOver)
         {
             game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
             buttons.get(1).hide(false);
