@@ -124,6 +124,13 @@ public class Line {
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
+            float offset = 15/500;
+
+            if (!hitOccurred && 0 <= u && u <= 1)
+            {
+
+            }
+
             output = new Hit(hitOccurred, FindPointAt(u), normal, direction.Normalized(), t);
         }
         else
@@ -156,6 +163,15 @@ public class Line {
             // Assumes "direction" of each line brought it from its Start to its End
             boolean hitOccurred = 0 <= u && u <= 1.1 && // this should be 1, but works better around here
                     0 <= t && t <= 1;
+
+        float offset = 15/500f;
+
+        if (!hitOccurred &&
+                0 <= u && u <= 1.1 &&
+                0 - offset <= t && t <= 1+offset)
+        {
+            System.out.println("A corner is here");
+        }
 
             output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
         /*}

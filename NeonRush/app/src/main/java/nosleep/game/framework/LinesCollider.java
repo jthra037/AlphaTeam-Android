@@ -83,6 +83,29 @@ public class LinesCollider extends Collider {
                 output = thisHit;
         }
 
+        if (!output.isHitOccurred())
+        {
+            for (FTuple point : points)
+            {
+                // Find location of impact
+                FTuple otherVelNormal = point.Sub(other.position).Normalized();
+                FTuple loi = other.getPosition().Add(otherVelNormal.Mul(other.getRadius()));
+
+                FTuple otherVelTangent = new FTuple(otherVelNormal.y, -otherVelNormal.x);
+
+                // make the lines
+                Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f)); // need a real number here too
+                FTuple direction = otherVelTangent.Normalized().Mul(other.getRadius());
+                Line thisLine = new Line (point.Sub(direction), direction.Mul(2));
+
+
+                Hit thisHit = thisLine.FindIntersection(otherLine);
+                if (thisHit.isHitOccurred() &&
+                        thisHit.GetTStep() < output.GetTStep())
+                    output = thisHit;
+            }
+        }
+
         return output;
     }
 

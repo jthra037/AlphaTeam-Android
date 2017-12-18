@@ -204,7 +204,7 @@ public class MainGameScreen extends Screen {
                             break;
                     }
                     lastSpawn = System.currentTimeMillis() + spawnWait;
-                    new Enemy(world, 10, new FTuple(x, y));
+                    //new Enemy(world, 10, new FTuple(x, y));
                 }
 
                 break;
