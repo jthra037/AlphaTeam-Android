@@ -54,14 +54,6 @@ public class Ball extends Object{
             position = position.Add(velocity.Mul(deltaTime));
         }
 
-        /*position.x %= world.getWidth();
-        position.y %= world.getHeight();
-        if (position.x < 0) {
-            position.x = world.getWidth();
-        }
-        if (position.y < 0) {
-            position.y = world.getHeight();
-        }*/
         world.ConvertToWorldSpace(position);
         localCoord = world.toLocalCoord(position);
     }

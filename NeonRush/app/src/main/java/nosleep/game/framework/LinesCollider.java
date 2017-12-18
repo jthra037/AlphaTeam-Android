@@ -111,6 +111,7 @@ public class LinesCollider extends Collider {
                 // make the lines
                 Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // need a real number here too
                 FTuple direction = otherVelTangent.Normalized().Mul(other.getRadius());
+
                 Line thisLine = new Line (point.Sub(direction), direction.Mul(2), w);
 
 
