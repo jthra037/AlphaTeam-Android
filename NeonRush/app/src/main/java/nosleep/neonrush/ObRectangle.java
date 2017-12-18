@@ -19,6 +19,7 @@ public class ObRectangle extends Obstacle
     {
         super(game, world, pos, color);
         size = s;
+        pos = pos.Sub(size.x/2f, size.y/2f);
         FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
         //collider = new BoxCollider(size.x, size.y);
         collider = new LinesCollider(myPoints, this, w);

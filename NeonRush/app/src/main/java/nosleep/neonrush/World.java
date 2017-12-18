@@ -60,7 +60,7 @@ public class World
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
 
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 7);
+        LevelGenny = new LevelGenerator(this, 4);
 
         game.showBanner();//for ads
 
@@ -96,102 +96,53 @@ public class World
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
+                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 2722500) {
+                        if (tags.contains("Player")) {
+                            Ball thisBall;
 
-                    if (tags.contains("Player"))
-                    {
-                        Ball thisBall;
+                            if (tags.indexOf("Player") == 0) {
+                                thisBall = (Ball) object;
+                            } else {
+                                thisBall = (Ball) other;
+                            }
 
-                        if (tags.indexOf("Player") == 0)
-                        {
-                            thisBall = (Ball) object;
+                            FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(0.05f));
+
+                            if (nextPosition.x < 475 && nextPosition.x > 0 && nextPosition.y < 750 && nextPosition.y > 250) {
+                                System.out.println("This should be a collision with the box");
+                            }
                         }
-                        else
-                        {
-                            thisBall = (Ball) other;
-                        }
 
-                        FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(0.05f));
-
-                        if (nextPosition.x < 475 && nextPosition.x > 0 && nextPosition.y < 750 && nextPosition.y > 250)
-                        {
-                            System.out.println("This should be a collision with the box");
-                        }
-                    }
-
-					//Ball Combining.
-					if (!deRegistryList.contains(object) &&
-						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()) &&
-                            object instanceof Ball &&
-                            other instanceof Ball)
-                    {
+                        //Ball Combining.
+                        if (!deRegistryList.contains(object) &&
+                                !deRegistryList.contains(other) &&
+                                object.getCollider().OnOverlap(other, object.getPosition()) &&
+                                object instanceof Ball &&
+                                other instanceof Ball) {
 
 
-						Ball thisBall = (Ball)object;
+                            Ball thisBall = (Ball) object;
 
-						if (object != null && object.tag == other.tag)
-						{
-							thisBall.Combine((Ball)other);
-						}
-						else if (tags.contains("Player") && tags.contains("Goal"))
-						{
-							player.Combine(notPlayer(object, other));
-						}
-						else if (tags.contains("Player") && tags.contains("Enemy"))
-						{
-							unregister(object);
-							unregister(other);
-							game.setGameState(Game.GAMESTATE.GameOver);
-						}
-					}
-                    else if (tags.contains("Obstacle") &&
-                            tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
-                            !deRegistryList.contains(object) &&
-                            !deRegistryList.contains(other))
-                    {
-                        if (object instanceof Ball)
-                        {
-                            ((Ball) object).CollisionCheck(other);
-                        }
-                        else if (other instanceof Ball)
-                        {
-                            ((Ball) other).CollisionCheck(object);
+                            if (object != null && object.tag == other.tag) {
+                                thisBall.Combine((Ball) other);
+                            } else if (tags.contains("Player") && tags.contains("Goal")) {
+                                player.Combine(notPlayer(object, other));
+                            } else if (tags.contains("Player") && tags.contains("Enemy")) {
+                                unregister(object);
+                                unregister(other);
+                                game.setGameState(Game.GAMESTATE.GameOver);
+                            }
+                        } else if (tags.contains("Obstacle") &&
+                                tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
+                                !deRegistryList.contains(object) &&
+                                !deRegistryList.contains(other)) {
+                            if (object instanceof Ball) {
+                                ((Ball) object).CollisionCheck(other);
+                            } else if (other instanceof Ball) {
+                                ((Ball) other).CollisionCheck(object);
+                            }
                         }
                     }
-
-					/*else if (tags.contains("Obstacle") &&
-						tags.indexOf("Obstacle")  == tags.lastIndexOf("Obstacle") &&
-						!deRegistryList.contains(object) &&
-						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()))
-					{
-						ObRectangle thisRect;
-						Ball thisBall;
-						if (object.tag == "Obstacle")
-						{
-							thisBall = (Ball) other;
-							thisRect = (ObRectangle) object;
-						}
-						else
-						{
-							thisBall = (Ball) object;
-							thisRect = (ObRectangle) other;
-						}
-						FTuple direction = thisRect.position.Add((thisRect.getSize().x/2), (thisRect.getSize().y/2));
-						direction = thisBall.position.Add(direction.Mul(-1));
-						direction = direction.Normalized();
-
-						float scale = direction.Dot(thisBall.getVelocity());
-						//thisBall.AddForce(direction.Normalized().Mul(2 * scale));
-						thisBall.setVelocity(thisBall.velocity.Add(direction.Mul(4f* Math.abs(scale)))); // This is jank, and should be fixed
-
-						if (thisBall.tag == "Player")
-						{
-							Player fuckingPlayer = (Player) thisBall;
-							fuckingPlayer.setCollision();
-						}
-					}*/
-
 				}
 			}
 

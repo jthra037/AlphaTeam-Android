@@ -24,6 +24,8 @@ public class FTuple
 
     public FTuple Sub(FTuple in){return new FTuple(this.x - in.x,this.y - in.y);}
 
+    public FTuple Sub(float x, float y){return new FTuple(this.x - x,this.y - y);}
+
     public FTuple Div(float d){return new FTuple(this.x/d, this.y/d);}
 
     public FTuple Mul(float m)
