@@ -186,6 +186,8 @@ public class MainGameScreen extends Screen {
             }
         }
 
+
+
         switch(game.getGameState())
         {
             case Play:

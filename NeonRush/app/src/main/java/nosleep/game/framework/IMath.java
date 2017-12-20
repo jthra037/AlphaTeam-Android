@@ -70,5 +70,11 @@ public class IMath {
 
     }
 
+    public static int getRandomInt(double min, double max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return (int)(Math.floor(Math.random() * (max - min)) + min); //The maximum is exclusive and the minimum is inclusive
+    }
+
 
 }

@@ -51,7 +51,7 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
 
             if (lastFpsTime >= 1000000000)
             {
-                Log.i("FPS", "(FPS: " + fps + ") + (deltaTime: " + deltaTime + ")");
+                //Log.i("FPS", "(FPS: " + fps + ") + (deltaTime: " + deltaTime + ")");
                 lastFpsTime = 0;
                 fps = 0;
             }
