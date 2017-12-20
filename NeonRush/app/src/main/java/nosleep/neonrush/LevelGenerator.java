@@ -1,6 +1,7 @@
 package nosleep.neonrush;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class LevelGenerator
 
         //Add a mock obstacle at player location for the purpose of not spawning proceeding obstacles nearby.
         //Size of slightly smaller than the screen size. Immediately deregister from world.
-        placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10)), Color.WHITE));
+        placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10)), "obstacles/white.png"));
         w.unregister(placedObstacles.get(0));
 
         int minObstacleCount = w.worldSize * density * 2;
@@ -44,11 +45,12 @@ public class LevelGenerator
 
         //r.nextInt produces an int between 0 inclusive and (n) EXCLUSIVE, hence the +1 on max arguments.
         int obstacleCount = r.nextInt(rangeObstacleCount) + minObstacleCount;
-        System.out.println("Number of obstacles: " + obstacleCount);
+        Log.i("Number of obstacles", "Number of obstacles: " + obstacleCount);
 
         float mindistscalar = w.worldSize * 100;
         float mindist = mindistscalar * (1.0f / (density * 0.2f));
-        System.out.println("Minimum distance: " + mindist);
+
+        Log.i("Minimum Distance" , "Minimum distance: " + String.valueOf(mindist));
 
         //Place the determined amount of objects in the world.
         for (int i = 0; i < obstacleCount; i++)
@@ -71,8 +73,7 @@ public class LevelGenerator
                     float distTo = pos.Distance(ob.position);
                     if (distTo < mindist)
                     {
-                        invalidPlacement = true;
-                        System.out.println("=== INVALID PLACEMENT, DistTo: " + distTo + " ===");
+                        Log.e("LvlGen InvalidPlacement", "INVALID PLACEMENT, DistTo: " + distTo );
                         break;
                     }
                 }
@@ -83,8 +84,9 @@ public class LevelGenerator
 
             //Place the obstacle.
             int color = r.nextInt(w.Palette.length);
-            placedObstacles.add(new ObRectangle(w.game, w, pos, size, w.Palette[color]));
-            System.out.println("Obstacle " + (i + 1) + "- Size x: " + size.x + ", Size y: " + size.y + ", Pos x: " + pos.x + ", Pos y: " + pos.y);
+            placedObstacles.add(new ObRectangle(w.game, w, pos, size, w.obstaclePalette[color]));
+            Log.i("Obstacle Placement", "Obstacle " + (i + 1) + "- Size x: " + size.x +
+                    ", Size y: " + size.y + ", Pos x: " + pos.x + ", Pos y: " + pos.y + ", Color: " + w.obstaclePalette[color]);
         }
     }
 }

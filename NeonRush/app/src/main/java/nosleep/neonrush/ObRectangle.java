@@ -1,5 +1,7 @@
 package nosleep.neonrush;
 
+import android.util.Log;
+
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.BoxCollider;
@@ -19,6 +21,16 @@ public class ObRectangle extends Obstacle
         super(game, world, pos, color);
         size = s;
         collider = new BoxCollider(size.x, size.y);
+        game.getGraphics().resizePixmap(img,size.x,size.y);
+    }
+
+    public ObRectangle(Game game, World world, FTuple pos, ITuple s, String color)
+    {
+        super(game, world, pos, color);
+        size = s;
+        collider = new BoxCollider(size.x, size.y);
+        img = game.getGraphics().newPixmap(obColor, Graphics.PixmapFormat.ARGB8888);
+        game.getGraphics().resizePixmap(img,size.x,size.y);
     }
 
     /*@Override
@@ -33,11 +45,12 @@ public class ObRectangle extends Obstacle
         {
             Graphics g = getGame().getGraphics();
             g.drawRect((localCoord.x - size.x / 2), (localCoord.y - size.y / 2), size.x, size.y, color);
+
         }
         else
         {
             // may need to adjust draw location here too, like done above.
-            super.present(localCoord.x, localCoord.y, deltaTime);
+            super.present((localCoord.x - size.x / 2), (localCoord.y - size.y / 2), deltaTime);
         }
     }
 

@@ -22,6 +22,7 @@ public class Ball extends Object{
     private int radius = 500;
     private float mass = 1;
     protected int color = Color.BLACK;
+    protected String enemyColor = "enemies/white.png";
     private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
 
@@ -31,6 +32,17 @@ public class Ball extends Object{
         this.radius = radius;
         this.world = world;
 
+        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
+        collider = new CircleCollider(radius, this);
+        world.register(this);
+    }
+
+    public Ball(World world, int radius, String sColor)
+    {
+        super(world.game);
+        this.radius = radius;
+        this.world = world;
+        this.enemyColor = sColor;
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius, this);
         world.register(this);

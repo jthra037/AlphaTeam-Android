@@ -3,6 +3,7 @@ package nosleep.androidgames.framework.impl;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -50,7 +51,7 @@ public class AndroidFastRenderView extends SurfaceView implements Runnable {
 
             if (lastFpsTime >= 1000000000)
             {
-                System.out.println("(FPS: " + fps + ") + (deltaTime: " + deltaTime + ")");
+                Log.i("FPS", "(FPS: " + fps + ") + (deltaTime: " + deltaTime + ")");
                 lastFpsTime = 0;
                 fps = 0;
             }

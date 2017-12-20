@@ -26,6 +26,13 @@ public class World
         Color.BLUE, Color.YELLOW,
         Color.GRAY
     };
+
+    public String[] obstaclePalette = {"obstacles/cyan.png","obstacles/green.png","obstacles/magenta.png",
+        "obstacles/red.png","obstacles/blue.png","obstacles/yellow.png","obstacles/grey.png"};
+
+    public String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
+            "enemies/red.png","enemies/blue.png","enemies/yellow.png","enemies/grey.png"};
+
     public Game game;
     public Graphics g;
     private ViewableScreen v;
@@ -57,12 +64,13 @@ public class World
         player = new Player(this);
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
+        //Level Generation Things.
+        LevelGenny = new LevelGenerator(this, 7);
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
 
 
 
-        //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 7);
+
 
         game.showBanner();//for ads
 
@@ -203,7 +211,7 @@ public class World
                             (pos.y + radius) < (rect.position.y + rect.getSize().y))
                         {
                             inside = true;
-                            System.out.println("TRIED TO PLACE GOAL INSIDE OBSTACLE.");
+                            Log.e("LvlGen Placement error","TRIED TO PLACE GOAL INSIDE OBSTACLE." );
                             break;
                         }
                     }
@@ -227,7 +235,6 @@ public class World
 
                 break;
             case GameOver:
-                Integer newint = null;
 
                 break;
         }

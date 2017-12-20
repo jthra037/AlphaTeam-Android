@@ -16,6 +16,7 @@ public interface Graphics
     }
 
     public Pixmap newPixmap(String fileName, PixmapFormat format);
+
     public Pixmap newPixmap(Bitmap bitmap, PixmapFormat format);
     public Pixmap resizePixmap(Pixmap pixmap, int width, int height);
     public Pixmap rotatePixmap(Pixmap pixmap, float angle);
@@ -33,6 +34,8 @@ public interface Graphics
     public void drawPixmap(Pixmap pixmap, int x, int y);
     public void drawPixmap(Pixmap pixmap, Matrix matrix);
     public void drawPixmap(Pixmap pixmap);
+    public void drawPixmap(Pixmap pixmap, int color);
+    public Pixmap setPixmapColor(Pixmap pixmap, int color);
     public int getWidth();
     public int getHeight();
     public void drawText(String text, int x, int y, Paint color);
