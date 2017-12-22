@@ -18,7 +18,7 @@ import nosleep.androidgames.framework.Pixmap;
 public abstract class Object
 {
     protected Collider collider;
-    Graphics g;
+    protected Graphics g;
     public FTuple position;
     public float rotation;
     public int glowColor = 0;
@@ -33,13 +33,10 @@ public abstract class Object
     {
         this.game = game;
         g = game.getGraphics();
-
     }
 
     public void present(float deltaTime)
     {
-
-
         if (img != null)
         {
             g.drawPixmap(img);
@@ -48,7 +45,6 @@ public abstract class Object
 
     public void present(int x, int y, float deltaTime)
     {
-
         if (img != null)
         {
             g.drawPixmap(img, x, y);

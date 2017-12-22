@@ -243,6 +243,7 @@ public class World
         {
             case Play:
 
+                //Render the background.
                 for (int i = 0; i < worldSize; i++)
                 {
                     for (int j = 0; j < worldSize; j++)
@@ -254,6 +255,7 @@ public class World
                     }
                 }
 
+                //Render all the objects.
                 for (Object object : objects)
                 {
                     object.present(deltaTime);

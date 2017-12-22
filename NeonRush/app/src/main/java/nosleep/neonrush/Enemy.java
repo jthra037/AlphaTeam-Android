@@ -26,7 +26,6 @@ public class Enemy extends Ball {
         super(world, radius);
         Random r = new Random();
         this.color = world.Palette[r.nextInt(world.Palette.length)];
-        //this.color = Color.GRAY;
         this.position = new FTuple(0, 0);
         this.player = world.getPlayer();
         tag = "Enemy";

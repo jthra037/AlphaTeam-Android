@@ -57,9 +57,7 @@ public class Ball extends Object{
     {
         if (img == null)
         {
-            Graphics g = getGame().getGraphics();
             g.drawCircle(localCoord.x, localCoord.y, radius, color);
-
         }
         else
         {
