@@ -42,13 +42,15 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
-
                 game.setScreen(new MainGameScreen(game));
-
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(0).resize(340,100);
         buttons.get(0).setPosition(100,200);
 
@@ -57,16 +59,17 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,achievementsButton, new Callable<Void>(){
             public Void call() {
-
-                //game.setScreen(new AchievementsScreen(game));
-                //System.out.println("Achievements have yet to be implemented. Please be patient!");
                 if (game.isSignedIn())
                     game.showAchievements();
 
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(1).resize(340,100);
         buttons.get(1).setPosition(100,330);
 
@@ -75,14 +78,16 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
-
                 game.setScreen(new SettingsScreen(game));
-                //System.out.println("Settings have yet to be implemented. Please be patient!");
                 game.showBanner();
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(2).resize(340,100);
         buttons.get(2).setPosition(100,460);
 
@@ -91,21 +96,19 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,leaderboardsButton, new Callable<Void>(){
             public Void call() {
-
-                //game.setScreen(new LeaderboardsScreen(game));
-                //System.out.println("Leaderboards have yet to be implemented. Please be patient!");
                 if (game.isSignedIn())
                     game.showLeaderboard();
 
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(3).resize(340,100);
         buttons.get(3).setPosition(100,590);
-
-
-
     }
 
     @Override

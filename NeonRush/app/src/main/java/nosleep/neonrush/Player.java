@@ -27,6 +27,7 @@ public class Player extends Ball
     private World mWorld;
     private float damp = 2;
     public Vector<Powerup> powerups;
+    public boolean PUTriggerActive = false;
 
     public Player(World w)
     {

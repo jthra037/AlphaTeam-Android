@@ -64,14 +64,17 @@ public class MainGameScreen extends Screen {
 
         buttons.add(new Button(game,pauseButton, new Callable<Void>(){
             public Void call() {
-
                 game.setGameState(Game.GAMESTATE.Pause);
                 buttons.get(1).hide(false);
                 buttons.get(2).hide(false);
+                buttons.get(4).hide(true);
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call() {
+                return null;
+            }
+        } ));
         buttons.get(0).resize(48,68);
         buttons.get(0).setPosition((g.getWidth() - pauseButton.getWidth()) - 40,20);
 
@@ -91,13 +94,16 @@ public class MainGameScreen extends Screen {
             public Void call() {
                 buttons.get(1).hide(true);
                 buttons.get(2).hide(true);
+                buttons.get(4).hide(false);
                 game.setGameState(Game.GAMESTATE.Play);
-
-
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(1).resize(200,80);
         buttons.get(1).setPosition((g.getWidth()/2 - playButton.getWidth()/2) ,g.getHeight()/2 - playButton.getHeight());
 
@@ -116,8 +122,12 @@ public class MainGameScreen extends Screen {
                 game.setScreen(new MainMenuScreen(game));
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(2).resize(200,80);
         buttons.get(2).setPosition((g.getWidth()/2 - quitButton.getWidth()/2) ,g.getHeight()/2 + quitButton.getHeight());
 
@@ -133,15 +143,35 @@ public class MainGameScreen extends Screen {
                 editor.putInt("adCount", countBeforeAd+=1);
                 editor.commit();
 
-
-
                 game.setScreen(new MainGameScreen(game));
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
+
         buttons.get(3).resize(200,80);
         buttons.get(3).setPosition((g.getWidth()/2 - replayButton.getWidth()/2) ,g.getHeight()/2 - replayButton.getHeight());
+
+        //Powerup Trigger. buttons.get(4)
+        buttons.add(new Button(game, 0, 88, g.getWidth(), g.getHeight() - 88, new Callable<Void>() {
+            public Void call()
+            {
+                System.out.println("Powerup Trigger Activated.");
+                world.getPlayer().PUTriggerActive = true;
+                return null;
+            }
+        }, new Callable<Void>() {
+            public Void call()
+            {
+                System.out.println("Powerup Trigger Deactivated.");
+                world.getPlayer().PUTriggerActive = false;
+                return null;
+            }
+        } ));
 
         buttons.get(1).hide(true); //hiding the buttons after initialization so they don't show up immediately
         buttons.get(2).hide(true);
@@ -173,6 +203,17 @@ public class MainGameScreen extends Screen {
                             button.getWidth(), button.getHeight()))
                     {
                         button.onClick();
+                    }
+                }
+            }
+            else if (event.type == Input.TouchEvent.TOUCH_UP)
+            {
+                for (Button button : buttons)
+                {
+                    if(inBounds(event, button.getX(), button.getY(),
+                            button.getWidth(), button.getHeight()))
+                    {
+                        button.onRelease();
                     }
                 }
             }
@@ -249,7 +290,7 @@ public class MainGameScreen extends Screen {
 
         for (Button button : buttons)
         {
-            if(button.isHidden() == false)
+            if(button.isHidden() == false && button.getImg() != null)
                 g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
 
