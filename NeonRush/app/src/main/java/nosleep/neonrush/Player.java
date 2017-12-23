@@ -3,6 +3,8 @@ package nosleep.neonrush;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import java.util.Vector;
+
 import nosleep.androidgames.framework.Input;
 import nosleep.game.framework.FTuple;
 
@@ -24,6 +26,7 @@ public class Player extends Ball
     SharedPreferences settings;
     private World mWorld;
     private float damp = 2;
+    public Vector<Powerup> powerups;
 
     public Player(World w)
     {
@@ -36,6 +39,7 @@ public class Player extends Ball
         position = new FTuple(mWorld.getWidth() / 2, mWorld.getHeight() / 2);
         tag = "Player";
         handHeldPlay = settings.getBoolean("handHeldPlay", false); //gets the value for handheld play. sets it to false if prefs doesn't exist.
+        powerups = new Vector(10, 3);
         //img = mWorld.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //mWorld.g.resizePixmap(playerImg, xValue, yValue);
     }

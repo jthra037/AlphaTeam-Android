@@ -43,8 +43,11 @@ public class World
     private long score = 0;
     private long regTime = 0;
     private Random r;
-    private int spawnWait = 2000;
-    private long lastSpawn = 0;
+    private int enemySpawnWait = 2000;  //2 seconds.
+    private int puSpawnWait = 20000;    //20 seconds.
+    private long lastEnemySpawn = 0;
+    private long lastPuSpawn = 0;
+    private int puTypeNum = 1;  //Number of different powerup types.
 
     private LevelGenerator LevelGenny;
 
@@ -62,14 +65,14 @@ public class World
         regTime = System.currentTimeMillis()/1000;
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
         r = new Random();
-        lastSpawn = System.currentTimeMillis();
+        lastEnemySpawn = System.currentTimeMillis();
+        lastPuSpawn = System.currentTimeMillis() - 20000;
 
-        //Level Generation Things.
         LevelGenny = new LevelGenerator(this, 5);
 
         game.showBanner();//for ads
 
-        dArrow.setAlpha(49);
+        dArrow.setAlpha(25);
     }
 
     public float getWidth()
@@ -100,29 +103,54 @@ public class World
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
-					//Ball Combining.
 					if (!deRegistryList.contains(object) &&
 						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()) &&
-                            object instanceof Ball &&
-                            other instanceof Ball)
+						object.getCollider().OnOverlap(other, object.getPosition()))
                     {
-						Ball thisBall = (Ball)object;
+                        //Ball Combining.
+						if (object instanceof Ball && other instanceof Ball)
+                        {
+                            Ball thisBall = (Ball)object;
 
-						if (object != null && object.tag == other.tag)
-						{
-							thisBall.Combine((Ball)other);
-						}
-						else if (tags.contains("Player") && tags.contains("Goal"))
-						{
-							player.Combine(notPlayer(object, other));
-						}
-						else if (tags.contains("Player") && tags.contains("Enemy"))
-						{
-							unregister(object);
-							unregister(other);
-							game.setGameState(Game.GAMESTATE.GameOver);
-						}
+                            if (object != null && object.tag == other.tag)
+                            {
+                                thisBall.Combine((Ball)other);
+                            }
+                            else if (tags.contains("Player") && tags.contains("Goal"))
+                            {
+                                player.Combine(notPlayer(object, other));
+                            }
+                            else if (tags.contains("Player") && tags.contains("Enemy"))
+                            {
+                                unregister(object);
+                                unregister(other);
+                                game.setGameState(Game.GAMESTATE.GameOver);
+                            }
+                        }
+
+                        //Powerup acquisition. Player should always be ahead of all powerups in object list.
+                        else if (object instanceof Player && other instanceof Powerup)
+                        {
+                            Powerup p = (Powerup) other;
+
+                            System.out.println("Before add: " + player.powerups);
+
+                            //Cast the appropriate powerup. If we have more than one we can increment different UI here.
+                            //For now only one type, further cases can be added as we go.
+                            switch(p.type)
+                            {
+                                case Colorphase:
+                                    PUColorphase pu = (PUColorphase) p;
+                                    player.powerups.add(pu);
+                                    //increment powerup UI.
+                                    break;
+                            }
+
+                            System.out.println("After add: " + player.powerups);
+                            unregister(other);
+                        }
+
+
 					}
 				}
 			}
@@ -182,7 +210,8 @@ public class World
 			}
 
 			//Spawn enemies at appropriate time.
-			if (System.currentTimeMillis() > lastSpawn + spawnWait)
+                /*
+			if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
             {
                 FTuple pos = new FTuple(0.0f, 0.0f);
                 int radius = 10;
@@ -215,8 +244,56 @@ public class World
                     }
                 }
 
-                lastSpawn = System.currentTimeMillis() + spawnWait;
+                lastEnemySpawn = System.currentTimeMillis();
                 new Enemy(this, radius, pos);
+            }
+            */
+
+            //Spawn powerups at the appropriate time.
+            if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)
+            {
+                FTuple pos = new FTuple(0.0f, 0.0f);
+                int radius = 10;
+                boolean inside = true;
+
+                //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
+                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 1);
+                unregister(playerOb);
+                LevelGenny.placedObstacles.set(0, playerOb);
+
+                //Check against obstacle list to avoid spawning enemies inside obstacles.
+                while(inside)
+                {
+                    inside = false;
+                    pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+
+                    for(Obstacle ob : LevelGenny.placedObstacles)
+                    {
+                        ObRectangle rect = (ObRectangle) ob;
+
+                        if ((pos.x + radius) > (rect.position.x - rect.getSize().x) &&
+                                (pos.x - radius) < (rect.position.x + rect.getSize().x) &&
+                                (pos.y + radius) > (rect.position.y - rect.getSize().y) &&
+                                (pos.y + radius) < (rect.position.y + rect.getSize().y))
+                        {
+                            inside = true;
+                            System.out.println("TRIED TO PLACE POWERUP INSIDE OBSTACLE.");
+                            break;
+                        }
+                    }
+                }
+
+                lastPuSpawn = System.currentTimeMillis();
+
+                //Selects a random powerup type to spawn.
+                //Value between 0 and number of different powerup types.
+                int whichPU = r.nextInt(puTypeNum);
+                switch(whichPU)
+                {
+                    case 0:
+                        new PUColorphase(this, pos);
+                        break;
+                }
             }
 
             //Set the screen position to that of the player.

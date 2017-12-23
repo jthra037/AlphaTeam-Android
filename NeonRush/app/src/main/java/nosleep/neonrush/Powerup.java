@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import nosleep.androidgames.framework.Graphics;
+import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
@@ -12,29 +13,30 @@ import nosleep.game.framework.Object;
  * Created by Mark- on 22-Dec-17.
  */
 
-public class Powerup extends Object
+public abstract class Powerup extends Object
 {
     public enum PUTYPE {Colorphase};
     public PUTYPE type;
 
-    private World world;
-    private ITuple localCoord;
-    private int radius = 10;
+    protected World world;
+    protected ITuple localCoord;
+    protected int radius = 10;
     protected int color = Color.GREEN;
 
-    private float timespawned;
-    private float lifetime;
-    private float timeout = 20000.0f;
+    protected long timespawned;
+    protected long lifetime;
+    protected int timeout = 20000;
 
-    Powerup(World w, PUTYPE t)
+    Powerup(World w, FTuple pos)
     {
         super(w.game);
         world = w;
-        position = new FTuple(0.0f, 0.0f);
+        position = pos;
         timespawned = System.currentTimeMillis();
-
+        collider = new CircleCollider(radius, this);
         tag = "powerup";
-        type = t;
+
+        world.register(this);
     }
 
     @Override
@@ -63,4 +65,11 @@ public class Powerup extends Object
             super.present(localCoord.x, localCoord.y, deltaTime);
         }
     }
+
+    public void acquire()
+    {
+        world.getPlayer().powerups.add(this);
+    }
+
+    public abstract void activate();
 }
