@@ -104,7 +104,6 @@ public abstract class Object
 
             // the glow color
 
-
             // extract the alpha from the source image
             Bitmap alpha = pixmap.getBitmap().extractAlpha();
 
@@ -129,10 +128,6 @@ public abstract class Object
         {
             return pixmap;
         }
-
-
-
-
     }
 
     public Pixmap setBackgroundGlow(Pixmap pixmap,int color)
@@ -174,7 +169,6 @@ public abstract class Object
 
     }
 
-
     public void setAlpha(float newAlpha) //integer between 0-100
     {
 
@@ -201,7 +195,4 @@ public abstract class Object
         }
 
     }
-
-
-
 }

@@ -1,7 +1,6 @@
 package nosleep.game.framework;
 
 import nosleep.neonrush.Ball;
-import static nosleep.game.framework.Collider.ColliderFormat.circle;
 
 /**
  * Created by John on 2017-10-12.
@@ -17,7 +16,7 @@ public class CircleCollider extends Collider {
     public CircleCollider(int radius, Object object)
     {
         this.radius = radius;
-        format = circle;
+        format = ColliderFormat.circle;
         this.object = object;
     }
 
@@ -25,7 +24,7 @@ public class CircleCollider extends Collider {
     {
         this.radius = radius;
         this.offset = offset;
-        format = circle;
+        format = ColliderFormat.circle;
     }
 
     @Override
@@ -51,12 +50,10 @@ public class CircleCollider extends Collider {
                 return rectCircleCollision(other, (BoxCollider) otherCollider, pos.ToITuple()); // hard cast fuckit
         }
 
-        try{
-            CircleCollider otherCircle = (CircleCollider)otherCollider;
-            return circleCircleCollision(other, otherCircle, pos);
-        }catch (Exception e)
+        if (otherCollider instanceof CircleCollider)
         {
-            System.out.println(e);
+            CircleCollider otherCircle = (CircleCollider) otherCollider;
+            return circleCircleCollision(other, otherCircle, pos);
         }
 
         return false;

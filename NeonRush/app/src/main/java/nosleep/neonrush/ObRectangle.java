@@ -5,6 +5,7 @@ import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.BoxCollider;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.LinesCollider;
 
 /**
  * Created by Mark- on 08-Nov-17.
@@ -18,7 +19,10 @@ public class ObRectangle extends Obstacle
     {
         super(game, world, pos, color);
         size = s;
-        collider = new BoxCollider(size.x, size.y);
+        pos = pos.Sub(size.x/2f, size.y/2f);
+        FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
+        //collider = new BoxCollider(size.x, size.y);
+        collider = new LinesCollider(myPoints, this, w);
     }
 
     /*@Override
@@ -45,6 +49,4 @@ public class ObRectangle extends Obstacle
     {
         return size;
     }
-
-
 }

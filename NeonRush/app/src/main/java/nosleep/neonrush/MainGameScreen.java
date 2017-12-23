@@ -242,8 +242,6 @@ public class MainGameScreen extends Screen {
                 }
                 break;
         }
-
-
     }
 
     @Override

@@ -1,10 +1,13 @@
 package nosleep.game.framework;
 
+import nosleep.neonrush.World;
+
 /**
  * Created by John on 12/7/2017.
  */
 
 public class Line {
+    private World world;
     private FTuple point;
     private FTuple endpoint;
     private FTuple direction;
@@ -26,6 +29,15 @@ public class Line {
         CalcNormal();
     }
 
+    public Line(FTuple point, FTuple direction, World world)
+    {
+        this.point = point;
+        this.direction = direction;
+        endpoint = point.Add(direction);
+        CalcNormal();
+        this.world = world;
+    }
+
     public Line(FTuple first, FTuple second, boolean flag)
     {
         if (flag) {
@@ -43,21 +55,44 @@ public class Line {
         }
     }
 
-    private void CalcNormal()
+    public Line(FTuple first, FTuple second, boolean flag, World world)
     {
-        normal = new FTuple(direction.y, -direction.x);
+        this.world = world;
+
+        if (flag) {
+            point = first;
+            direction = second;
+            endpoint = first.Add(second);
+            CalcNormal();
+        }
+        else
+        {
+            point = first;
+            direction = second.Sub(first);
+            endpoint = second;
+            CalcNormal();
+        }
     }
 
-    private FTuple getPoint(){return point; }
-    private void setPoint(FTuple point){this.point = point; }
+    private void CalcNormal()
+    {
+        normal = new FTuple(direction.y, -direction.x).Normalized();
+    }
 
-    private FTuple getEndpoint(){return endpoint; }
-    private void setEndpoint(FTuple endpoint){this.endpoint = endpoint; }
+    public FTuple getPoint(){return point; }
+    public void setPoint(FTuple point)
+    {
+        this.point = point;
+        endpoint = point.Add(direction);
+    }
 
-    private FTuple getDirection(){return direction; }
-    private void setDirection(FTuple direction){this.direction = direction; }
+    public FTuple getEndpoint(){return endpoint; }
+    public void setEndpoint(FTuple endpoint){this.endpoint = endpoint; }
 
-    private void MakeByPoints(FTuple head, FTuple tail)
+    public FTuple getDirection(){return direction; }
+    public void setDirection(FTuple direction){this.direction = direction; }
+
+    public void MakeByPoints(FTuple head, FTuple tail)
     {
         point = head;
         direction = tail.Sub(head);
@@ -65,19 +100,19 @@ public class Line {
         CalcNormal();
     }
 
-    private float FindYAt(float x)
+    public float FindYAt(float x)
     {
         float t = (x - point.x)/ direction.x;
         return point.y + (t * direction.y);
     }
 
-    private float FindXAt(float y)
+    public float FindXAt(float y)
     {
         float t = (y - point.y)/ direction.y;
         return point.x + (t * direction.x);
     }
 
-    private FTuple FindPointAt(float t)
+    public FTuple FindPointAt(float t)
     {
         float x = point.x + (t * direction.x);
         float y = point.y + (t * direction.y);
@@ -87,14 +122,22 @@ public class Line {
 
 
     // Checks if the slopes of each line are the same
-    private boolean IntersectsWith(Line other)
+    public boolean IntersectsWith(Line other)
     {
-        return Math.abs((direction.y/direction.x) - (other.direction.y/other.direction.x)) < 0.00001f; // Should replace with a real/better epsilon
+        if (direction.x == 0 ||
+            other.direction.x == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return Math.abs((direction.y / direction.x) - (other.direction.y / other.direction.x)) > 0.00001f; // Should replace with a real/better epsilon
+        }
     }
 
 
     // Find the intersection of some other line and this line
-    private Hit FindIntersection(Line other, FTuple segmentEnd)
+    /*public Hit FindIntersection(Line other, FTuple segmentEnd)
     {
         Hit output;
 
@@ -116,7 +159,14 @@ public class Line {
             boolean hitOccurred = 0 <= u && u <= 1 &&
                     0 <= t && t <= 1;
 
-            output = new Hit(hitOccurred, FindPointAt(u), normal, direction, t);
+            float offset = 15/500;
+
+            if (!hitOccurred && 0 <= u && u <= 1)
+            {
+
+            }
+
+            output = new Hit(hitOccurred, FindPointAt(u), normal, direction.Normalized(), t);
         }
         else
         {
@@ -124,6 +174,48 @@ public class Line {
         }
 
         return output;
+    }*/
+
+    // Find the intersection of some other line and this line
+    public Hit FindIntersection(Line other)
+    {
+        Hit output;
+
+        if (!world.IsValidPosition(other.getEndpoint()))
+        {
+            world.ConvertToWorldSpace(other.endpoint);
+            other.setPoint(other.getEndpoint().Sub(other.getDirection()));
+        }
+
+        //if (IntersectsWith(other))
+        //{
+            float ax = point.x;
+            float ay = point.y;
+            float bx = direction.x;
+            float by = direction.y;
+            float cx = other.point.x;
+            float cy = other.point.y;
+            float dx = other.direction.x;
+            float dy = other.direction.y;
+
+            float u = (bx * (cy - ay) + by * (ax - cx)) / (dx * by - dy * bx); // Parameter for other line
+            float t = (dx * (ay - cy) + dy * (cx - ax)) / (bx * dy - by * dx); // Parameter for this(?) line
+
+            // Assumes "direction" of each line brought it from its Start to its End
+            boolean hitOccurred = 0 <= u && u <= 1.1 && // this should be 1, but works better around here
+                    0 <= t && t <= 1;
+
+            output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
+        /*}
+        else
+        {
+            output = new Hit();
+        }*/
+
+        return output;
     }
+
+    public FTuple getNormal()
+    {return normal;}
 
 }
