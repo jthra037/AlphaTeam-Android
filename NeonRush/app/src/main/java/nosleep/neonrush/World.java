@@ -81,20 +81,18 @@ public class World
 
     public void update(float deltaTime)
     {
-        long timerStart = 0;
+        //long timerStart = 0;
+        //timerStart = System.currentTimeMillis();
 
         switch(game.getGameState())
         {
             case Play:
 			/// Handles all collision interactions.
 			///</summary>
-
-
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
 				for(int j = i + 1; j < objects.size(); j++)
 				{
-                    timerStart = System.currentTimeMillis();
 					Object object = objects.get(i);
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
@@ -134,12 +132,10 @@ public class World
                                 ((Ball) other).CollisionCheck(object);
                             }
                         }
-
-                        System.out.println(object.tag + " and  " + other.tag +
-                                ": " + (System.currentTimeMillis() - timerStart));
                     }
 				}
 			}
+
                 objects.addAll(registryList);
                 registryList.removeAll(registryList);
 
@@ -212,6 +208,7 @@ public class World
 
                 break;
         }
+        //System.out.println("World update duration: " + (System.currentTimeMillis() - timerStart));
     }
 
     public void present(float deltaTime)
