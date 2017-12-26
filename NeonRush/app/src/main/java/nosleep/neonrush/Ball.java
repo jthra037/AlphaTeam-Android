@@ -3,12 +3,15 @@ package nosleep.neonrush;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.widget.Switch;
 import android.graphics.Paint;
 import android.util.Log;
 
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
+import nosleep.game.framework.Collider;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.Hit;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
@@ -22,6 +25,7 @@ public class Ball extends Object{
     private int radius = 500;
     private float mass = 1;
     protected int color = Color.BLACK;
+    protected Hit collision;
     private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
 
@@ -30,6 +34,7 @@ public class Ball extends Object{
         super(world.game);
         this.radius = radius;
         this.world = world;
+        this.collision = new Hit();
 
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius, this);
@@ -38,17 +43,23 @@ public class Ball extends Object{
 
     @Override
     public void update(float deltaTime) {
-        position = position.Add(velocity.Mul(deltaTime));
-        position.x %= world.getWidth();
-        position.y %= world.getHeight();
-        if(position.x < 0)
+        if (collision.isHitOccurred())
         {
-            position.x = world.getWidth();
+            //Move forward until collision time
+            //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+            FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+            position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+
+            // Hit resolved; clear the hit
+            collision = new Hit();
         }
-        if (position.y < 0)
+        else
         {
-            position.y = world.getHeight();
+            position = position.Add(velocity.Mul(deltaTime));
         }
+
+        world.ConvertToWorldSpace(position);
         localCoord = world.toLocalCoord(position);
     }
 
@@ -107,5 +118,33 @@ public class Ball extends Object{
         thisCollider.setRadius(radius);
 
         world.unregister(other);
+    }
+
+    public void CollisionCheck(Object other)
+    {
+        Collider otherCollider = other.getCollider();
+
+        switch (otherCollider.format)
+        {
+            case lines:
+                SetCollision(otherCollider.OnCollision(this, localCoord));
+                break;
+        }
+    }
+
+
+    public void SetCollision(Hit collision)
+    {
+        if (collision.isHitOccurred() &&
+                collision.GetTStep() >= 0 &&
+                collision.GetTStep() < this.collision.GetTStep())
+        {
+            this.collision = collision;
+        }
+    }
+
+    public Hit GetCollision()
+    {
+        return collision;
     }
 }

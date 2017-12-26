@@ -86,6 +86,8 @@ public class World
 
     public void update(float deltaTime)
     {
+        //long timerStart = 0;
+        //timerStart = System.currentTimeMillis();
 
         switch(game.getGameState())
         {
@@ -100,30 +102,41 @@ public class World
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
-					//Ball Combining.
-					if (!deRegistryList.contains(object) &&
-						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()) &&
-                            object instanceof Ball &&
-                            other instanceof Ball)
+                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000 &&
+                            !tags.contains("dArrow") &&
+                            !(object.tag == "Obstacle" && other.tag == "Obstacle"))
                     {
-						Ball thisBall = (Ball)object;
+                        //Ball Combining.
+                        if (!deRegistryList.contains(object) &&
+                                !deRegistryList.contains(other) &&
+                                object.getCollider().OnOverlap(other, object.getPosition()) &&
+                                object instanceof Ball &&
+                                other instanceof Ball)
+                        {
+                            Ball thisBall = (Ball) object;
 
-						if (object != null && object.tag == other.tag)
-						{
-							thisBall.Combine((Ball)other);
-						}
-						else if (tags.contains("Player") && tags.contains("Goal"))
-						{
-							player.Combine(notPlayer(object, other));
-						}
-						else if (tags.contains("Player") && tags.contains("Enemy"))
-						{
-							unregister(object);
-							unregister(other);
-							game.setGameState(Game.GAMESTATE.GameOver);
-						}
-					}
+                            if (object != null && object.tag == other.tag) {
+                                thisBall.Combine((Ball) other);
+                            } else if (tags.contains("Player") && tags.contains("Goal")) {
+                                player.Combine(notPlayer(object, other));
+                            } else if (tags.contains("Player") && tags.contains("Enemy")) {
+                                unregister(object);
+                                unregister(other);
+                                game.setGameState(Game.GAMESTATE.GameOver);
+                            }
+                        }
+                        else if (tags.contains("Obstacle") &&
+                                tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
+                                !deRegistryList.contains(object) &&
+                                !deRegistryList.contains(other) &&
+                                !tags.contains("Goal")) {
+                            if (object instanceof Ball) {
+                                ((Ball) object).CollisionCheck(other);
+                            } else if (other instanceof Ball) {
+                                ((Ball) other).CollisionCheck(object);
+                            }
+                        }
+                    }
 				}
 			}
 
@@ -234,6 +247,7 @@ public class World
 
                 break;
         }
+        //System.out.println("World update duration: " + (System.currentTimeMillis() - timerStart));
     }
 
     public void present(float deltaTime)
@@ -326,6 +340,40 @@ public class World
     }
 
     public long getLScore() {return score;}
+
+    public boolean IsValidPosition(FTuple point)
+    {
+        return point.x >= 0 && point.x <= worldWidth &&
+                point.y >= 0 && point.y <= worldHeight;
+    }
+
+    public void ConvertToWorldSpace(FTuple point)
+    {
+        if (IsValidPosition(point))
+        {
+            return;
+        }
+
+        if (point.x < 0)
+        {
+            point.x = worldWidth + point.x;
+            ConvertToWorldSpace(point);
+        }
+        if (point.x > worldWidth)
+        {
+            point.x %= worldWidth;
+        }
+        if (point.y < 0)
+        {
+            point.y = worldHeight + point.y;
+            ConvertToWorldSpace(point);
+        }
+        if (point.y > worldHeight)
+        {
+            point.y %= worldHeight;
+        }
+    }
+
 
     //This represents the viewport into the world that is visible on screen to the player.
     public class ViewableScreen
