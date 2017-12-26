@@ -81,7 +81,7 @@ public class World
 
     public void update(float deltaTime)
     {
-
+        long timeStartOfWorldUpdate = System.currentTimeMillis();
         switch(game.getGameState())
         {
             case Play:
@@ -96,23 +96,8 @@ public class World
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
-                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 2722500) {
-                        if (tags.contains("Player")) {
-                            Ball thisBall;
-
-                            if (tags.indexOf("Player") == 0) {
-                                thisBall = (Ball) object;
-                            } else {
-                                thisBall = (Ball) other;
-                            }
-
-                            FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(0.05f));
-
-                            if (nextPosition.x < 475 && nextPosition.x > 0 && nextPosition.y < 750 && nextPosition.y > 250) {
-                                System.out.println("This should be a collision with the box");
-                            }
-                        }
-
+                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000)
+                    {
                         //Ball Combining.
                         if (!deRegistryList.contains(object) &&
                                 !deRegistryList.contains(other) &&
@@ -132,7 +117,8 @@ public class World
                                 unregister(other);
                                 game.setGameState(Game.GAMESTATE.GameOver);
                             }
-                        } else if (tags.contains("Obstacle") &&
+                        }
+                        else if (tags.contains("Obstacle") &&
                                 tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
                                 !deRegistryList.contains(object) &&
                                 !deRegistryList.contains(other)) {
@@ -218,6 +204,8 @@ public class World
 
                 break;
         }
+
+        System.out.println("Update length in millis: " + (System.currentTimeMillis() - timeStartOfWorldUpdate));
     }
 
     public void present(float deltaTime)
