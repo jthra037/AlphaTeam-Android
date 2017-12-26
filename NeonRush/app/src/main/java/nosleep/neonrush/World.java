@@ -81,22 +81,27 @@ public class World
 
     public void update(float deltaTime)
     {
-        long timeStartOfWorldUpdate = System.currentTimeMillis();
+        long timerStart = 0;
+
         switch(game.getGameState())
         {
             case Play:
 			/// Handles all collision interactions.
 			///</summary>
 
+
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
 				for(int j = i + 1; j < objects.size(); j++)
 				{
+                    timerStart = System.currentTimeMillis();
 					Object object = objects.get(i);
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
-                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000)
+                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000 &&
+                            !tags.contains("dArrow") &&
+                            !(object.tag == "Obstacle" && other.tag == "Obstacle"))
                     {
                         //Ball Combining.
                         if (!deRegistryList.contains(object) &&
@@ -121,17 +126,20 @@ public class World
                         else if (tags.contains("Obstacle") &&
                                 tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
                                 !deRegistryList.contains(object) &&
-                                !deRegistryList.contains(other)) {
+                                !deRegistryList.contains(other) &&
+                                !tags.contains("Goal")) {
                             if (object instanceof Ball) {
                                 ((Ball) object).CollisionCheck(other);
                             } else if (other instanceof Ball) {
                                 ((Ball) other).CollisionCheck(object);
                             }
                         }
+
+                        System.out.println(object.tag + " and  " + other.tag +
+                                ": " + (System.currentTimeMillis() - timerStart));
                     }
 				}
 			}
-
                 objects.addAll(registryList);
                 registryList.removeAll(registryList);
 
@@ -204,8 +212,6 @@ public class World
 
                 break;
         }
-
-        System.out.println("Update length in millis: " + (System.currentTimeMillis() - timeStartOfWorldUpdate));
     }
 
     public void present(float deltaTime)
