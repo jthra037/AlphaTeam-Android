@@ -89,6 +89,8 @@ public class World
 
     public void update(float deltaTime)
     {
+        //long timerStart = 0;
+        //timerStart = System.currentTimeMillis();
 
         switch(game.getGameState())
         {
@@ -102,9 +104,11 @@ public class World
 					Object object = objects.get(i);
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
-
+					
 					//Only check collision on objects in proximity to eachother.
-					if (object.getPosition().Sub(other.getPosition()).LengthS() < 2722500)
+					if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000 &&
+                            !tags.contains("dArrow") &&
+                            !(object.tag == "Obstacle" && other.tag == "Obstacle"))
 					{
 						if (!deRegistryList.contains(object) &&
 							!deRegistryList.contains(other))
@@ -156,7 +160,8 @@ public class World
 						
 							//Obstacle Collision.
 							else if (tags.contains("Obstacle") &&
-									tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle")) {
+									tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
+									!tags.contains("Goal")) {
 								if (object instanceof Ball) {
 									((Ball) object).CollisionCheck(other);
 								} else if (other instanceof Ball) {
@@ -324,6 +329,7 @@ public class World
 
                 break;
         }
+        //System.out.println("World update duration: " + (System.currentTimeMillis() - timerStart));
     }
 
     public void present(float deltaTime)
