@@ -43,7 +43,7 @@ public class World
     private long score = 0;
     private long regTime = 0;
     private Random r;
-    private int enemySpawnWait = 2000;  //2 seconds.
+    private int enemySpawnWait = 30000;  //30 seconds.
     private int puSpawnWait = 20000;    //20 seconds.
     private long lastEnemySpawn = 0;
     private long lastPuSpawn = 0;
@@ -106,6 +106,7 @@ public class World
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 					
 					//Only check collision on objects in proximity to eachother.
+                    //Don't check against the arrow UI, or if both objects are obstacles.
 					if (object.getPosition().Sub(other.getPosition()).LengthS() < 640000 &&
                             !tags.contains("dArrow") &&
                             !(object.tag == "Obstacle" && other.tag == "Obstacle"))
@@ -159,9 +160,13 @@ public class World
 							}
 						
 							//Obstacle Collision.
+                            //Make sure one tag is an obstacle, but not both.
+                            //Make sure one of the objects isn't the goal.
+                            //Make sure the color isn't the same for both objects (color phasing).
 							else if (tags.contains("Obstacle") &&
 									tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
-									!tags.contains("Goal")) {
+									!tags.contains("Goal") &&
+                                    object.color != other.color) {
 								if (object instanceof Ball) {
 									((Ball) object).CollisionCheck(other);
 								} else if (other instanceof Ball) {
@@ -228,7 +233,7 @@ public class World
 			}
 
 			//Spawn enemies at appropriate time.
-                /*
+
 			if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
             {
                 FTuple pos = new FTuple(0.0f, 0.0f);
@@ -265,7 +270,7 @@ public class World
                 lastEnemySpawn = System.currentTimeMillis();
                 new Enemy(this, radius, pos);
             }
-            */
+
 
             //Spawn powerups at the appropriate time.
             if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)

@@ -18,7 +18,6 @@ public class Obstacle extends Object
     protected World w;
     protected boolean isDynamic = false;
     protected ITuple localCoord;
-    protected int color = Color.WHITE;
     protected int maxSpeed = 0;
     protected Callable<Void> action;
 

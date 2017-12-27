@@ -27,6 +27,7 @@ public abstract class Object
     private Game game;
     protected Pixmap img;
     protected Pixmap backupImg;
+    public int color = Color.BLACK;
 
 
     public Object(Game game)

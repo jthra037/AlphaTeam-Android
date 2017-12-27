@@ -24,7 +24,6 @@ public class Ball extends Object{
     private ITuple localCoord;
     private int radius = 500;
     private float mass = 1;
-    protected int color = Color.BLACK;
     protected Hit collision;
     private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
