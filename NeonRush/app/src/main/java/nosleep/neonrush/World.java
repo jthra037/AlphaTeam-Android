@@ -68,12 +68,7 @@ public class World
         lastEnemySpawn = System.currentTimeMillis();
         lastPuSpawn = System.currentTimeMillis() - 20000;
 
-<<<<<<< HEAD
         LevelGenny = new LevelGenerator(this, 5);
-=======
-        //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 4);
->>>>>>> origin/feature/LineColliderCollisions
 
         game.showBanner();//for ads
 
@@ -98,14 +93,8 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-<<<<<<< HEAD
 
 			// Handles all collision interactions.
-=======
-			/// Handles all collision interactions.
-			///</summary>
-
->>>>>>> origin/feature/LineColliderCollisions
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
 				for(int j = i + 1; j < objects.size(); j++)
@@ -114,105 +103,68 @@ public class World
 					Object other = objects.get(j);
 					List<String> tags = Arrays.asList(object.tag, other.tag);
 
-<<<<<<< HEAD
-					if (!deRegistryList.contains(object) &&
-						!deRegistryList.contains(other) &&
-						object.getCollider().OnOverlap(other, object.getPosition()))
-                    {
-                        //Ball Combining.
-						if (object instanceof Ball && other instanceof Ball)
-                        {
-                            Ball thisBall = (Ball)object;
+					//Only check collision on objects in proximity to eachother.
+					if (object.getPosition().Sub(other.getPosition()).LengthS() < 2722500)
+					{
+						if (!deRegistryList.contains(object) &&
+							!deRegistryList.contains(other))
+						{
+							//Ball Combining.
+							if (object instanceof Ball && other instanceof Ball &&
+								object.getCollider().OnOverlap(other, object.getPosition()))
+							{
+								Ball thisBall = (Ball)object;
 
-                            if (object != null && object.tag == other.tag)
-                            {
-                                thisBall.Combine((Ball)other);
-                            }
-                            else if (tags.contains("Player") && tags.contains("Goal"))
-                            {
-                                player.Combine(notPlayer(object, other));
-                            }
-                            else if (tags.contains("Player") && tags.contains("Enemy"))
-                            {
-                                unregister(object);
-                                unregister(other);
-                                game.setGameState(Game.GAMESTATE.GameOver);
-                            }
-                        }
+								if (object != null && object.tag == other.tag)
+								{
+									thisBall.Combine((Ball)other);
+								}
+								else if (tags.contains("Player") && tags.contains("Goal"))
+								{
+									player.Combine(notPlayer(object, other));
+								}
+								else if (tags.contains("Player") && tags.contains("Enemy"))
+								{
+									unregister(object);
+									unregister(other);
+									game.setGameState(Game.GAMESTATE.GameOver);
+								}
+							}
 
-                        //Powerup acquisition. Player should always be ahead of all powerups in object list.
-                        else if (object instanceof Player && other instanceof Powerup)
-                        {
-                            Powerup p = (Powerup) other;
+							//Powerup acquisition. Player should always be ahead of all powerups in object list.
+							else if (object instanceof Player && other instanceof Powerup &&
+									object.getCollider().OnOverlap(other, object.getPosition()))
+							{
+								Powerup p = (Powerup) other;
 
-                            System.out.println("Before add: " + player.powerups);
+								System.out.println("Before add: " + player.powerups);
 
-                            //Cast the appropriate powerup. If we have more than one we can increment different UI here.
-                            //For now only one type, further cases can be added as we go.
-                            switch(p.type)
-                            {
-                                case Colorphase:
-                                    PUColorphase pu = (PUColorphase) p;
-                                    player.powerups.add(pu);
-                                    //increment powerup UI.
-                                    break;
-                            }
+								//Cast the appropriate powerup. If we have more than one we can increment different UI here.
+								//For now only one type, further cases can be added as we go.
+								switch(p.type)
+								{
+									case Colorphase:
+										PUColorphase pu = (PUColorphase) p;
+										player.powerups.add(pu);
+										//increment powerup UI.
+										break;
+								}
 
-                            System.out.println("After add: " + player.powerups);
-                            unregister(other);
-                        }
-
-
+								System.out.println("After add: " + player.powerups);
+								unregister(other);
+							}
+						
+							//Obstacle Collision.
+							else if (tags.contains("Obstacle") &&
+									tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle")) {
+								if (object instanceof Ball) {
+									((Ball) object).CollisionCheck(other);
+								} else if (other instanceof Ball) {
+									((Ball) other).CollisionCheck(object);
+								}
+							}
+						}
 					}
-=======
-                    if (object.getPosition().Sub(other.getPosition()).LengthS() < 2722500) {
-                        if (tags.contains("Player")) {
-                            Ball thisBall;
-
-                            if (tags.indexOf("Player") == 0) {
-                                thisBall = (Ball) object;
-                            } else {
-                                thisBall = (Ball) other;
-                            }
-
-                            FTuple nextPosition = thisBall.getPosition().Add(thisBall.getVelocity().Mul(0.05f));
-
-                            if (nextPosition.x < 475 && nextPosition.x > 0 && nextPosition.y < 750 && nextPosition.y > 250) {
-                                System.out.println("This should be a collision with the box");
-                            }
-                        }
-
-                        //Ball Combining.
-                        if (!deRegistryList.contains(object) &&
-                                !deRegistryList.contains(other) &&
-                                object.getCollider().OnOverlap(other, object.getPosition()) &&
-                                object instanceof Ball &&
-                                other instanceof Ball) {
-
-
-                            Ball thisBall = (Ball) object;
-
-                            if (object != null && object.tag == other.tag) {
-                                thisBall.Combine((Ball) other);
-                            } else if (tags.contains("Player") && tags.contains("Goal")) {
-                                player.Combine(notPlayer(object, other));
-                            } else if (tags.contains("Player") && tags.contains("Enemy")) {
-                                unregister(object);
-                                unregister(other);
-                                game.setGameState(Game.GAMESTATE.GameOver);
-                            }
-                        } else if (tags.contains("Obstacle") &&
-                                tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
-                                !deRegistryList.contains(object) &&
-                                !deRegistryList.contains(other)) {
-                            if (object instanceof Ball) {
-                                ((Ball) object).CollisionCheck(other);
-                            } else if (other instanceof Ball) {
-                                ((Ball) other).CollisionCheck(object);
-                            }
-                        }
-                    }
->>>>>>> origin/feature/LineColliderCollisions
 				}
 			}
 
