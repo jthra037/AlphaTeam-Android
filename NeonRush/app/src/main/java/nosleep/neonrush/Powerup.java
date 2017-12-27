@@ -19,6 +19,7 @@ public abstract class Powerup extends Object
     public PUTYPE type;
 
     protected World world;
+    protected Player player;
     protected ITuple localCoord;
     protected int radius = 10;
     protected int color = Color.GREEN;
@@ -31,6 +32,7 @@ public abstract class Powerup extends Object
     {
         super(w.game);
         world = w;
+        player = w.getPlayer();
         position = pos;
         timespawned = System.currentTimeMillis();
         collider = new CircleCollider(radius, this);

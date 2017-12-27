@@ -19,11 +19,12 @@ import nosleep.game.framework.Object;
  * Created by John on 2017-10-17.
  */
 
-public class Ball extends Object{
+public class Ball extends Object
+{
     private World world;
-    private ITuple localCoord;
-    private int radius = 500;
-    private float mass = 1;
+    protected ITuple localCoord;
+    protected int radius = 500;
+    protected float mass = 1;
     protected Hit collision;
     private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
@@ -41,7 +42,8 @@ public class Ball extends Object{
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void update(float deltaTime)
+    {
         if (collision.isHitOccurred())
         {
             //Move forward until collision time
@@ -49,6 +51,16 @@ public class Ball extends Object{
             position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
             FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
             position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+
+            //Check if ball is player, and if player is trying to use a powerup.
+            if(this.tag == "Player")
+            {
+                Player p = (Player) this;
+                if(p.PUTriggerActive)
+                {
+
+                }
+            }
 
             // Hit resolved; clear the hit
             collision = new Hit();
@@ -124,19 +136,20 @@ public class Ball extends Object{
         switch (otherCollider.format)
         {
             case lines:
-                SetCollision(otherCollider.OnCollision(this, localCoord));
+                SetCollision(otherCollider.OnCollision(this, localCoord), other.color);
                 break;
         }
     }
 
 
-    public void SetCollision(Hit collision)
+    public void SetCollision(Hit collision, int otherColor)
     {
         if (collision.isHitOccurred() &&
                 collision.GetTStep() >= 0 &&
                 collision.GetTStep() < this.collision.GetTStep())
         {
             this.collision = collision;
+            this.collision.otherColor = otherColor;
         }
     }
 

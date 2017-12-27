@@ -141,21 +141,19 @@ public class World
 									object.getCollider().OnOverlap(other, object.getPosition()))
 							{
 								Powerup p = (Powerup) other;
-
-								System.out.println("Before add: " + player.powerups);
+								System.out.println("Before PU add: " + player.powerups);
 
 								//Cast the appropriate powerup. If we have more than one we can increment different UI here.
 								//For now only one type, further cases can be added as we go.
 								switch(p.type)
 								{
 									case Colorphase:
-										PUColorphase pu = (PUColorphase) p;
-										player.powerups.add(pu);
 										//increment powerup UI.
 										break;
 								}
 
-								System.out.println("After add: " + player.powerups);
+								p.acquire();
+								System.out.println("After PU add: " + player.powerups);
 								unregister(other);
 							}
 						
@@ -166,10 +164,14 @@ public class World
 							else if (tags.contains("Obstacle") &&
 									tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
 									!tags.contains("Goal") &&
-                                    object.color != other.color) {
-								if (object instanceof Ball) {
+                                    object.color != other.color)
+							{
+								if (object instanceof Ball)
+								{
 									((Ball) object).CollisionCheck(other);
-								} else if (other instanceof Ball) {
+								}
+								else if (other instanceof Ball)
+								{
 									((Ball) other).CollisionCheck(object);
 								}
 							}
@@ -233,7 +235,7 @@ public class World
 			}
 
 			//Spawn enemies at appropriate time.
-
+/*
 			if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
             {
                 FTuple pos = new FTuple(0.0f, 0.0f);
@@ -270,7 +272,7 @@ public class World
                 lastEnemySpawn = System.currentTimeMillis();
                 new Enemy(this, radius, pos);
             }
-
+*/
 
             //Spawn powerups at the appropriate time.
             if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)

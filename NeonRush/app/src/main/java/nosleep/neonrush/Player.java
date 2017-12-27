@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import nosleep.androidgames.framework.Input;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.Hit;
 
 /**
  * Created by Mark- on 17-Oct-17.
@@ -48,7 +49,53 @@ public class Player extends Ball
     @Override
     public void update(float deltaTime)
     {
-        super.update(deltaTime);
+        if (collision.isHitOccurred())
+        {
+            //If the player is trying to activate a powerup, check to see what powerups the player has.
+            //If they have a colorphase, activate it and allow the player to pass through.
+            boolean colorphasing = false;
+            if (PUTriggerActive)
+            {
+                for(Powerup pow : powerups)
+                {
+                    if(pow.type == Powerup.PUTYPE.Colorphase)
+                    {
+                        System.out.println("Powerups Before phase: " + powerups);
+                        pow.activate();
+                        powerups.remove(pow);
+                        PUTriggerActive = false;
+                        colorphasing = true;
+                        System.out.println("Powerups After phase: " + powerups);
+                        System.out.println("Other color: " + collision.otherColor);
+                        System.out.println("Player color: " + color);
+                        break;
+                    }
+                }
+            }
+
+            if (!colorphasing)
+            {
+                //Move forward until collision time
+                //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+                position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+                FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+                position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+
+                // Hit resolved; clear the hit
+                collision = new Hit();
+            }
+            else
+            {
+                position = position.Add(velocity.Mul(deltaTime));
+            }
+        }
+        else
+        {
+            position = position.Add(velocity.Mul(deltaTime));
+        }
+
+        mWorld.ConvertToWorldSpace(position);
+        localCoord = mWorld.toLocalCoord(position);
         move(deltaTime);
     }
 

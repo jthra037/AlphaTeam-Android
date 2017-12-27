@@ -16,6 +16,6 @@ public class PUColorphase extends Powerup
 
     public void activate()
     {
-
+        player.color = player.collision.otherColor;
     }
 }
