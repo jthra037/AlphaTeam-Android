@@ -51,7 +51,7 @@ public abstract class Object
 
         if (img != null)
         {
-            g.drawPixmap(img, x, y);
+            g.drawPixmap(img, x - img.getWidth()/2, y - img.getHeight()/2);
         }
     }
 

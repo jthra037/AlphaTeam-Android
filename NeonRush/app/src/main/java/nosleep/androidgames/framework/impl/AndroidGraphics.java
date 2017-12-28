@@ -211,9 +211,25 @@ public class AndroidGraphics implements Graphics {
     }
 
     @Override
+    public void drawPixmap(Pixmap pixmap, int color)
+    {
+        paint.setColor(color);
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,(pixmap).getX() , (pixmap).getY(), paint);
+    }
+
+    @Override
     public void drawPixmap(Pixmap pixmap, Matrix matrix)
     {
         canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,matrix,null);
+    }
+
+    @Override
+    public Pixmap setPixmapColor(Pixmap pixmap, int color)
+    {
+        paint.setColor(color);
+        canvas.drawBitmap(((AndroidPixmap)pixmap).bitmap,(pixmap).getX() , (pixmap).getY(), paint);
+        return pixmap;
+
     }
 
     public int getWidth() {

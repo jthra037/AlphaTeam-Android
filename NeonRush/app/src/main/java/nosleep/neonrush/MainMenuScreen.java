@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import nosleep.androidgames.framework.Game;
@@ -16,6 +17,9 @@ import nosleep.androidgames.framework.Input;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Screen;
 import nosleep.game.framework.Button;
+import nosleep.game.framework.FTuple;
+import nosleep.game.framework.IMath;
+import nosleep.game.framework.ITuple;
 
 /**
  * Created by John on 2017-10-10.
@@ -24,17 +28,29 @@ import nosleep.game.framework.Button;
 public class MainMenuScreen extends Screen {
     private Pixmap gameTitle;
     Graphics g;
-    Rect backGround;
+    Pixmap backGround;
+    Rect inBetween;
+    private Random random;
+    int mainButtonY = 155;
+    int ballSpeed = 10;
+    int count = 0;
+
+    public String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
+            "enemies/red.png","enemies/blue.png","enemies/yellow.png","enemies/grey.png"};
+
     private List<Button> buttons = new ArrayList<Button>();
+    private List<Ball> balls = new ArrayList<Ball>();
 
     public MainMenuScreen(final Game game)
     {
         super(game);
         g = game.getGraphics();
-        backGround = new Rect(0,0,g.getWidth()+1,g.getHeight());
-        gameTitle = g.newPixmap("title.png", Graphics.PixmapFormat.RGB565);
-        gameTitle.setPosition(500,(g.getHeight()/2) - gameTitle.getHeight()/4);
+        backGround = g.newPixmap("mainscreen1.png", Graphics.PixmapFormat.ARGB4444);
+        inBetween = new Rect(0,0,g.getWidth()+1,g.getHeight());
+        gameTitle = g.newPixmap("title1.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(gameTitle,700,500);
+        gameTitle.setPosition(500,((g.getHeight()/2) - (gameTitle.getHeight()/2)));
+
 
 
         Pixmap playButton = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
@@ -50,7 +66,7 @@ public class MainMenuScreen extends Screen {
         }
         ));
         buttons.get(0).resize(340,100);
-        buttons.get(0).setPosition(100,200);
+        buttons.get(0).setPosition(100,mainButtonY);
 
         Pixmap achievementsButton = g.newPixmap("buttons/achievementsbutton.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(achievementsButton, 100, 50);
@@ -68,7 +84,7 @@ public class MainMenuScreen extends Screen {
         }
         ));
         buttons.get(1).resize(340,100);
-        buttons.get(1).setPosition(100,330);
+        buttons.get(1).setPosition(100,mainButtonY + 130);
 
         Pixmap settingsButton = g.newPixmap("buttons/settingsbutton.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(settingsButton, 100, 50);
@@ -84,7 +100,7 @@ public class MainMenuScreen extends Screen {
         }
         ));
         buttons.get(2).resize(340,100);
-        buttons.get(2).setPosition(100,460);
+        buttons.get(2).setPosition(100,mainButtonY + 260);
 
         Pixmap leaderboardsButton = g.newPixmap("buttons/leaderboardsbutton.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(leaderboardsButton, 100, 50);
@@ -102,7 +118,9 @@ public class MainMenuScreen extends Screen {
         }
         ));
         buttons.get(3).resize(340,100);
-        buttons.get(3).setPosition(100,590);
+        buttons.get(3).setPosition(100,mainButtonY + 390);
+
+        random = new Random();
 
 
 
@@ -128,11 +146,61 @@ public class MainMenuScreen extends Screen {
                 }
             }
 
+            if ( count < 1)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    int x = 0;
+                    int y = 0;
+                    switch (random.nextInt(4))
+                    {
+                        case 0:
+                            x = 0;
+                            y = random.nextInt(g.getHeight() - 50);
+                            break;
+                        case 1:
+                            x = (int)g.getWidth();
+                            y = random.nextInt(g.getHeight() - 50);
+                            break;
+                        case 2:
+                            y = 0;
+                            x = random.nextInt(g.getWidth() - 50);
+                            break;
+                        case 3:
+                            y = g.getHeight();
+                            x = random.nextInt(g.getWidth() - 50);
+                            break;
+                    }
+                    Random r = new Random();
+                    balls.add(new Ball(game,50, new FTuple(IMath.getRandomInt(-ballSpeed,ballSpeed),IMath.getRandomInt(-ballSpeed,ballSpeed)), enemyPalette[r.nextInt(enemyPalette.length)]));
+                    balls.get(j).setVelocity(new FTuple(x,y));
+                    Log.i("Positions", "X: " + x + ", Y: " + y);
+
+                }
+                count++;
+            }
+
+        for (Ball ball : balls)
+        {
+            if (!balls.isEmpty())
+            {
+                ball.update(deltaTime);
+            }
+        }
+
     }
 
     @Override
     public void present(float deltaTime) {
-        g.drawRect(backGround, Color.BLACK );
+        //g.drawRect(inBetween,Color.GRAY);
+        for (Ball ball : balls)
+        {
+            if (!balls.isEmpty())
+            {
+                ball.present(deltaTime);
+            }
+        }
+        g.drawPixmap(backGround,-1,0);
         g.drawPixmap(gameTitle);
 
         for (Button button : buttons)
@@ -140,6 +208,8 @@ public class MainMenuScreen extends Screen {
             if (!buttons.isEmpty())
                 g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
+
+
 
 
     }

@@ -2,6 +2,7 @@ package nosleep.neonrush;
 
 import java.util.Random;
 
+import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.FTuple;
 
 /**
@@ -17,6 +18,15 @@ public class Enemy extends Ball {
         super(world, radius);
         Random r = new Random();
         this.color = world.Palette[r.nextInt(world.Palette.length)];
+        this.position = position;
+        this.player = world.getPlayer();
+        tag = "Enemy";
+    }
+
+    public Enemy(World world, int radius, FTuple position, String sColor) {
+        super(world, radius, sColor);
+        this.img = getGame().getGraphics().newPixmap(this.enemyColor, Graphics.PixmapFormat.ARGB8888);
+        getGame().getGraphics().resizePixmap(this.img, radius*2,radius*2);
         this.position = position;
         this.player = world.getPlayer();
         tag = "Enemy";

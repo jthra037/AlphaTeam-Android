@@ -7,11 +7,13 @@ import android.widget.Switch;
 import android.graphics.Paint;
 import android.util.Log;
 
+import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.Collider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.Hit;
+import nosleep.game.framework.IMath;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
@@ -26,6 +28,7 @@ public class Ball extends Object{
     private float mass = 1;
     protected int color = Color.BLACK;
     protected Hit collision;
+    protected String enemyColor = "enemies/white.png";
     private Paint newPaint = new Paint();
     protected FTuple velocity = new FTuple(0, 0);
 
@@ -36,6 +39,39 @@ public class Ball extends Object{
         this.world = world;
         this.collision = new Hit();
 
+        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
+        collider = new CircleCollider(radius, this);
+        world.register(this);
+    }
+
+    public Ball(Game game, int radius, FTuple pos, int color)
+    {
+        super(game);
+        this.radius = radius;
+        this.position = pos;
+        this.color = color;
+        collider = new CircleCollider(radius, this);
+        //world.register(this);
+    }
+
+    public Ball(Game game, int radius, FTuple pos, String sColor)
+    {
+        super(game);
+        this.radius = radius;
+        this.position = pos;
+        this.enemyColor = sColor;
+        this.img = game.getGraphics().newPixmap(this.enemyColor, Graphics.PixmapFormat.ARGB8888);
+        game.getGraphics().resizePixmap(img, radius*2,radius*2);
+        collider = new CircleCollider(radius, this);
+        //world.register(this);
+    }
+
+    public Ball(World world, int radius, String sColor)
+    {
+        super(world.game);
+        this.radius = radius;
+        this.world = world;
+        this.enemyColor = sColor;
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius, this);
         world.register(this);
@@ -53,6 +89,20 @@ public class Ball extends Object{
 
             // Hit resolved; clear the hit
             collision = new Hit();
+        if (world != null)
+        {
+            position = position.Add(velocity.Mul(deltaTime));
+            position.x %= world.getWidth();
+            position.y %= world.getHeight();
+            if(position.x < 0)
+            {
+                position.x = world.getWidth();
+            }
+            if (position.y < 0)
+            {
+                position.y = world.getHeight();
+            }
+            localCoord = world.toLocalCoord(position);
         }
         else
         {
@@ -61,16 +111,39 @@ public class Ball extends Object{
 
         world.ConvertToWorldSpace(position);
         localCoord = world.toLocalCoord(position);
+            position.x %= getGame().getGraphics().getWidth();
+            position.y %= getGame().getGraphics().getHeight();
+            if(position.x < 0)
+            {
+                position.x = getGame().getGraphics().getWidth();
+                velocity.x = IMath.getRandomInt(-10,10);
+            }
+            if (position.y < 0)
+            {
+                position.y = getGame().getGraphics().getHeight();
+                velocity.y = IMath.getRandomInt(-10,10);
+            }
+        }
+
     }
 
     @Override
     public void present(float deltaTime)
     {
-        if (img == null)
+        if (img == null && world == null)
+        {
+            Graphics g = getGame().getGraphics();
+            g.drawCircle((int)position.x, (int)position.y, radius, color);
+
+        }
+        else if (img == null && world != null)
         {
             Graphics g = getGame().getGraphics();
             g.drawCircle(localCoord.x, localCoord.y, radius, color);
-
+        }
+        else if (img != null && world == null)
+        {
+            super.present((int)position.x,(int)position.y,deltaTime);
         }
         else
         {
@@ -110,14 +183,30 @@ public class Ball extends Object{
         velocity = velocity.Add(force.Mul(1/mass));
     }
 
+    public ITuple getLocalCoord(){return localCoord;}
+
     public void Combine(Ball other)
     {
-        radius += other.getRadius()/2;
-        mass += other.getMass();
-        CircleCollider thisCollider = (CircleCollider)collider;
-        thisCollider.setRadius(radius);
+        if (img == null)
+        {
+            radius += other.getRadius()/2;
+            mass += other.getMass();
+            CircleCollider thisCollider = (CircleCollider)collider;
+            thisCollider.setRadius(radius);
 
-        world.unregister(other);
+            world.unregister(other);
+        }
+        else
+        {
+            radius += other.getRadius()/2;
+            mass += other.getMass();
+            CircleCollider thisCollider = (CircleCollider)collider;
+            getGame().getGraphics().resizePixmap(img, radius*2,radius*2);
+            thisCollider.setRadius(radius);
+
+            world.unregister(other);
+        }
+
     }
 
     public void CollisionCheck(Object other)
