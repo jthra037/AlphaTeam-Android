@@ -23,9 +23,7 @@ public class ObRectangle extends Obstacle
         size = s;
         pos = pos.Sub(size.x/2f, size.y/2f);
         FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
-        //collider = new BoxCollider(size.x, size.y);
         collider = new LinesCollider(myPoints, this, w);
-        collider = new BoxCollider(size.x, size.y);
         game.getGraphics().resizePixmap(img,size.x,size.y);
     }
 
@@ -33,7 +31,9 @@ public class ObRectangle extends Obstacle
     {
         super(game, world, pos, color);
         size = s;
-        collider = new BoxCollider(size.x, size.y);
+        //collider = new BoxCollider(size.x, size.y);
+        FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
+        collider = new LinesCollider(myPoints, this, w);
         img = game.getGraphics().newPixmap(obColor, Graphics.PixmapFormat.ARGB8888);
         game.getGraphics().resizePixmap(img,size.x,size.y);
     }

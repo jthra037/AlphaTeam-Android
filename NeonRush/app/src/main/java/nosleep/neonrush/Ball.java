@@ -48,6 +48,7 @@ public class Ball extends Object{
     {
         super(game);
         this.radius = radius;
+        this.collision = new Hit();
         this.position = pos;
         this.color = color;
         collider = new CircleCollider(radius, this);
@@ -59,6 +60,7 @@ public class Ball extends Object{
         super(game);
         this.radius = radius;
         this.position = pos;
+        this.collision = new Hit();
         this.enemyColor = sColor;
         this.img = game.getGraphics().newPixmap(this.enemyColor, Graphics.PixmapFormat.ARGB8888);
         game.getGraphics().resizePixmap(img, radius*2,radius*2);
@@ -71,6 +73,7 @@ public class Ball extends Object{
         super(world.game);
         this.radius = radius;
         this.world = world;
+        this.collision = new Hit();
         this.enemyColor = sColor;
         localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
         collider = new CircleCollider(radius, this);
@@ -79,38 +82,37 @@ public class Ball extends Object{
 
     @Override
     public void update(float deltaTime) {
-        if (collision.isHitOccurred())
-        {
-            //Move forward until collision time
-            //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
-            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
-            FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
-            position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
-
-            // Hit resolved; clear the hit
-            collision = new Hit();
         if (world != null)
         {
-            position = position.Add(velocity.Mul(deltaTime));
-            position.x %= world.getWidth();
-            position.y %= world.getHeight();
-            if(position.x < 0)
-            {
-                position.x = world.getWidth();
+            if (collision.isHitOccurred()) {
+                //Move forward until collision time
+                //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+                position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+                FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+                position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+
+                // Hit resolved; clear the hit
+                collision = new Hit();
             }
-            if (position.y < 0)
+            else
             {
-                position.y = world.getHeight();
+                position = position.Add(velocity.Mul(deltaTime));
+                position.x %= world.getWidth();
+                position.y %= world.getHeight();
+                if(position.x < 0)
+                {
+                    position.x = world.getWidth();
+                }
+                if (position.y < 0)
+                {
+                    position.y = world.getHeight();
+                }
+                localCoord = world.toLocalCoord(position);
             }
-            localCoord = world.toLocalCoord(position);
         }
-        else
+        else //for the main menu screen
         {
             position = position.Add(velocity.Mul(deltaTime));
-        }
-
-        world.ConvertToWorldSpace(position);
-        localCoord = world.toLocalCoord(position);
             position.x %= getGame().getGraphics().getWidth();
             position.y %= getGame().getGraphics().getHeight();
             if(position.x < 0)
@@ -125,7 +127,10 @@ public class Ball extends Object{
             }
         }
 
-    }
+
+        }
+
+
 
     @Override
     public void present(float deltaTime)

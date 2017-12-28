@@ -39,6 +39,10 @@ public class MainGameScreen extends Screen {
     private Pixmap quitButton;
     private Pixmap replayButton;
 
+    private int spawnWait = 2000;
+    private long lastSpawn = 0;
+    private Random random;
+
     private int worldSize = 2;
     //private Random random;
     SharedPreferences settings;
@@ -153,6 +157,8 @@ public class MainGameScreen extends Screen {
         textPaint.setTypeface(tf);
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(100);
+
+        random = new Random();
 
         countBeforeAd = settings.getInt("adCount", 0);
     }

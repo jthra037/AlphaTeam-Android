@@ -74,7 +74,7 @@ public class World
         lastSpawn = System.currentTimeMillis();
 
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 5);
+        LevelGenny = new LevelGenerator(this, 4);
 
 
         game.showBanner();//for ads
@@ -212,7 +212,7 @@ public class World
                 boolean inside = true;
 
                 //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 1);
+                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png");
                 unregister(playerOb);
                 LevelGenny.placedObstacles.set(0, playerOb);
 
@@ -232,7 +232,7 @@ public class World
                                 (pos.y + radius) < (rect.position.y + rect.getSize().y))
                         {
                             inside = true;
-                            System.out.println("TRIED TO PLACE ENEMY INSIDE OBSTACLE.");
+                            Log.e("LvlGen Placement error","TRIED TO PLACE GOAL INSIDE OBSTACLE." );
                             break;
                         }
                     }
