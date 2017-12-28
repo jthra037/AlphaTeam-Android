@@ -3,8 +3,11 @@ package nosleep.neonrush;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
+import java.util.Vector;
+
 import nosleep.androidgames.framework.Input;
 import nosleep.game.framework.FTuple;
+import nosleep.game.framework.Hit;
 
 /**
  * Created by Mark- on 17-Oct-17.
@@ -25,6 +28,16 @@ public class Player extends Ball
     private World mWorld;
     private float damp = 2;
 
+    //Powerups
+    public Vector<Powerup> powerups;
+    public boolean PUTriggerActive = false;         //Player is pressing on screen.
+    private long PUTimeActivated;                   //Time powerup is triggered by player.
+    private long PUTimeEnd;                         //Time powerup is scheduled to end.
+
+    private boolean PUColorphaseIsActive = false;   //Colorphase specifically is active.
+    public int PUColorphaseCount = 0;
+    private double PUColorphaseRatio;                //For phase back to white effect.
+
     public Player(World w)
     {
         super(w, 15);
@@ -36,6 +49,7 @@ public class Player extends Ball
         position = new FTuple(mWorld.getWidth() / 2, mWorld.getHeight() / 2);
         tag = "Player";
         handHeldPlay = settings.getBoolean("handHeldPlay", false); //gets the value for handheld play. sets it to false if prefs doesn't exist.
+        powerups = new Vector(10, 3);
         //img = mWorld.g.newPixmap("filename.png", Graphics.PixmapFormat.RGB565);
         //mWorld.g.resizePixmap(playerImg, xValue, yValue);
     }
@@ -43,8 +57,82 @@ public class Player extends Ball
     @Override
     public void update(float deltaTime)
     {
-        super.update(deltaTime);
+        if (collision.isHitOccurred())
+        {
+            //If the player is trying to activate a powerup, check to see what powerups the player has.
+            //If they have a colorphase, activate it and allow the player to pass through.
+            boolean colorphasingThisFrame = false;
+            if (PUTriggerActive)
+            {
+                for(Powerup pow : powerups)
+                {
+                    if(pow.type == Powerup.PUTYPE.Colorphase)
+                    {
+                        System.out.println("Powerups Before phase: " + powerups);
+                        PUTimeActivated = System.currentTimeMillis();
+                        pow.activate();
+                        powerups.remove(pow);
+                        PUTriggerActive = false;
+                        PUColorphaseIsActive = true;
+                        colorphasingThisFrame = true;
+                        PUColorphaseCount--;
+                        System.out.println("Powerups After phase: " + powerups);
+                        break;
+                    }
+                }
+            }
+
+            if (!colorphasingThisFrame)
+            {
+                //Move forward until collision time
+                //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
+                position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+                FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+                position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+
+                // Hit resolved; clear the hit
+                collision = new Hit();
+            }
+            else
+            {
+                position = position.Add(velocity.Mul(deltaTime));
+            }
+        }
+        else
+        {
+            position = position.Add(velocity.Mul(deltaTime));
+        }
+
+        //Timer to return back to white.
+        if(PUColorphaseIsActive)
+        {
+            if(System.currentTimeMillis() >= PUTimeEnd)
+            {
+                PUColorphaseIsActive = false;
+                color = Color.WHITE;
+            }
+
+            PUColorphaseRatio = ((double)(System.currentTimeMillis() - PUTimeActivated) / (double)(PUTimeEnd - PUTimeActivated));
+        }
+
+        mWorld.ConvertToWorldSpace(position);
+        localCoord = mWorld.toLocalCoord(position);
         move(deltaTime);
+    }
+
+    @Override
+    public void present(float deltaTime)
+    {
+        super.present(deltaTime);
+
+        //Colorphase timer effect.
+        if(PUColorphaseIsActive)
+        {
+            if (img == null)
+            {
+                g.drawCircle(localCoord.x, localCoord.y, (int)(radius * PUColorphaseRatio), Color.WHITE);
+            }
+        }
     }
 
     public void move(float deltaTime)
@@ -85,9 +173,6 @@ public class Player extends Ball
         }
 
         lastAccel = accel;
-
-
-
     }
 
 
@@ -99,5 +184,11 @@ public class Player extends Ball
     public FTuple getWorldCoord()
     {
         return position;
+    }
+
+    //Duration set by the powerup, allows for different durations if necessary.
+    public void setPowerupTimer(int duration)
+    {
+        PUTimeEnd = PUTimeActivated + duration;
     }
 }

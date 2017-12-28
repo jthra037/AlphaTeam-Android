@@ -77,8 +77,12 @@ public class SettingsScreen extends Screen {
                 Log.d("Temp boolean", String.valueOf(settings.getBoolean("handHeldPlay",false)));
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(0).resize(125,125);
         buttons.get(0).setPosition(100,200);
 
@@ -87,8 +91,12 @@ public class SettingsScreen extends Screen {
                 game.setScreen(new MainMenuScreen(game));
                 return null;
             }
-        }
-        ));
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
         buttons.get(1).resize(100,100);
         buttons.get(1).setPosition(20, g.getHeight() - backButton.getHeight() - 20);
 

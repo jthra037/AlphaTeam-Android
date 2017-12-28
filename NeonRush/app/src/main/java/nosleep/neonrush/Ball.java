@@ -21,12 +21,12 @@ import nosleep.game.framework.Object;
  * Created by John on 2017-10-17.
  */
 
-public class Ball extends Object{
+public class Ball extends Object
+{
     private World world;
-    private ITuple localCoord;
-    private int radius = 500;
-    private float mass = 1;
-    protected int color = Color.BLACK;
+    protected ITuple localCoord;
+    protected int radius = 500;
+    protected float mass = 1;
     protected Hit collision;
     protected String enemyColor = "enemies/white.png";
     private Paint newPaint = new Paint();
@@ -139,7 +139,6 @@ public class Ball extends Object{
         {
             Graphics g = getGame().getGraphics();
             g.drawCircle((int)position.x, (int)position.y, radius, color);
-
         }
         else if (img == null && world != null)
         {
@@ -221,19 +220,20 @@ public class Ball extends Object{
         switch (otherCollider.format)
         {
             case lines:
-                SetCollision(otherCollider.OnCollision(this, localCoord));
+                SetCollision(otherCollider.OnCollision(this, localCoord), other.color);
                 break;
         }
     }
 
 
-    public void SetCollision(Hit collision)
+    public void SetCollision(Hit collision, int otherColor)
     {
         if (collision.isHitOccurred() &&
                 collision.GetTStep() >= 0 &&
                 collision.GetTStep() < this.collision.GetTStep())
         {
             this.collision = collision;
+            this.collision.otherColor = otherColor;
         }
     }
 
