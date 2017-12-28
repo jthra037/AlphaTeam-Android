@@ -68,13 +68,10 @@ public class World
         v = new ViewableScreen(g);
         regTime = System.currentTimeMillis()/1000;
         //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 7);
+        LevelGenny = new LevelGenerator(this, 4);
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
         r = new Random();
         lastSpawn = System.currentTimeMillis();
-
-        //Level Generation Things.
-        LevelGenny = new LevelGenerator(this, 4);
 
 
         game.showBanner();//for ads
