@@ -2,6 +2,7 @@ package nosleep.neonrush;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.wifi.aware.PublishConfig;
 
 import java.util.Vector;
 
@@ -27,8 +28,13 @@ public class Player extends Ball
     SharedPreferences settings;
     private World mWorld;
     private float damp = 2;
+
+    //Powerups
     public Vector<Powerup> powerups;
-    public boolean PUTriggerActive = false;
+    public boolean PUTriggerActive = false;         //Player is pressing on screen.
+    private boolean PUcolorPhaseIsActive = false;   //Colorphase specifically is active.
+    private long PUTimeActivated;                   //Time powerup is triggered by player.
+    private long PUTimeEnd;                         //Time powerup is scheduled to end.
 
     public Player(World w)
     {
@@ -53,7 +59,7 @@ public class Player extends Ball
         {
             //If the player is trying to activate a powerup, check to see what powerups the player has.
             //If they have a colorphase, activate it and allow the player to pass through.
-            boolean colorphasing = false;
+            boolean colorphasingThisFrame = false;
             if (PUTriggerActive)
             {
                 for(Powerup pow : powerups)
@@ -61,19 +67,19 @@ public class Player extends Ball
                     if(pow.type == Powerup.PUTYPE.Colorphase)
                     {
                         System.out.println("Powerups Before phase: " + powerups);
+                        PUTimeActivated = System.currentTimeMillis();
                         pow.activate();
                         powerups.remove(pow);
                         PUTriggerActive = false;
-                        colorphasing = true;
+                        PUcolorPhaseIsActive = true;
+                        colorphasingThisFrame = true;
                         System.out.println("Powerups After phase: " + powerups);
-                        System.out.println("Other color: " + collision.otherColor);
-                        System.out.println("Player color: " + color);
                         break;
                     }
                 }
             }
 
-            if (!colorphasing)
+            if (!colorphasingThisFrame)
             {
                 //Move forward until collision time
                 //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
@@ -92,6 +98,16 @@ public class Player extends Ball
         else
         {
             position = position.Add(velocity.Mul(deltaTime));
+        }
+
+        //Timer to return back to white.
+        if(PUcolorPhaseIsActive)
+        {
+            if(System.currentTimeMillis() >= PUTimeEnd)
+            {
+                PUcolorPhaseIsActive = false;
+                color = Color.WHITE;
+            }
         }
 
         mWorld.ConvertToWorldSpace(position);
@@ -151,5 +167,11 @@ public class Player extends Ball
     public FTuple getWorldCoord()
     {
         return position;
+    }
+
+    //Duration set by the powerup, allows for different durations if necessary.
+    public void setPowerupTimer(int duration)
+    {
+        PUTimeEnd = PUTimeActivated + duration;
     }
 }

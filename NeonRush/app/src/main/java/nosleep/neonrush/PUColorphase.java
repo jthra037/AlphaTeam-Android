@@ -8,6 +8,8 @@ import nosleep.game.framework.FTuple;
 
 public class PUColorphase extends Powerup
 {
+    private int duration = 10000; //10 Seconds.
+
     public PUColorphase(World w, FTuple pos)
     {
         super(w, pos);
@@ -17,5 +19,6 @@ public class PUColorphase extends Powerup
     public void activate()
     {
         player.color = player.collision.otherColor;
+        player.setPowerupTimer(duration);
     }
 }
