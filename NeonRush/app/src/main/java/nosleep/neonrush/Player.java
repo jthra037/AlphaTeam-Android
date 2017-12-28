@@ -2,7 +2,6 @@ package nosleep.neonrush;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.wifi.aware.PublishConfig;
 
 import java.util.Vector;
 
@@ -31,11 +30,13 @@ public class Player extends Ball
 
     //Powerups
     public Vector<Powerup> powerups;
-    public int PUColorphaseCount = 0;
     public boolean PUTriggerActive = false;         //Player is pressing on screen.
-    private boolean PUcolorPhaseIsActive = false;   //Colorphase specifically is active.
     private long PUTimeActivated;                   //Time powerup is triggered by player.
     private long PUTimeEnd;                         //Time powerup is scheduled to end.
+
+    private boolean PUColorphaseIsActive = false;   //Colorphase specifically is active.
+    public int PUColorphaseCount = 0;
+    private double PUColorphaseRatio;                //For phase back to white effect.
 
     public Player(World w)
     {
@@ -72,7 +73,7 @@ public class Player extends Ball
                         pow.activate();
                         powerups.remove(pow);
                         PUTriggerActive = false;
-                        PUcolorPhaseIsActive = true;
+                        PUColorphaseIsActive = true;
                         colorphasingThisFrame = true;
                         PUColorphaseCount--;
                         System.out.println("Powerups After phase: " + powerups);
@@ -103,18 +104,35 @@ public class Player extends Ball
         }
 
         //Timer to return back to white.
-        if(PUcolorPhaseIsActive)
+        if(PUColorphaseIsActive)
         {
             if(System.currentTimeMillis() >= PUTimeEnd)
             {
-                PUcolorPhaseIsActive = false;
+                PUColorphaseIsActive = false;
                 color = Color.WHITE;
             }
+
+            PUColorphaseRatio = ((double)(System.currentTimeMillis() - PUTimeActivated) / (double)(PUTimeEnd - PUTimeActivated));
         }
 
         mWorld.ConvertToWorldSpace(position);
         localCoord = mWorld.toLocalCoord(position);
         move(deltaTime);
+    }
+
+    @Override
+    public void present(float deltaTime)
+    {
+        super.present(deltaTime);
+
+        //Colorphase timer effect.
+        if(PUColorphaseIsActive)
+        {
+            if (img == null)
+            {
+                g.drawCircle(localCoord.x, localCoord.y, (int)(radius * PUColorphaseRatio), Color.WHITE);
+            }
+        }
     }
 
     public void move(float deltaTime)
@@ -155,9 +173,6 @@ public class Player extends Ball
         }
 
         lastAccel = accel;
-
-
-
     }
 
 
