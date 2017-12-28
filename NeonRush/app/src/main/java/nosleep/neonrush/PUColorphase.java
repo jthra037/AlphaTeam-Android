@@ -8,12 +8,18 @@ import nosleep.game.framework.FTuple;
 
 public class PUColorphase extends Powerup
 {
-    private int duration = 10000; //10 Seconds.
-
     public PUColorphase(World w, FTuple pos)
     {
         super(w, pos);
         type = PUTYPE.Colorphase;
+        duration = 10000;
+    }
+
+    @Override
+    public void acquire()
+    {
+        super.acquire();
+        player.PUColorphaseCount++;
     }
 
     public void activate()

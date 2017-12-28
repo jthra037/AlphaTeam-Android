@@ -31,6 +31,7 @@ public class Player extends Ball
 
     //Powerups
     public Vector<Powerup> powerups;
+    public int PUColorphaseCount = 0;
     public boolean PUTriggerActive = false;         //Player is pressing on screen.
     private boolean PUcolorPhaseIsActive = false;   //Colorphase specifically is active.
     private long PUTimeActivated;                   //Time powerup is triggered by player.
@@ -73,6 +74,7 @@ public class Player extends Ball
                         PUTriggerActive = false;
                         PUcolorPhaseIsActive = true;
                         colorphasingThisFrame = true;
+                        PUColorphaseCount--;
                         System.out.println("Powerups After phase: " + powerups);
                         break;
                     }

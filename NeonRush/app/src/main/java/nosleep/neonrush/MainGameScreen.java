@@ -297,7 +297,7 @@ public class MainGameScreen extends Screen {
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(50);
         g.drawText(world.getScore(), g.getWidth()/2, 100, paint);
-
+        g.drawText(String.valueOf(world.getPlayer().PUColorphaseCount), 50, 100, paint);
     }
 
     @Override

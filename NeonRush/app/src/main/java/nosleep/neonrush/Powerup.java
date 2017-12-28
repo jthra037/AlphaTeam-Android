@@ -23,6 +23,7 @@ public abstract class Powerup extends Object
     protected ITuple localCoord;
     protected int radius = 10;
     protected int color = Color.GREEN;
+    protected int duration;
 
     protected long timespawned;
     protected long lifetime;

@@ -153,16 +153,6 @@ public class World
 							{
 								Powerup p = (Powerup) other;
 								System.out.println("Before PU add: " + player.powerups);
-
-								//Cast the appropriate powerup. If we have more than one we can increment different UI here.
-								//For now only one type, further cases can be added as we go.
-								switch(p.type)
-								{
-									case Colorphase:
-										//increment powerup UI.
-										break;
-								}
-
 								p.acquire();
 								System.out.println("After PU add: " + player.powerups);
 								unregister(other);
