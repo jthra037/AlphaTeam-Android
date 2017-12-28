@@ -120,19 +120,30 @@ public class World
 							{
 								Ball thisBall = (Ball)object;
 
+								//If two enemies collide, form a bigger enemy.
 								if (object != null && object.tag == other.tag)
 								{
 									thisBall.Combine((Ball)other);
 								}
+								//If player collides with the goal, grow the player.
 								else if (tags.contains("Player") && tags.contains("Goal"))
 								{
 									player.Combine(notPlayer(object, other));
 								}
+								//If player collides with an enemy, are they the same color?
+                                //If yes, the player absorbs the enemy. If not, game over.
 								else if (tags.contains("Player") && tags.contains("Enemy"))
 								{
-									unregister(object);
-									unregister(other);
-									game.setGameState(Game.GAMESTATE.GameOver);
+									if(thisBall.color == other.color)
+                                    {
+                                        player.Combine(notPlayer(object, other));
+                                    }
+                                    else
+                                    {
+                                        unregister(object);
+                                        unregister(other);
+                                        game.setGameState(Game.GAMESTATE.GameOver);
+                                    }
 								}
 							}
 
@@ -235,7 +246,7 @@ public class World
 			}
 
 			//Spawn enemies at appropriate time.
-/*
+
 			if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
             {
                 FTuple pos = new FTuple(0.0f, 0.0f);
@@ -272,7 +283,7 @@ public class World
                 lastEnemySpawn = System.currentTimeMillis();
                 new Enemy(this, radius, pos);
             }
-*/
+
 
             //Spawn powerups at the appropriate time.
             if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)
@@ -377,6 +388,7 @@ public class World
         }
     }
 
+    //Compares two balls and returns the one that isn't the player.
     private Ball notPlayer(Object one, Object two)
     {
         return one == player ? (Ball)two : (Ball)one;
