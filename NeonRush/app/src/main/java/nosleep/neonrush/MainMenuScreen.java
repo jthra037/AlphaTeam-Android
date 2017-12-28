@@ -54,7 +54,7 @@ public class MainMenuScreen extends Screen {
 
 
         Pixmap playButton = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(playButton, 100, 50);
+        //g.resizePixmap(playButton, 100, 50);
 
         buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
@@ -71,7 +71,7 @@ public class MainMenuScreen extends Screen {
         buttons.get(0).setPosition(100,mainButtonY);
 
         Pixmap achievementsButton = g.newPixmap("buttons/achievementsbutton.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(achievementsButton, 100, 50);
+        //g.resizePixmap(achievementsButton, 100, 50);
 
         buttons.add(new Button(game,achievementsButton, new Callable<Void>(){
             public Void call() {
@@ -90,7 +90,7 @@ public class MainMenuScreen extends Screen {
         buttons.get(1).setPosition(100,mainButtonY + 130);
 
         Pixmap settingsButton = g.newPixmap("buttons/settingsbutton.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(settingsButton, 100, 50);
+        //g.resizePixmap(settingsButton, 100, 50);
 
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
@@ -108,7 +108,7 @@ public class MainMenuScreen extends Screen {
         buttons.get(2).setPosition(100,mainButtonY + 260);
 
         Pixmap leaderboardsButton = g.newPixmap("buttons/leaderboardsbutton.png", Graphics.PixmapFormat.RGB565);
-        g.resizePixmap(leaderboardsButton, 100, 50);
+        //g.resizePixmap(leaderboardsButton, 100, 50);
 
         buttons.add(new Button(game,leaderboardsButton, new Callable<Void>(){
             public Void call() {
