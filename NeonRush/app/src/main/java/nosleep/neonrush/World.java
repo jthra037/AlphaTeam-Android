@@ -102,7 +102,6 @@ public class World
         switch(game.getGameState())
         {
             case Play:
-
 			// Handles all collision interactions.
 			for (int i = 0; i < objects.size() - 1; i++)
 			{
@@ -283,7 +282,6 @@ public class World
                 new Enemy(this, radius, pos);
             }
 
-
             //Spawn powerups at the appropriate time.
             if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)
             {
@@ -292,10 +290,9 @@ public class World
                 boolean inside = true;
 
                 //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 1);
+                ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png");
                 unregister(playerOb);
                 LevelGenny.placedObstacles.set(0, playerOb);
-
                 //Check against obstacle list to avoid spawning enemies inside obstacles.
                 while(inside)
                 {
