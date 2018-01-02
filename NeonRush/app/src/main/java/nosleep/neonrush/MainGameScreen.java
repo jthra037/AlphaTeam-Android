@@ -233,37 +233,6 @@ public class MainGameScreen extends Screen {
 
                 world.update(deltaTime);
 
-
-
-
-                if (System.currentTimeMillis() > lastSpawn + spawnWait)
-                {
-                    int x = 0;
-                    int y = 0;
-                    switch (random.nextInt(4))
-                    {
-                        case 0:
-                            x = 0;
-                            y = random.nextInt((int)world.getHeight());
-                            break;
-                        case 1:
-                            x = (int)world.getWidth();
-                            y = random.nextInt((int)world.getHeight());
-                            break;
-                        case 2:
-                            y = 0;
-                            x = random.nextInt((int)world.getWidth());
-                            break;
-                        case 3:
-                            y = (int)world.getHeight();
-                            x = random.nextInt((int)world.getWidth());
-                            break;
-                    }
-                    lastSpawn = System.currentTimeMillis() + spawnWait;
-                    Random r = new Random();
-                    new Enemy(world, 30, new FTuple(x, y), world.enemyPalette[r.nextInt(world.enemyPalette.length)]);
-                }
-
                 break;
             case Pause:
 

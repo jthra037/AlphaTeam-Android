@@ -244,7 +244,6 @@ public class World
 			}
 
 			//Spawn enemies at appropriate time.
-
 			if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
             {
                 FTuple pos = new FTuple(0.0f, 0.0f);

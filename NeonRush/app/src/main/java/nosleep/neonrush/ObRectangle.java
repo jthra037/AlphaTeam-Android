@@ -1,5 +1,6 @@
 package nosleep.neonrush;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import nosleep.androidgames.framework.Game;
@@ -31,8 +32,8 @@ public class ObRectangle extends Obstacle
     {
         super(game, world, pos, color);
         size = s;
-        //collider = new BoxCollider(size.x, size.y);
-        FTuple[] myPoints = new FTuple[]{pos, pos.Add(size.x, 0), pos.Add(size.x, size.y), pos.Add(0, size.y)};
+        FTuple topLeft = new FTuple(pos.x - (size.x / 2), pos.y - (size.y / 2));
+        FTuple[] myPoints = new FTuple[]{topLeft, topLeft.Add(size.x, 0), topLeft.Add(size.x, size.y), topLeft.Add(0, size.y)};
         collider = new LinesCollider(myPoints, this, w);
         img = game.getGraphics().newPixmap(obColor, Graphics.PixmapFormat.ARGB8888);
         game.getGraphics().resizePixmap(img,size.x,size.y);
@@ -55,7 +56,8 @@ public class ObRectangle extends Obstacle
         else
         {
             // may need to adjust draw location here too, like done above.
-            super.present((localCoord.x - size.x / 2), (localCoord.y - size.y / 2), deltaTime);
+            super.present(localCoord.x, localCoord.y, deltaTime);
+            //g.drawCircle(localCoord.x, localCoord.y, 5, Color.RED);   //Good for checking obstacle is rendering in the right location.
         }
     }
 
