@@ -136,6 +136,7 @@ public class World
 								else if (tags.contains("Player") && tags.contains("Goal"))
 								{
 									player.Combine(notPlayer(object, other));
+									game.vibrateForInterval(50); //for haptic feedback
 								}
 								//If player collides with an enemy, are they the same color?
                                 //If yes, the player absorbs the enemy. If not, game over.
@@ -144,6 +145,7 @@ public class World
 									if(thisBall.color == other.color)
                                     {
                                         player.Combine(notPlayer(object, other));
+                                        game.vibrateForInterval(50); //for haptic feedback
                                     }
                                     else
                                     {

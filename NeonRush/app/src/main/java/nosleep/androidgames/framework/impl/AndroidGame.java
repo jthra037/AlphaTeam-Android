@@ -8,7 +8,10 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -106,11 +109,16 @@ public abstract class AndroidGame extends BaseGameActivity implements Game {
         screen = getStartScreen();
         context = getApplicationContext();
         settings = getSharedPreferences(Settings_Prefs,0);
+    }
 
-
-
-
-
+    @Override
+    public void vibrateForInterval(int milliTime) //time in milliseconds
+    {
+        if (Build.VERSION.SDK_INT >= 26) {
+            ((Vibrator) getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(milliTime, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            ((Vibrator) getContext().getSystemService(VIBRATOR_SERVICE)).vibrate(milliTime);
+        }
     }
 
 

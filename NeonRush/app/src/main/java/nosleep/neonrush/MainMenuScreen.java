@@ -3,6 +3,9 @@ package nosleep.neonrush;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +23,8 @@ import nosleep.game.framework.Button;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.IMath;
 import nosleep.game.framework.ITuple;
+
+import static android.content.Context.VIBRATOR_SERVICE;
 
 /**
  * Created by John on 2017-10-10.
@@ -58,6 +63,7 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
+                game.vibrateForInterval(100);
                 game.setScreen(new MainGameScreen(game));
                 return null;
             }
@@ -75,8 +81,17 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,achievementsButton, new Callable<Void>(){
             public Void call() {
+                game.vibrateForInterval(100);
                 if (game.isSignedIn())
+                {
                     game.showAchievements();
+                }
+                else
+                {
+                    Toast t = new Toast(game.getContext());
+                    t.makeText(game.getContext(), "Not sogned in", Toast.LENGTH_SHORT).show();
+                }
+
 
                 return null;
             }
@@ -94,6 +109,7 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
+                game.vibrateForInterval(100);
                 game.setScreen(new SettingsScreen(game));
                 game.showBanner();
                 return null;
@@ -112,8 +128,17 @@ public class MainMenuScreen extends Screen {
 
         buttons.add(new Button(game,leaderboardsButton, new Callable<Void>(){
             public Void call() {
+
+                game.vibrateForInterval(100);
                 if (game.isSignedIn())
+                {
                     game.showLeaderboard();
+                }
+                else
+                {
+                    Toast t = new Toast(game.getContext());
+                    t.makeText(game.getContext(), "Not sogned in", Toast.LENGTH_SHORT).show();
+                }
 
                 return null;
             }
@@ -193,6 +218,8 @@ public class MainMenuScreen extends Screen {
 
     }
 
+
+
     @Override
     public void present(float deltaTime) {
         //g.drawRect(inBetween,Color.GRAY);
@@ -211,10 +238,6 @@ public class MainMenuScreen extends Screen {
             if (!buttons.isEmpty())
                 g.drawPixmap(button.getImg(),button.getX(),button.getY());
         }
-
-
-
-
     }
 
     @Override
