@@ -1,6 +1,7 @@
 package nosleep.neonrush;
 
 import nosleep.androidgames.framework.Game;
+import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.Collider;
 import nosleep.game.framework.FTuple;
@@ -20,7 +21,7 @@ public abstract class Ball extends Object
 
     //Physics Info.
     protected int radius;
-    private float mass = 1;
+    float mass = 1;
     Hit collision;
     FTuple velocity = new FTuple(0, 0);
 
@@ -137,6 +138,18 @@ public abstract class Ball extends Object
 
     //Setters.
     void setVelocity(FTuple velocity) {this.velocity = velocity; }
+    public void setImg(String imageRef)
+    {
+        img = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(img, imgScalar, imgScalar);
+    }
+    public void setBackupImg(String imageRef)
+    {
+        backupImg = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(backupImg, imgScalar, imgScalar);
+    }
 
     void AddForce(FTuple force) {
         velocity = velocity.Add(force.Mul(1/mass));
@@ -144,26 +157,19 @@ public abstract class Ball extends Object
 
     void Combine(Ball other)
     {
-        if (img == null)
-        {
-            radius += other.getRadius()/2;
-            mass += other.getMass();
-            CircleCollider thisCollider = (CircleCollider)collider;
-            thisCollider.setRadius(radius);
+        radius += other.getRadius()/2;
+        mass += other.getMass();
+        CircleCollider thisCollider = (CircleCollider)collider;
+        thisCollider.setRadius(radius);
 
-            world.unregister(other);
-        }
-        else
+        if (img != null)
         {
-            radius += other.getRadius()/2;
-            mass += other.getMass();
-            CircleCollider thisCollider = (CircleCollider)collider;
-            g.resizePixmap(img, radius*2,radius*2);
-            thisCollider.setRadius(radius);
-
-            world.unregister(other);
+            int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+            img.setBitmap(backupImg.getBitmap());
+            g.resizePixmap(img, imgScalar, imgScalar);
         }
 
+        world.unregister(other);
     }
 
     void CollisionCheck(Object other)
@@ -173,13 +179,13 @@ public abstract class Ball extends Object
         switch (otherCollider.format)
         {
             case lines:
-                SetCollision(otherCollider.OnCollision(this, localCoord), other.color);
+                SetCollision(otherCollider.OnCollision(this, localCoord), other.color, other.colorIndex);
                 break;
         }
     }
 
 
-    void SetCollision(Hit collision, int otherColor)
+    void SetCollision(Hit collision, int otherColor, int otherColorIdx)
     {
         if (collision.isHitOccurred() &&
                 collision.GetTStep() >= 0 &&
@@ -187,6 +193,7 @@ public abstract class Ball extends Object
         {
             this.collision = collision;
             this.collision.otherColor = otherColor;
+            this.collision.otherColorIndex = otherColorIdx;
         }
     }
 }

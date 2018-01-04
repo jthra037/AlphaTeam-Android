@@ -2,6 +2,7 @@ package nosleep.neonrush;
 
 import java.util.Random;
 
+import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.FTuple;
 
 /**
@@ -21,7 +22,12 @@ public class Enemy extends Ball
 
         //Assign a random color from the palette.
         Random r = new Random();
-        color = world.Palette[r.nextInt(world.Palette.length)];
+        colorIndex = r.nextInt(world.Palette.length);
+        color = world.Palette[colorIndex];
+        img = g.newPixmap(world.enemyPalette[colorIndex], Graphics.PixmapFormat.ARGB8888);
+        backupImg = g.newPixmap(world.enemyPalette[colorIndex], Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(img, imgScalar, imgScalar);
 
         position = pos;
     }

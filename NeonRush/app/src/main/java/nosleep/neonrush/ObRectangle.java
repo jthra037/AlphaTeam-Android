@@ -15,9 +15,9 @@ public class ObRectangle extends Obstacle
 {
     private ITuple size;
 
-    public ObRectangle(Game game, World world, FTuple pos, ITuple s, String image, int color)
+    public ObRectangle(Game game, World world, FTuple pos, ITuple s, int colorIndex)
     {
-        super(game, world, pos, image, color);
+        super(game, world, pos, colorIndex);
         size = s;
 
         //Set image.
@@ -46,5 +46,14 @@ public class ObRectangle extends Obstacle
     public ITuple getSize()
     {
         return size;
+    }
+
+    public void setImg(String imageRef)
+    {
+
+    }
+    public void setBackupImg(String imageRef)
+    {
+
     }
 }

@@ -3,6 +3,7 @@ package nosleep.neonrush;
 import android.graphics.Color;
 
 import nosleep.androidgames.framework.Game;
+import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.FTuple;
 
 /**
@@ -13,12 +14,16 @@ import nosleep.game.framework.FTuple;
 public class Goal extends Ball
 {
     //Standard constructor used for gameplay.
-    public Goal(World world, int radius, FTuple position)
+    public Goal(World world, int radius, FTuple position, String imageRef)
     {
         super(world, radius);
         this.tag = "Goal";
         this.position = position;
+
         this.color = Color.WHITE;
+        img = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(img, imgScalar, imgScalar);
     }
 
     //Alternative constructor used in main menu for color effect. Goals are basically just balls lets be real.

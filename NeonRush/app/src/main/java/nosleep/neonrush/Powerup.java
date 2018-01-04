@@ -2,6 +2,7 @@ package nosleep.neonrush;
 
 import android.graphics.Color;
 
+import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.Object;
@@ -76,6 +77,18 @@ public abstract class Powerup extends Object
         world.getPlayer().powerups.add(this);
     }
 
-    //Implemented differently by each type of powerup.
-    public abstract void activate();
+    public abstract void activate(int otherColorIndex);
+
+    public void setImg(String imageRef)
+    {
+        img = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(img, imgScalar, imgScalar);
+    }
+    public void setBackupImg(String imageRef)
+    {
+        backupImg = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(backupImg, imgScalar, imgScalar);
+    }
 }

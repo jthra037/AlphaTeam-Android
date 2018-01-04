@@ -52,4 +52,13 @@ public class DirectionalArrow extends Object
             g.drawCircle((int)position.x, (int)position.y,20, Color.RED);
         }
     }
+
+    public void setImg(String imageRef)
+    {
+
+    }
+    public void setBackupImg(String imageRef)
+    {
+
+    }
 }

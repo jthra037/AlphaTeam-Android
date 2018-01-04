@@ -30,6 +30,7 @@ public abstract class Object
     protected Pixmap img;
     protected Pixmap backupImg;
     public int color;
+    public int colorIndex;
     private int glowColor = 0;
     private float alpha = 100.0f;
 
@@ -61,6 +62,10 @@ public abstract class Object
     {
         return position;
     }
+
+    //Setters
+    public abstract void setImg(String imageRef);
+    public abstract void setBackupImg(String imageRef);
 
     public void rotateToPoint(FTuple a, FTuple point, float maxDegreesDelta)
     {

@@ -16,6 +16,7 @@ public class Hit
     private FTuple tangent;
     private Object collidedWith;
     public int otherColor;
+    public int otherColorIndex;
 
     public Hit()
     {

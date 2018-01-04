@@ -19,7 +19,7 @@ public abstract class Obstacle extends Object
     //protected boolean isDynamic = false;
     //protected Callable<Void> action;
 
-    public Obstacle (Game game, World w, FTuple pos, String image, int col)
+    public Obstacle (Game game, World w, FTuple pos, int col)
     {
         super(game);
         tag = "Obstacle";
@@ -30,8 +30,9 @@ public abstract class Obstacle extends Object
         localCoord = this.world.toLocalCoord(position);
 
         //Color Info.
-        color = col;
-        imageRef = image;
+        colorIndex = col;
+        color = world.Palette[colorIndex];
+        imageRef = world.obstaclePalette[colorIndex];
 
         w.register(this);
     }

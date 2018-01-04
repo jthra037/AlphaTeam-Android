@@ -5,7 +5,10 @@ import android.graphics.Color;
 
 import java.util.Vector;
 
+import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Input;
+import nosleep.androidgames.framework.Pixmap;
+import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.Hit;
 
@@ -35,8 +38,9 @@ public class Player extends Ball
     int PUColorphaseCount = 0;
     private boolean PUColorphaseIsActive = false;   //Colorphase specifically is active.
     private double PUColorphaseRatio;               //For phase back to white effect.
+    private Pixmap PUColorPhaseImg;                 //For phase back to white effect.
 
-    public Player(World w)
+    public Player(World w, String imageRef)
     {
         super(w, 15);
         tag = "Player";
@@ -47,7 +51,14 @@ public class Player extends Ball
         //Location and Movement Info.
         position = new FTuple(world.getWidth() / 2, world.getHeight() / 2);
         startingAccel = new FTuple(i.getAccelX(), i.getAccelY());
+
+        //Presentation Info.
         color = Color.WHITE;
+        img = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+        g.resizePixmap(img, imgScalar, imgScalar);
+        backupImg = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
+        PUColorPhaseImg = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
 
         //Powerups List.
         powerups = new Vector(10, 3);
@@ -65,6 +76,12 @@ public class Player extends Ball
             {
                 PUColorphaseIsActive = false;
                 color = Color.WHITE;
+                if (img != null)
+                {
+                    img.setBitmap(backupImg.getBitmap());
+                    int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+                    g.resizePixmap(img, imgScalar, imgScalar);
+                }
             }
 
             //Used to grow the player back to white color over time, starting from the center.
@@ -85,9 +102,16 @@ public class Player extends Ball
         //Colorphase timer effect. Will turn off if we start using proper art, aka img != null.
         if(PUColorphaseIsActive)
         {
-            if (img == null)
+            if (backupImg == null)
             {
                 g.drawCircle(localCoord.x, localCoord.y, (int)(radius * PUColorphaseRatio), Color.WHITE);
+            }
+            else
+            {
+                int imgScalar = (int)(radius * PUColorphaseRatio * 2.0f * 1.5f) + 1;    //Manually calculated to suit art assets.
+                PUColorPhaseImg.setBitmap(backupImg.getBitmap());
+                g.resizePixmap(PUColorPhaseImg, imgScalar, imgScalar);
+                g.drawPixmap(PUColorPhaseImg, (localCoord.x - PUColorPhaseImg.getWidth()/2), (localCoord.y - PUColorPhaseImg.getHeight()/2));
             }
         }
     }
@@ -150,7 +174,7 @@ public class Player extends Ball
                     if(pow.type == Powerup.PUTYPE.Colorphase)
                     {
                         PUTimeActivated = System.currentTimeMillis();
-                        pow.activate();
+                        pow.activate(collision.otherColorIndex);
                         powerups.remove(pow);
                         PUColorphaseCount--;
 
@@ -184,6 +208,30 @@ public class Player extends Ball
         {
             position = position.Add(velocity.Mul(deltaTime));
         }
+    }
+
+    //Tweaked to account for Colorphasing.
+    @Override
+    void Combine(Ball other)
+    {
+        radius += other.getRadius()/2;
+        mass += other.getMass();
+        CircleCollider thisCollider = (CircleCollider)collider;
+        thisCollider.setRadius(radius);
+
+        if (img != null && !PUColorphaseIsActive)
+        {
+            int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+            img.setBitmap(backupImg.getBitmap());
+            g.resizePixmap(img, imgScalar, imgScalar);
+        }
+        else if (img!= null)
+        {
+            int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
+            g.resizePixmap(img, imgScalar, imgScalar);
+        }
+
+        world.unregister(other);
     }
 
     //Getters.

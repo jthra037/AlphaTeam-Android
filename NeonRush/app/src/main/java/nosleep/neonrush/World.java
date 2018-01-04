@@ -22,6 +22,10 @@ import nosleep.game.framework.Object;
 
 public class World
 {
+    //
+    //IT IS IMPORTANT THAT ALL PALETTES REMAIN IN THE SAME ORDER AS EACH OTHER.
+    //
+
     //Basic color palette for primitives.
     int[] Palette = { Color.CYAN, Color.GREEN, Color.MAGENTA, Color.RED,
         Color.BLUE, Color.YELLOW, Color.GRAY };
@@ -78,7 +82,7 @@ public class World
         g.resizePixmap(background, g.getWidth(), g.getHeight());
 
         //Make the player, the viewport, and generate the level.
-        player = new Player(this);
+        player = new Player(this, "enemies/white.png");
         v = new ViewableScreen(g);
         LevelGenny = new LevelGenerator(this, 4);
 
@@ -309,7 +313,7 @@ public class World
                 }
             }
 
-            goal = new Goal(this, radius, pos);
+            goal = new Goal(this, radius, pos, "enemies/white.png");
         }
     }
 
@@ -325,7 +329,7 @@ public class World
             boolean inside = true;
 
             //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png", Color.TRANSPARENT);
+            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 0);
             unregister(playerOb);
             LevelGenny.placedObstacles.set(0, playerOb);
 
@@ -369,7 +373,7 @@ public class World
             boolean inside = true;
 
             //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png", Color.TRANSPARENT);
+            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 0);
             unregister(playerOb);
             LevelGenny.placedObstacles.set(0, playerOb);
             //Check against obstacle list to avoid spawning enemies inside obstacles.
@@ -397,7 +401,7 @@ public class World
             lastPuSpawn = System.currentTimeMillis();
 
             //Selects a random powerup type to spawn.
-            //Value between 0 and number of different powerup types.
+            //Value between 0 INCLUSIVE and number of different powerup types EXCLUSIVE.
             int whichPU = r.nextInt(puTypeNum);
             switch(whichPU)
             {
