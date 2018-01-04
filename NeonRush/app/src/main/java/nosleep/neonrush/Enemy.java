@@ -2,66 +2,69 @@ package nosleep.neonrush;
 
 import java.util.Random;
 
-import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.FTuple;
 
 /**
  * Created by John on 2017-10-19.
+ * Trimmed by Mark on 2018-01-03.
  */
 
-public class Enemy extends Ball {
+public class Enemy extends Ball
+{
     private Player player;
-    private float speed = 350;
-    private float F = 60;
 
-    public Enemy(World world, int radius, FTuple position) {
+    public Enemy(World world, int radius, FTuple pos)
+    {
         super(world, radius);
-        Random r = new Random();
-        this.color = world.Palette[r.nextInt(world.Palette.length)];
-        this.position = position;
-        this.player = world.getPlayer();
         tag = "Enemy";
-    }
+        player = world.getPlayer();
 
-    public Enemy(World world, int radius, FTuple position, String sColor) {
-        super(world, radius, sColor);
-        this.img = getGame().getGraphics().newPixmap(this.enemyColor, Graphics.PixmapFormat.ARGB8888);
-        getGame().getGraphics().resizePixmap(this.img, radius*2,radius*2);
-        this.position = position;
-        this.player = world.getPlayer();
-        tag = "Enemy";
-    }
-
-    public Enemy(World world, int radius) {
-        super(world, radius);
+        //Assign a random color from the palette.
         Random r = new Random();
-        this.color = world.Palette[r.nextInt(world.Palette.length)];
-        this.position = new FTuple(0, 0);
-        this.player = world.getPlayer();
-        tag = "Enemy";
+        color = world.Palette[r.nextInt(world.Palette.length)];
+
+        position = pos;
     }
 
     @Override
     public void update(float deltaTime)
     {
-        super.update(deltaTime);
-        FTuple playerPos = getWorld().getPlayer().getWorldCoord();
+        FTuple playerPos = player.getWorldCoord();
+        float speed = 350;
+        float F = 60;
         FTuple Fa = playerPos.Add(position.Mul(-1)).Normalized().Mul(F);
-        if ( Math.abs(playerPos.x - position.x) > getWorld().getWidth()/2 )
+
+        //
+        //
+        //This is why enemies move weird. This worked when our world was the size of the screen. No longer the case.
+        //Especially near wrap lines enemies won't chase the player, they'll chase a weird direction.
+        //
+        //
+
+        if ( Math.abs(playerPos.x - position.x) > world.getWidth()/2 )
         {
             Fa.x *= -1;
         }
-        if ( Math.abs(playerPos.y - position.y) > getWorld().getHeight()/2 )
+        if ( Math.abs(playerPos.y - position.y) > world.getHeight()/2 )
         {
             Fa.y *= -1;
         }
+
         AddForce(Fa);
 
+        //Cap enemy speed.
         if(velocity.LengthS() > speed * speed)
         {
             velocity = velocity.Normalized().Mul(speed);
         }
+
+        //Once velocity is properly determined, run it through Ball's movement functionality in update().
+        super.update(deltaTime);
     }
 
-
+    @Override
+    public void present(float deltaTime)
+    {
+        super.present(deltaTime, localCoord);
+    }
 }

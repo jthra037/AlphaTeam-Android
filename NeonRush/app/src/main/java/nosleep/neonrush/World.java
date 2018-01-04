@@ -23,15 +23,15 @@ import nosleep.game.framework.Object;
 public class World
 {
     //Basic color palette for primitives.
-    public int[] Palette = { Color.CYAN, Color.GREEN, Color.MAGENTA, Color.RED,
+    int[] Palette = { Color.CYAN, Color.GREEN, Color.MAGENTA, Color.RED,
         Color.BLUE, Color.YELLOW, Color.GRAY };
 
     //Obstacle art palette.
-    public String[] obstaclePalette = {"obstacles/cyan.png","obstacles/green.png","obstacles/magenta.png",
+    String[] obstaclePalette = {"obstacles/cyan.png","obstacles/green.png","obstacles/magenta.png",
         "obstacles/red.png","obstacles/blue.png","obstacles/yellow.png","obstacles/grey.png"};
 
     //Enemy art palette.
-    public String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
+    String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
             "enemies/red.png","enemies/blue.png","enemies/yellow.png","enemies/grey.png"};
 
     public Game game;
@@ -325,7 +325,7 @@ public class World
             boolean inside = true;
 
             //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png");
+            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png", Color.TRANSPARENT);
             unregister(playerOb);
             LevelGenny.placedObstacles.set(0, playerOb);
 
@@ -369,7 +369,7 @@ public class World
             boolean inside = true;
 
             //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png");
+            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, "obstacles/white.png", Color.TRANSPARENT);
             unregister(playerOb);
             LevelGenny.placedObstacles.set(0, playerOb);
             //Check against obstacle list to avoid spawning enemies inside obstacles.

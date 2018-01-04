@@ -1,14 +1,6 @@
 package nosleep.neonrush;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.widget.Switch;
-import android.graphics.Paint;
-import android.util.Log;
-
 import nosleep.androidgames.framework.Game;
-import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.Collider;
 import nosleep.game.framework.FTuple;
@@ -19,177 +11,138 @@ import nosleep.game.framework.Object;
 
 /**
  * Created by John on 2017-10-17.
+ * Trimmed by Mark on 2018-01-03.
  */
 
-public class Ball extends Object
+public abstract class Ball extends Object
 {
-    private World world;
-    protected ITuple localCoord;
-    protected int radius = 500;
-    protected float mass = 1;
-    protected Hit collision;
-    protected String enemyColor = "enemies/white.png";
-    private Paint newPaint = new Paint();
-    protected FTuple velocity = new FTuple(0, 0);
+    protected World world;
 
-    public Ball(World world, int radius)
+    //Physics Info.
+    protected int radius;
+    private float mass = 1;
+    Hit collision;
+    FTuple velocity = new FTuple(0, 0);
+
+    Ball(World w, int rad)
     {
-        super(world.game);
-        this.radius = radius;
-        this.world = world;
-        this.collision = new Hit();
+        super(w.game);
+        world = w;
 
-        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
+        radius = rad;
+        collision = new Hit();
         collider = new CircleCollider(radius, this);
+
         world.register(this);
     }
 
-    public Ball(Game game, int radius, FTuple pos, int color)
+    //This constructor is used for menu balls (for color effects), which require less functionality than game balls.
+    Ball(Game gm)
     {
-        super(game);
-        this.radius = radius;
-        this.collision = new Hit();
-        this.position = pos;
-        this.color = color;
-        collider = new CircleCollider(radius, this);
-        //world.register(this);
-    }
-
-    public Ball(Game game, int radius, FTuple pos, String sColor)
-    {
-        super(game);
-        this.radius = radius;
-        this.position = pos;
-        this.collision = new Hit();
-        this.enemyColor = sColor;
-        this.img = game.getGraphics().newPixmap(this.enemyColor, Graphics.PixmapFormat.ARGB8888);
-        game.getGraphics().resizePixmap(img, radius*2,radius*2);
-        collider = new CircleCollider(radius, this);
-        //world.register(this);
-    }
-
-    public Ball(World world, int radius, String sColor)
-    {
-        super(world.game);
-        this.radius = radius;
-        this.world = world;
-        this.collision = new Hit();
-        this.enemyColor = sColor;
-        localCoord = new ITuple(world.g.getWidth() / 2, world.g.getHeight() / 2);
-        collider = new CircleCollider(radius, this);
-        world.register(this);
+        super(gm);
     }
 
     @Override
-    public void update(float deltaTime) {
-        if (world != null)
+    public void update(float deltaTime)
+    {
+        //If a collision is projected to occur this frame.
+        if (collision.isHitOccurred())
         {
-            if (collision.isHitOccurred()) {
-                //Move forward until collision time
-                //position = position.Add(velocity.Mul(collision.GetTStep() * deltaTime));
-                position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
-                FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
-                position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
+            //Move forward until exact collision time (less than 1 frame of movement).
+            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+            FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
+            position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
 
-                // Hit resolved; clear the hit
-                collision = new Hit();
-            }
-            else
-            {
-                position = position.Add(velocity.Mul(deltaTime));
-                position.x %= world.getWidth();
-                position.y %= world.getHeight();
-                if(position.x < 0)
-                {
-                    position.x = world.getWidth();
-                }
-                if (position.y < 0)
-                {
-                    position.y = world.getHeight();
-                }
-                localCoord = world.toLocalCoord(position);
-            }
+            //Hit resolved; clear the hit.
+            collision = new Hit();
         }
-        else //for the main menu screen
+        //Otherwise move full velocity for this frame.
+        else
         {
+            //
+            //
+            //Something might be off here, doesn't look right, could be outdated, likely cause of weird movement sometimes.
+            //
+            //
+
             position = position.Add(velocity.Mul(deltaTime));
-            position.x %= getGame().getGraphics().getWidth();
-            position.y %= getGame().getGraphics().getHeight();
+
+            position.x %= world.getWidth();
+            position.y %= world.getHeight();
+
+            //This in particular, seem to recall removing it. Jacob?
             if(position.x < 0)
             {
-                position.x = getGame().getGraphics().getWidth();
-                velocity.x = IMath.getRandomInt(-10,10);
+                position.x = world.getWidth();
             }
             if (position.y < 0)
             {
-                position.y = getGame().getGraphics().getHeight();
-                velocity.y = IMath.getRandomInt(-10,10);
+                position.y = world.getHeight();
             }
+            //=====================================================
+
+            localCoord = world.toLocalCoord(position);
         }
-
-
-        }
-
-
+    }
 
     @Override
-    public void present(float deltaTime)
+    public void present(float deltaTime, ITuple pos)
     {
-        if (img == null && world == null)
+        if (img == null)
         {
-            Graphics g = getGame().getGraphics();
-            g.drawCircle((int)position.x, (int)position.y, radius, color);
-        }
-        else if (img == null && world != null)
-        {
-            Graphics g = getGame().getGraphics();
-            g.drawCircle(localCoord.x, localCoord.y, radius, color);
-        }
-        else if (img != null && world == null)
-        {
-            super.present((int)position.x,(int)position.y,deltaTime);
+            g.drawCircle(pos.x, pos.y, radius, color);
         }
         else
         {
-            super.present(localCoord.x, localCoord.y, deltaTime);
+            super.present(deltaTime, pos);
         }
     }
 
-    public int getRadius() {
-        return radius;
+    //Called from Main Menu to update background color effect.
+    void menuUpdate(float deltaTime)
+    {
+        position = position.Add(velocity.Mul(deltaTime));
+        position.x %= g.getWidth();
+        position.y %= g.getHeight();
+        if(position.x < 0)
+        {
+            position.x = g.getWidth();
+            velocity.x = IMath.getRandomInt(-10,10);
+        }
+        if (position.y < 0)
+        {
+            position.y = g.getHeight();
+            velocity.y = IMath.getRandomInt(-10,10);
+        }
     }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
+    //Called from Main Menu to present background color effect.
+    void menuPresent()
+    {
+        g.drawCircle((int)position.x, (int)position.y, radius, color);
     }
 
+    //Getters.
     public FTuple getVelocity() { return velocity; }
-    public void setVelocity(FTuple velocity) {this.velocity = velocity; }
-
     public float getMass() {
         return mass;
     }
-
-    public void setMass(float mass) {
-        this.mass = mass;
+    public int getRadius() {
+        return radius;
     }
-
-    public void AddForce(FTuple force, float deltaTime) {
-        velocity = velocity.Add(force.Mul(1/mass).Mul(deltaTime));
-    }
-
-    public World getWorld()
+    public Hit GetCollision()
     {
-        return world;
+        return collision;
     }
 
-    public void AddForce(FTuple force) {
+    //Setters.
+    void setVelocity(FTuple velocity) {this.velocity = velocity; }
+
+    void AddForce(FTuple force) {
         velocity = velocity.Add(force.Mul(1/mass));
     }
 
-    public ITuple getLocalCoord(){return localCoord;}
-
-    public void Combine(Ball other)
+    void Combine(Ball other)
     {
         if (img == null)
         {
@@ -205,7 +158,7 @@ public class Ball extends Object
             radius += other.getRadius()/2;
             mass += other.getMass();
             CircleCollider thisCollider = (CircleCollider)collider;
-            getGame().getGraphics().resizePixmap(img, radius*2,radius*2);
+            g.resizePixmap(img, radius*2,radius*2);
             thisCollider.setRadius(radius);
 
             world.unregister(other);
@@ -213,7 +166,7 @@ public class Ball extends Object
 
     }
 
-    public void CollisionCheck(Object other)
+    void CollisionCheck(Object other)
     {
         Collider otherCollider = other.getCollider();
 
@@ -226,7 +179,7 @@ public class Ball extends Object
     }
 
 
-    public void SetCollision(Hit collision, int otherColor)
+    void SetCollision(Hit collision, int otherColor)
     {
         if (collision.isHitOccurred() &&
                 collision.GetTStep() >= 0 &&
@@ -235,10 +188,5 @@ public class Ball extends Object
             this.collision = collision;
             this.collision.otherColor = otherColor;
         }
-    }
-
-    public Hit GetCollision()
-    {
-        return collision;
     }
 }

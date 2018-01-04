@@ -5,7 +5,6 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
@@ -13,62 +12,55 @@ import nosleep.androidgames.framework.Pixmap;
 
 /**
  * Created by John on 2017-10-17.
+ * Trimmed by Mark on 2018-01-03.
  */
 
 public abstract class Object
 {
-    protected Collider collider;
     protected Graphics g;
-    public FTuple position;
-    public float rotation;
-    public int glowColor = 0;
+    protected Game game;
     public String tag;
-    public float alpha = 100.0f;
-    private Game game;
+
+    //Location info.
+    public FTuple position;
+    protected ITuple localCoord;
+    protected float rotation;
+
+    //Presentation info.
     protected Pixmap img;
     protected Pixmap backupImg;
-    public int color = Color.BLACK;
+    public int color;
+    private int glowColor = 0;
+    private float alpha = 100.0f;
 
+    protected Collider collider;
 
-    public Object(Game game)
+    public Object(Game gm)
     {
-        this.game = game;
+        game = gm;
         g = game.getGraphics();
     }
 
-    public void present(float deltaTime)
-    {
-        if (img != null)
-        {
-            g.drawPixmap(img);
-        }
-    }
-
-    public void present(int x, int y, float deltaTime)
-    {
-        if (img != null)
-        {
-            g.drawPixmap(img, x - img.getWidth()/2, y - img.getHeight()/2);
-        }
-    }
-
+    //The bare minimum all objects require to present and update is deltaTime.
+    //The unique implementation of these functions are called on all objects from World.java.
+    public abstract void present(float deltaTime);
     public abstract void update(float deltaTime);
 
+    //Img is checked against null at the bottom of the hierarchy.
+    //All img nullity should be resolved by the time this is reached.
+    public void present(float deltaTime, ITuple pos)
+    {
+        g.drawPixmap(img, pos.x - img.getWidth()/2, pos.y - img.getHeight()/2);
+    }
+
+    //Getters
     public Collider getCollider() {
         return collider;
     }
-
     public FTuple getPosition()
     {
         return position;
     }
-
-    protected Game getGame()
-    {
-        return game;
-    }
-
-    public Pixmap getImg(){return img;}
 
     public void rotateToPoint(FTuple a, FTuple point, float maxDegreesDelta)
     {
@@ -131,16 +123,16 @@ public abstract class Object
         }
     }
 
-    public Pixmap setBackgroundGlow(Pixmap pixmap,int color)
+    public Pixmap setBackgroundGlow(Pixmap pixmap,int col)
     {
-        if(glowColor != color)
+        if(glowColor != col)
         {
             // An added margin to the initial image
             int margin = 0;
             int halfMargin = margin / 2;
             // the glow radius
             int mGlowRadius = 20;
-            glowColor = color;
+            glowColor = col;
 
             // extract the alpha from the source image
             Bitmap alpha = pixmap.getBitmap().extractAlpha();
@@ -151,7 +143,7 @@ public abstract class Object
             Canvas canvas = new Canvas(bmp);
 
             Paint paint = new Paint();
-            paint.setColor(color);
+            paint.setColor(col);
 
             // outer glow
             paint.setMaskFilter(new BlurMaskFilter(mGlowRadius, BlurMaskFilter.Blur.OUTER));//For Inner glow set Blur.INNER

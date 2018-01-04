@@ -33,7 +33,7 @@ public class LevelGenerator
 
         //Add a mock obstacle at player location for the purpose of not spawning proceeding obstacles nearby.
         //Size of slightly smaller than the screen size. Immediately deregister from world.
-        placedObstacles.add(new ObRectangle(w.game,w,w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10)), "obstacles/white.png"));
+        placedObstacles.add(new ObRectangle(w.game, w, w.getPlayer().getWorldCoord(), new ITuple(screenSize.x - (screenSize.x / 10),screenSize.y - (screenSize.y / 10)), "obstacles/white.png", Color.TRANSPARENT));
         w.unregister(placedObstacles.get(0));
 
         int minObstacleCount = w.worldSize * density * 2;
@@ -98,7 +98,7 @@ public class LevelGenerator
 
             //Place the obstacle.
             int color = r.nextInt(w.Palette.length);
-            placedObstacles.add(new ObRectangle(w.game, w, pos, size, w.obstaclePalette[color]));
+            placedObstacles.add(new ObRectangle(w.game, w, pos, size, w.obstaclePalette[color], color));
             Log.i("Obstacle Placement", "Obstacle " + (i + 1) + "- Size x: " + size.x +
                     ", Size y: " + size.y + ", Pos x: " + pos.x + ", Pos y: " + pos.y + ", Color: " + w.obstaclePalette[color]);
         }

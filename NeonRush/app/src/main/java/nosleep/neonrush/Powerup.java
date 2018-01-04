@@ -1,12 +1,9 @@
 package nosleep.neonrush;
 
 import android.graphics.Color;
-import android.graphics.Paint;
 
-import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
-import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
 
 /**
@@ -18,27 +15,31 @@ public abstract class Powerup extends Object
     public enum PUTYPE {Colorphase};
     public PUTYPE type;
 
+    //External References.
     protected World world;
     protected Player player;
-    protected ITuple localCoord;
+
+    //Presentation Info.
     protected int radius = 10;
     protected int color = Color.GREEN;
-    protected int duration;
 
-    protected long timespawned;
-    protected long lifetime;
-    protected int timeout = 20000;
+    //Timer Related Info.
+    int duration;
+    private long timespawned;
+    private long lifetime;
+    private int timeout = 20000;
 
     Powerup(World w, FTuple pos)
     {
         super(w.game);
-        world = w;
-        player = w.getPlayer();
-        position = pos;
-        timespawned = System.currentTimeMillis();
-        collider = new CircleCollider(radius, this);
         tag = "powerup";
+        world = w;
+        player = world.getPlayer();
 
+        position = pos;
+        collider = new CircleCollider(radius, this);
+
+        timespawned = System.currentTimeMillis();
         world.register(this);
     }
 
@@ -46,7 +47,7 @@ public abstract class Powerup extends Object
     public void update(float deltaTime)
     {
         lifetime = System.currentTimeMillis() - timespawned;
-        setAlpha(100.0f - (lifetime / timeout * 100.f));
+        setAlpha(100.0f - (lifetime / timeout * 100.f));    //Not working as intended yet.
 
         if(lifetime >= timeout)
         {
@@ -65,14 +66,16 @@ public abstract class Powerup extends Object
         }
         else
         {
-            super.present(localCoord.x, localCoord.y, deltaTime);
+            super.present(deltaTime, localCoord);
         }
     }
 
+    //All powerups are added to the player's powerup list when acquired.
     public void acquire()
     {
         world.getPlayer().powerups.add(this);
     }
 
+    //Implemented differently by each type of powerup.
     public abstract void activate();
 }

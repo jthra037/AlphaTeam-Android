@@ -1,6 +1,7 @@
 package nosleep.neonrush;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,12 +31,12 @@ public class MainMenuScreen extends Screen
     //UI
     private Pixmap gameTitle;
     private Pixmap backGround;
-    private List<Button> buttons = new ArrayList<Button>();
+    private List<Button> buttons = new ArrayList<>();
 
     //Background Color Effect.
-    private List<Ball> balls = new ArrayList<Ball>();
-    private String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
-            "enemies/red.png","enemies/blue.png","enemies/yellow.png","enemies/grey.png"};
+    private List<Goal> balls = new ArrayList<>();
+    int[] palette = { Color.CYAN, Color.GREEN, Color.MAGENTA, Color.RED,
+                        Color.BLUE, Color.YELLOW, Color.GRAY };
 
     public MainMenuScreen(final Game game)
     {
@@ -50,9 +51,9 @@ public class MainMenuScreen extends Screen
         g.resizePixmap(gameTitle,700,500);
         gameTitle.setPosition(500,((g.getHeight()/2) - (gameTitle.getHeight()/2)));
 
+        random = new Random();
         createButtons();
         spawnBalls();
-        random = new Random();
     }
 
     @Override
@@ -82,7 +83,7 @@ public class MainMenuScreen extends Screen
         {
             if (!balls.isEmpty())
             {
-                ball.update(deltaTime);
+                ball.menuUpdate(deltaTime);
             }
         }
     }
@@ -91,11 +92,11 @@ public class MainMenuScreen extends Screen
     public void present(float deltaTime)
     {
         //Draw balls behind the background.
-        for (Ball ball : balls)
+        for (Goal ball : balls)
         {
             if (!balls.isEmpty())
             {
-                ball.present(deltaTime);
+                ball.menuPresent();
             }
         }
 
@@ -236,7 +237,7 @@ public class MainMenuScreen extends Screen
                     break;
             }
 
-            balls.add(new Ball(game,50, new FTuple(IMath.getRandomInt(-ballSpeed,ballSpeed),IMath.getRandomInt(-ballSpeed,ballSpeed)), enemyPalette[random.nextInt(enemyPalette.length)]));
+            balls.add(new Goal(game, 50, new FTuple(IMath.getRandomInt(-ballSpeed,ballSpeed),IMath.getRandomInt(-ballSpeed,ballSpeed)), palette[random.nextInt(palette.length)]));
             balls.get(j).setVelocity(new FTuple(x,y));
         }
     }

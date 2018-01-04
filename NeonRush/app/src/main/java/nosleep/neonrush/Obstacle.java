@@ -1,9 +1,5 @@
 package nosleep.neonrush;
 
-import android.graphics.Color;
-
-import java.util.concurrent.Callable;
-
 import nosleep.androidgames.framework.Game;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.ITuple;
@@ -11,44 +7,41 @@ import nosleep.game.framework.Object;
 
 /**
  * Created by Mark- on 08-Nov-17.
+ * Trimmed by Mark on 2018-01-03.
  */
 
-public class Obstacle extends Object
+public abstract class Obstacle extends Object
 {
-    protected World w;
-    protected boolean isDynamic = false;
-    protected ITuple localCoord;
-    protected int color = Color.WHITE;
-    protected String obColor = "obstacles/white.png";
-    protected int maxSpeed = 0;
-    protected Callable<Void> action;
+    protected World world;
+    protected String imageRef;
 
-    public Obstacle (Game game, World world, FTuple pos, int col)
+    //To be used for dynamic obstacles.
+    //protected boolean isDynamic = false;
+    //protected Callable<Void> action;
+
+    public Obstacle (Game game, World w, FTuple pos, String image, int col)
     {
         super(game);
         tag = "Obstacle";
-        w = world;
+        world = w;
+
+        //Location Info.
         position = pos;
-        localCoord = w.toLocalCoord(position);
+        localCoord = this.world.toLocalCoord(position);
+
+        //Color Info.
         color = col;
-        world.register(this);
-    }
+        imageRef = image;
 
-    public Obstacle (Game game, World world, FTuple pos, String col)
-    {
-        super(game);
-        tag = "Obstacle";
-        w = world;
-        position = pos;
-        localCoord = w.toLocalCoord(position);
-        obColor = col;
-        world.register(this);
+        w.register(this);
     }
 
     @Override
     public void update(float deltaTime)
     {
-        localCoord = w.toLocalCoord(position);
+        localCoord = world.toLocalCoord(position);
+
+        /*
         if(isDynamic)
         {
             try {
@@ -58,11 +51,12 @@ public class Obstacle extends Object
                 e.printStackTrace();
             }
         }
+        */
     }
 
     @Override
-    public void present(float deltaTime)
+    public void present(float deltaTime, ITuple pos)
     {
-        super.present(localCoord.x, localCoord.y, deltaTime);
+        super.present(deltaTime, pos);
     }
 }
