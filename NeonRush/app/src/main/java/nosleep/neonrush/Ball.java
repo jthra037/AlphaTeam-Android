@@ -85,7 +85,7 @@ public abstract class Ball extends Object
             for (Hit collision : collisions)
             {
                 // account for colors
-                if (collision.otherColorIndex == colorIndex)
+                if (collision.otherColor == color)
                 {
                     position = position.Add(velocity.Mul(deltaTime));
                 }
