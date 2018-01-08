@@ -92,39 +92,59 @@ public class LinesCollider extends Collider {
             // One day we will need relative velocity here
             Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // this should be replaced with something other than a hardcoded approximation
 
+            float p = other.getRadius()/line.getDirection().Length();
+
             Hit thisHit = line.FindIntersection(otherLine);
-            if (thisHit.isHitOccurred() &&
-                    thisHit.GetTStep() < output.GetTStep())
-                output = thisHit;
-        }
 
-        if (!output.isHitOccurred())
-        {
-            for (FTuple point : points)
+            // Black magic to determine points without actually checking them
+            if(!thisHit.isHitOccurred() &&
+                    thisHit.GetUStep() <= 0 &&
+                    thisHit.GetUStep() > -p - 0.001f)
             {
-                // Find location of impact
-                FTuple otherVelNormal = point.Sub(other.position).Normalized();
-                FTuple loi = other.getPosition().Add(otherVelNormal.Mul(other.getRadius()));
+                thisHit = calcForPoint(line.getPoint(), other);
+                if (thisHit.isHitOccurred())
+                {
+                    System.out.println("Corner!");
+                }
+            }
+            else if (!thisHit.isHitOccurred() &&
+                    thisHit.GetUStep() >= 1 &&
+                    thisHit.GetUStep() < 1 + p + 0.001f)
+            {
+                thisHit = calcForPoint(line.getEndpoint(), other);
+                if (thisHit.isHitOccurred())
+                {
+                    System.out.println("Corner!");
+                }
+            }
 
-                FTuple otherVelTangent = new FTuple(otherVelNormal.y, -otherVelNormal.x);
-
-                // make the lines
-                Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // need a real number here too
-                FTuple direction = otherVelTangent.Normalized().Mul(other.getRadius());
-
-                Line thisLine = new Line (point.Sub(direction), direction.Mul(2), w);
-
-
-                Hit thisHit = thisLine.FindIntersection(otherLine);
-                if (thisHit.isHitOccurred() &&
-                        thisHit.GetTStep() < output.GetTStep())
-                    output = thisHit;
-
+            if (thisHit.isHitOccurred() &&
+                    thisHit.GetTStep() < output.GetTStep()) // P
+            {
+                output = thisHit;
             }
         }
 
         output.SetCollidedWith(parent);
         return output;
+    }
+
+    private Hit calcForPoint(FTuple point, Ball other)
+    {
+        // Find location of impact
+        FTuple otherVelNormal = point.Sub(other.position).Normalized();
+        FTuple loi = other.getPosition().Add(otherVelNormal.Mul(other.getRadius()));
+
+        FTuple otherVelTangent = new FTuple(otherVelNormal.y, -otherVelNormal.x);
+
+        // make the lines
+        Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // need a real number here too
+        FTuple direction = otherVelTangent.Normalized().Mul(other.getRadius());
+
+        Line thisLine = new Line (point.Sub(direction), direction.Mul(2), w);
+
+
+        return thisLine.FindIntersection(otherLine);
     }
 
 }
