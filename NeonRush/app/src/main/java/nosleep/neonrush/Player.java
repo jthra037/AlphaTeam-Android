@@ -67,6 +67,7 @@ public class Player extends Ball
     @Override
     public void update(float deltaTime)
     {
+        super.update(deltaTime);
         resolvePhysics(deltaTime);
 
         //Timer to return back to white while ColorPhased.
@@ -89,8 +90,8 @@ public class Player extends Ball
         }
 
         //Move the player.
-        world.ConvertToWorldSpace(position);
-        localCoord = world.toLocalCoord(position);
+        //world.ConvertToWorldSpace(position);
+        //localCoord = world.toLocalCoord(position);
         move();
     }
 
@@ -139,7 +140,7 @@ public class Player extends Ball
         FTuple Fa = new FTuple(dx, dy);
 
         //If no collision is projected to occur this frame, business as usual.
-        if (!collision.isHitOccurred())
+        if (collisions.isEmpty())
         {
             AddForce(Fa); // Impulse plays more fun
             lastVelocity = velocity;
@@ -162,7 +163,7 @@ public class Player extends Ball
 
     private void resolvePhysics(float deltaTime)
     {
-        if (collision.isHitOccurred())
+        if (!collisions.isEmpty())
         {
             //If the player is trying to activate a powerup, check to see what powerups the player has.
             boolean colorphasingThisFrame = false;  //Used to ignore a collision if the player decides to phase through. Prevents stutter.
@@ -174,7 +175,7 @@ public class Player extends Ball
                     if(pow.type == Powerup.PUTYPE.Colorphase)
                     {
                         PUTimeActivated = System.currentTimeMillis();
-                        pow.activate(collision.otherColorIndex);
+                        pow.activate(collisions.get(0).otherColorIndex);
                         powerups.remove(pow);
                         PUColorphaseCount--;
 
@@ -189,7 +190,7 @@ public class Player extends Ball
             }
 
             //If the player hasn't chosen to avoid the collision using ColorPhase, proceed.
-            if (!colorphasingThisFrame)
+            /*if (!colorphasingThisFrame)
             {
                 //Move forward until exact collision time (less than 1 frame of movement).
                 position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
@@ -202,12 +203,12 @@ public class Player extends Ball
             else
             {
                 position = position.Add(velocity.Mul(deltaTime));
-            }
+            }*/
         }
-        else
+        /*else
         {
             position = position.Add(velocity.Mul(deltaTime));
-        }
+        }*/
     }
 
     //Tweaked to account for Colorphasing.
