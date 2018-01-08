@@ -59,6 +59,8 @@ public class World
     //Registry Lists.
     private List<Object> registryList = new ArrayList<Object>();
     private List<Object> deRegistryList = new ArrayList<Object>();
+    private List<Obstacle> obstacles = new ArrayList<>();
+    private List<Ball> balls = new ArrayList<>();
 
     //Timer and score metrics.
     private long score = 0;
@@ -66,6 +68,9 @@ public class World
     private long lastEnemySpawn = 0;
     private long lastPuSpawn = 0;
     private Random r;
+
+    // Debugging
+    private long timer;
 
     public World(Game gm, Graphics graphics, int ws)
     {
@@ -128,6 +133,8 @@ public class World
 
 			    //Remove all objects from the registry that are in queue.
 			    objects.removeAll(deRegistryList);
+			    balls.removeAll(deRegistryList);
+			    obstacles.removeAll(deRegistryList);
 			    deRegistryList.removeAll(deRegistryList);
 
 			    //Run update for all registered objects.
@@ -430,8 +437,17 @@ public class World
     public void register(Object object)
     {
         registryList.add(object);
+        if (object instanceof Ball)
+        {
+            balls.add((Ball) object);
+        }
+        else if (object instanceof Obstacle)
+        {
+            obstacles.add((Obstacle) object);
+        }
     }
-    public void unregister(Object object) {
+    public void unregister(Object object)
+    {
         deRegistryList.add(object);
     }
 
