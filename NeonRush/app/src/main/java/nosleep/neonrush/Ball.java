@@ -1,5 +1,8 @@
 package nosleep.neonrush;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.game.framework.CircleCollider;
@@ -22,7 +25,7 @@ public abstract class Ball extends Object
     //Physics Info.
     protected int radius;
     float mass = 1;
-    Hit collision;
+    List<Hit> collisions;
     FTuple velocity = new FTuple(0, 0);
 
     Ball(World w, int rad)
@@ -31,7 +34,7 @@ public abstract class Ball extends Object
         world = w;
 
         radius = rad;
-        collision = new Hit();
+        collisions = new ArrayList<>();
         collider = new CircleCollider(radius, this);
 
         world.register(this);
@@ -47,18 +50,7 @@ public abstract class Ball extends Object
     public void update(float deltaTime)
     {
         //If a collision is projected to occur this frame.
-        if (collision.isHitOccurred())
-        {
-            //Move forward until exact collision time (less than 1 frame of movement).
-            position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
-            FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
-            position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
-
-            //Hit resolved; clear the hit.
-            collision = new Hit();
-        }
-        //Otherwise move full velocity for this frame.
-        else
+        if (collisions.isEmpty())
         {
             //
             //
@@ -68,22 +60,53 @@ public abstract class Ball extends Object
 
             position = position.Add(velocity.Mul(deltaTime));
 
-            position.x %= world.getWidth();
+            /*position.x %= world.getWidth();
             position.y %= world.getHeight();
 
             //This in particular, seem to recall removing it. Jacob?
             if(position.x < 0)
             {
-                position.x = world.getWidth();
+                position.x = world.ConvertToWorldSpace(position.x);
             }
             if (position.y < 0)
             {
                 position.y = world.getHeight();
             }
-            //=====================================================
+            //=====================================================*/
 
-            localCoord = world.toLocalCoord(position);
+            //localCoord = world.toLocalCoord(position);
         }
+        //Otherwise move full velocity for this frame.
+        else
+        {
+
+            FTuple velocityRelTangent = velocity;
+
+            for (Hit collision : collisions)
+            {
+                // account for colors
+                if (collision.otherColorIndex == colorIndex)
+                {
+                    position = position.Add(velocity.Mul(deltaTime));
+                }
+                else
+                {
+                    //Move forward until exact collision time (less than 1 frame of movement).
+                    position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
+                    velocityRelTangent = velocityRelTangent.ProjectedOnto(collision.GetTangent()); // flatten velocity to possible movement
+                    position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime))); // apply velocity along possible vector for remainder of frame
+                }
+
+            }
+
+
+            //Hit resolved; clear the hit.
+            collisions.clear();
+        }
+
+        // Do all position correction after movement either way
+        world.ConvertToWorldSpace(position);
+        localCoord = world.toLocalCoord(position);
     }
 
     @Override
@@ -131,9 +154,9 @@ public abstract class Ball extends Object
     public int getRadius() {
         return radius;
     }
-    public Hit GetCollision()
+    public List<Hit> GetCollisions()
     {
-        return collision;
+        return collisions;
     }
 
     //Setters.
@@ -179,21 +202,21 @@ public abstract class Ball extends Object
         switch (otherCollider.format)
         {
             case lines:
-                SetCollision(otherCollider.OnCollision(this, localCoord), other.color, other.colorIndex);
+                AddCollision(otherCollider.OnCollision(this, localCoord), other.color, other.colorIndex);
                 break;
         }
     }
 
 
-    void SetCollision(Hit collision, int otherColor, int otherColorIdx)
+    void AddCollision(Hit collision, int otherColor, int otherColorIdx)
     {
         if (collision.isHitOccurred() &&
                 collision.GetTStep() >= 0 &&
-                collision.GetTStep() < this.collision.GetTStep())
+                collision.GetTStep() < 1)
         {
-            this.collision = collision;
-            this.collision.otherColor = otherColor;
-            this.collision.otherColorIndex = otherColorIdx;
+            collision.otherColor = otherColor;
+            collision.otherColorIndex = otherColorIdx;
+            collisions.add(collision);
         }
     }
 }
