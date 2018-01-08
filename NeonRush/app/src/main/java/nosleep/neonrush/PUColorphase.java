@@ -24,7 +24,7 @@ public class PUColorphase extends Powerup
 
     public void activate(int colorIndex)
     {
-        player.color = player.collision.otherColor;
+        player.color = player.collisions.get(0).otherColor;
         player.setImg(world.enemyPalette[colorIndex]);
         player.setPowerupTimer(duration);
     }

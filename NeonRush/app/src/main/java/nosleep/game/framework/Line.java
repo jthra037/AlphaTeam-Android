@@ -187,8 +187,8 @@ public class Line {
             other.setPoint(other.getEndpoint().Sub(other.getDirection()));
         }
 
-        //if (IntersectsWith(other))
-        //{
+        if (other.getDirection().Dot(normal) < 0)
+        {
             float ax = point.x;
             float ay = point.y;
             float bx = direction.x;
@@ -205,12 +205,12 @@ public class Line {
             boolean hitOccurred = 0 <= u && u <= 1.1 && // this should be 1, but works better around here
                     0 <= t && t <= 1;
 
-            output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u);
-        /*}
+            output = new Hit(hitOccurred, FindPointAt(t), normal, direction.Normalized(), u, t);
+        }
         else
         {
             output = new Hit();
-        }*/
+        }
 
         return output;
     }
