@@ -97,6 +97,9 @@ public class World
 
         game.showBanner();//for ads
         r = new Random();
+
+        //Debugging
+        timer = System.currentTimeMillis();
     }
 
     public void update(float deltaTime)
@@ -106,7 +109,18 @@ public class World
         {
             case Play:
 
+                /*================::Timer Start::===============*/
+                timer = System.currentTimeMillis(); // Timer start
+                /*==============================================*/
+
                 resolvePhysics();
+
+                /*=======================::Timer End::==========================*/
+                long timerResult = System.currentTimeMillis() - timer;
+                System.out.println("ms: " + timerResult +
+                        ", %dt: " + (timerResult/(deltaTime * 10)) +
+                ", objects.size(): " + objects.size());
+                /*==============================================================*/
 
 			    //Add all objects to the registry that are in queue.
 			    objects.addAll(registryList);
