@@ -52,53 +52,30 @@ public abstract class Ball extends Object
         //If a collision is projected to occur this frame.
         if (collisions.isEmpty())
         {
-            //
-            //
-            //Something might be off here, doesn't look right, could be outdated, likely cause of weird movement sometimes.
-            //
-            //
-
             position = position.Add(velocity.Mul(deltaTime));
-
-            /*position.x %= world.getWidth();
-            position.y %= world.getHeight();
-
-            //This in particular, seem to recall removing it. Jacob?
-            if(position.x < 0)
-            {
-                position.x = world.ConvertToWorldSpace(position.x);
-            }
-            if (position.y < 0)
-            {
-                position.y = world.getHeight();
-            }
-            //=====================================================*/
-
-            //localCoord = world.toLocalCoord(position);
         }
         //Otherwise move full velocity for this frame.
         else
         {
-
-            FTuple velocityRelTangent = velocity;
+            FTuple velocityRelTangent = new FTuple(velocity);
+            Hit earliest = new Hit();
 
             for (Hit collision : collisions)
             {
+                earliest = earliest.GetTStep() < collision.GetTStep() ? earliest : collision;
+
                 // account for colors
-                if (collision.otherColor == color)
-                {
-                    position = position.Add(velocity.Mul(deltaTime));
-                }
-                else
+                if (collision.otherColor != color)
                 {
                     //Move forward until exact collision time (less than 1 frame of movement).
-                    position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
                     velocityRelTangent = velocityRelTangent.ProjectedOnto(collision.GetTangent()); // flatten velocity to possible movement
-                    position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime))); // apply velocity along possible vector for remainder of frame
                 }
-
             }
 
+            position = earliest.worldSpaceLocation.Add(earliest.GetNormal().Mul(radius + 1.0001f));
+            position = position.Add(velocityRelTangent.Mul(deltaTime - (earliest.GetTStep() * deltaTime))); // apply velocity along possible vector for remainder of frame
+
+            //position = position.Add(velocity.Mul(deltaTime));
 
             //Hit resolved; clear the hit.
             collisions.clear();

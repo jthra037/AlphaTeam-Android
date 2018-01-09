@@ -35,27 +35,21 @@ public class Enemy extends Ball
     @Override
     public void update(float deltaTime)
     {
-        FTuple playerPos = player.getWorldCoord();
+        FTuple playerPos =  new FTuple (player.getWorldCoord());
         float speed = 350;
         float F = 60;
-        FTuple Fa = playerPos.Add(position.Mul(-1)).Normalized().Mul(F);
 
-        //
-        //
-        //This is why enemies move weird. This worked when our world was the size of the screen. No longer the case.
-        //Especially near wrap lines enemies won't chase the player, they'll chase a weird direction.
-        //
-        //
-
+        //Account for world wrapping when locating the player.
         if ( Math.abs(playerPos.x - position.x) > world.getWidth()/2 )
         {
-            Fa.x *= -1;
+            playerPos.x = playerPos.x < position.x ? playerPos.x + world.getWidth() : playerPos.x - world.getWidth();
         }
         if ( Math.abs(playerPos.y - position.y) > world.getHeight()/2 )
         {
-            Fa.y *= -1;
+            playerPos.y = playerPos.y < position.y ? playerPos.y + world.getHeight() : playerPos.y - world.getHeight();
         }
 
+        FTuple Fa = playerPos.Add(position.Mul(-1)).Normalized().Mul(F);
         AddForce(Fa);
 
         //Cap enemy speed.

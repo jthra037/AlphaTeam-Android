@@ -45,7 +45,7 @@ public class MainGameScreen extends Screen
         g = game.getGraphics();
 
         //Create the whole world.
-        int worldSize = 2;
+        int worldSize = 4;
         world = new World(game, g, worldSize);
         settings = game.getSharedPreferences();
 

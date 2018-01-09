@@ -15,6 +15,12 @@ public class FTuple
         this.y = y;
     }
 
+    public FTuple (FTuple other)
+    {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
     public FTuple Add(FTuple in)
     {
         return new FTuple(this.x + in.x, this.y + in.y);

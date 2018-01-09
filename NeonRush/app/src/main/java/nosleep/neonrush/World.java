@@ -1,6 +1,7 @@
 package nosleep.neonrush;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class World
         //Make the player, the viewport, and generate the level.
         player = new Player(this, "enemies/white.png");
         v = new ViewableScreen(g);
-        LevelGenny = new LevelGenerator(this, 4);
+        LevelGenny = new LevelGenerator(this, 5);
 
         //Set the directional arrow.
         dArrow = new DirectionalArrow(this,new FTuple(g.getWidth()/2 - 63, g.getHeight()/2 - 33)); //hardcoded numbers are image width and height
@@ -124,8 +125,8 @@ public class World
                 /*=======================::Timer End::==========================*/
                 long timerResult = System.currentTimeMillis() - timer;
                 System.out.println("ms: " + timerResult +
-                        ", %dt: " + (timerResult/(deltaTime * 10)) +
-                ", objects.size(): " + objects.size());
+                        ", %dt: " + (deltaTime * 1000) +
+                ", valls.size(): " + balls.size());
                 /*==============================================================*/
 
 			    //Add all objects to the registry that are in queue.
@@ -153,7 +154,7 @@ public class World
                 }
 
                 placeGoal();
-                spawnEnemies();
+                //spawnEnemies();
                 spawnPowerups();
 
                 //Set the screen position to that of the player.
@@ -190,6 +191,16 @@ public class World
                         g.drawPixmap(background);
                     }
                 }
+
+                /*
+                //Draw Wrap Debug Lines.
+                FTuple zero = new FTuple(0.0f, 0.0f);
+                FTuple worldsize = new FTuple(getWidth(), getHeight());
+                g.drawLine(toLocalCoord(zero).x, toLocalCoord(zero).y, toLocalCoord(worldsize).x, toLocalCoord(zero).y, Color.RED);
+                g.drawLine(toLocalCoord(worldsize).x, toLocalCoord(zero).y, toLocalCoord(worldsize).x, toLocalCoord(worldsize).y, Color.RED);
+                g.drawLine(toLocalCoord(worldsize).x, toLocalCoord(worldsize).y, toLocalCoord(zero).x, toLocalCoord(worldsize).y, Color.RED);
+                g.drawLine(toLocalCoord(zero).x, toLocalCoord(worldsize).y, toLocalCoord(zero).x, toLocalCoord(zero).y, Color.RED);
+                */
 
                 //Render all the objects.
                 for (Object object : objects)
@@ -316,7 +327,7 @@ public class World
     //Spawn enemies at appropriate time.
     private void spawnEnemies()
     {
-        int enemySpawnWait = 30000;  //30 seconds.
+        int enemySpawnWait = 5000;  //10 seconds.
 
         if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
         {
