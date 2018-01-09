@@ -61,6 +61,7 @@ public class World
     private List<Object> deRegistryList = new ArrayList<Object>();
     private List<Obstacle> obstacles = new ArrayList<>();
     private List<Ball> balls = new ArrayList<>();
+    private List<Powerup> powerups = new ArrayList<>();
 
     //Timer and score metrics.
     private long score = 0;
@@ -134,6 +135,7 @@ public class World
 			    //Remove all objects from the registry that are in queue.
 			    objects.removeAll(deRegistryList);
 			    balls.removeAll(deRegistryList);
+			    powerups.removeAll(deRegistryList);
 			    obstacles.removeAll(deRegistryList);
 			    deRegistryList.removeAll(deRegistryList);
 
@@ -209,95 +211,68 @@ public class World
     //CONTAINS A GAME OVER CONDITION.
     private void resolvePhysics()
     {
-        //For all registered objects.
-        for (int i = 0; i < objects.size() - 1; i++)
+        int maxDistSquared = 640000;
+
+        // Check all ball on ball action
+        for(int i = 0; i < balls.size() - 1; i++)
         {
-            //Compared against all other registered objects.
-            for (int j = i + 1; j < objects.size(); j++)
+            for(int j = i + 1; j < balls.size(); j++)
             {
-                Object object = objects.get(i);
-                Object other = objects.get(j);
-                List<String> tags = Arrays.asList(object.tag, other.tag);
-                int maxDistSquared = 640000;
+                Ball ballOne = balls.get(i);
+                Ball ballTwo = balls.get(j);
+                List<String> tags = Arrays.asList(ballOne.tag, ballTwo.tag);
 
                 //Only check collision on objects in proximity to eachother.
-                //Don't check against the arrow UI, or if both objects are obstacles.
-                if (object.getPosition().Sub(other.getPosition()).LengthS() < maxDistSquared &&
-                        !tags.contains("dArrow") &&
-                        !(object.tag == "Obstacle" && other.tag == "Obstacle"))
+                if (ballOne.getPosition().Sub(ballTwo.getPosition()).LengthS() < maxDistSquared &&
+                        !deRegistryList.contains(ballOne) && // neither ball is about to be deregistered
+                        !deRegistryList.contains(ballTwo) &&
+                        ballOne.getCollider().OnOverlap(ballTwo, ballOne.getPosition())) // balls are touching
                 {
-                    //Only check if neither object is queued to be deregistered.
-                    if (!deRegistryList.contains(object) &&
-                            !deRegistryList.contains(other))
+                    // Start checking tags to determine outcome of collision
+                    if (ballOne.tag == ballTwo.tag)
                     {
-                        //OVERLAP CHECK.
-                        //Overlap ball combining. Check if both objects are overlapping balls.
-                        if (object instanceof Ball && other instanceof Ball &&
-                                object.getCollider().OnOverlap(other, object.getPosition()))
+                        ballOne.Combine(ballTwo);
+                    }
+                    else if (tags.contains("Player") && tags.contains("Goal"))
+                    {
+                        player.Combine(notPlayer(ballOne, ballTwo));
+                        game.vibrateForInterval(50);
+                    }
+                    else if (tags.contains("Player") && tags.contains("Enemy"))
+                    {
+                        if (ballOne.color == ballTwo.color)
                         {
-                            Ball thisBall = (Ball)object;
-
-                            //If two enemies collide, form a bigger enemy.
-                            if (object != null && object.tag == other.tag)
-                            {
-                                thisBall.Combine((Ball)other);
-                            }
-                            //If player collides with the goal, grow the player.
-                            else if (tags.contains("Player") && tags.contains("Goal"))
-                            {
-                                player.Combine(notPlayer(object, other));
-                                game.vibrateForInterval(50); //for haptic feedback
-                            }
-                            //If player collides with an enemy, are they the same color?
-                            //If yes, the player absorbs the enemy. If not, game over.
-                            else if (tags.contains("Player") && tags.contains("Enemy"))
-                            {
-                                if(thisBall.color == other.color)
-                                {
-                                    player.Combine(notPlayer(object, other));
-                                    game.vibrateForInterval(50); //for haptic feedback
-                                }
-                                else
-                                {
-                                    unregister(object);
-                                    unregister(other);
-                                    game.setGameState(Game.GAMESTATE.GameOver);
-                                }
-                            }
+                            player.Combine(notPlayer(ballOne, ballTwo));
+                            game.vibrateForInterval(50);
                         }
-
-                        //OVERLAP CHECK.
-                        //Powerup acquisition. Player should always be ahead of all powerups in object list.
-                        //Check if objects are player and powerup, and are overlapping.
-                        else if (object instanceof Player && other instanceof Powerup &&
-                                object.getCollider().OnOverlap(other, object.getPosition()))
+                        else
                         {
-                            Powerup p = (Powerup) other;
-                            System.out.println("Before PU add: " + player.powerups);
-                            p.acquire();
-                            System.out.println("After PU add: " + player.powerups);
-                            unregister(other);
-                        }
-
-                        //PHYSICS DRIVEN COLLISIONS.
-                        //Make sure one tag is an obstacle, but not both.
-                        //Make sure one of the objects isn't the goal.
-                        //Make sure the color isn't the same for both objects (color phasing).
-                        else if (tags.contains("Obstacle") &&
-                                tags.indexOf("Obstacle") == tags.lastIndexOf("Obstacle") &&
-                                !tags.contains("Goal") &&
-                                object.color != other.color)
-                        {
-                            if (object instanceof Ball)
-                            {
-                                ((Ball) object).CollisionCheck(other);
-                            }
-                            else if (other instanceof Ball)
-                            {
-                                ((Ball) other).CollisionCheck(object);
-                            }
+                            unregister(ballOne);
+                            unregister(ballTwo);
+                            game.setGameState(Game.GAMESTATE.GameOver);
                         }
                     }
+                }
+            }
+        }
+
+        for (Powerup p : powerups)
+        {
+            System.out.println("Before PU add: " + player.powerups);
+            p.acquire();
+            System.out.println("After PU add: " + player.powerups);
+            unregister(p);
+        }
+
+        // Check ball on obstacle collisions
+        for (Ball ball : balls)
+        {
+            for (Obstacle obstacle : obstacles)
+            {
+                if (ball.tag != "Goal" &&
+                        ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared)
+                {
+                    ball.CollisionCheck(obstacle);
                 }
             }
         }
@@ -444,6 +419,10 @@ public class World
         else if (object instanceof Obstacle)
         {
             obstacles.add((Obstacle) object);
+        }
+        else if (object instanceof Powerup)
+        {
+            powerups.add((Powerup) object);
         }
     }
     public void unregister(Object object)
