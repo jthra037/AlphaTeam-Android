@@ -17,8 +17,7 @@
 
         <meta-data android:name="com.google.gms.version" android:value="@integer/google_play_services_version"/>
 
-        <activity android:name=".MainActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".MainActivity" android:theme="@style/SplashTheme" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
