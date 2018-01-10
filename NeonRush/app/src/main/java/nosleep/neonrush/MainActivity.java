@@ -14,14 +14,14 @@ public class MainActivity extends AndroidGame {
     public void onSignInFailed()
     {
         Toast t = new Toast(this);
-        t.makeText(this, "Signin failed", Toast.LENGTH_LONG).show();
+        t.makeText(this, "Signin failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSignInSucceeded()
     {
         Toast t = new Toast(this);
-        t.makeText(this, "Successfully signed in", Toast.LENGTH_LONG).show();
+        t.makeText(this, "Successfully signed in", Toast.LENGTH_SHORT).show();
 
     }
     @Override
