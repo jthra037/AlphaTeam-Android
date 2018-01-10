@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -42,6 +43,7 @@ public class World
     public Game game;
     public Graphics g;
     private ViewableScreen v;
+    private Thread physicsThread;
 
     //World info.
     public int worldSize;
@@ -58,6 +60,7 @@ public class World
     private Pixmap background;
 
     //Registry Lists.
+    private List<Enemy> inactiveEnemies = new ArrayList<>();
     private List<Object> registryList = new ArrayList<Object>();
     private List<Object> deRegistryList = new ArrayList<Object>();
     private List<Obstacle> obstacles = new ArrayList<>();
@@ -74,8 +77,7 @@ public class World
     // Debugging
     private long timer;
 
-    public World(Game gm, Graphics graphics, int ws)
-    {
+    public World(Game gm, Graphics graphics, int ws) {
         game = gm;
         g = graphics;
 
@@ -102,6 +104,12 @@ public class World
         lastEnemySpawn = System.currentTimeMillis();
         lastPuSpawn = System.currentTimeMillis() - 20000;
 
+        // Make some enemies
+        for(int i = 0; i < 30; i++)
+        {
+            spawnEnemies();
+        }
+
         game.showBanner();//for ads
         r = new Random();
 
@@ -116,6 +124,19 @@ public class World
         {
             case Play:
 
+                //Add all objects to the registry that are in queue.
+                objects.addAll(registryList);
+                registryList.removeAll(registryList);
+
+                //Remove all objects from the registry that are in queue.
+                //objects.removeAll(deRegistryList);
+                iterativelyClearList(objects);
+                //balls.removeAll(deRegistryList);
+                iterativelyClearList(balls);
+                powerups.removeAll(deRegistryList);
+                obstacles.removeAll(deRegistryList);
+                deRegistryList.removeAll(deRegistryList);
+
                 /*================::Timer Start::===============*/
                 timer = System.currentTimeMillis(); // Timer start
                 /*==============================================*/
@@ -126,19 +147,9 @@ public class World
                 long timerResult = System.currentTimeMillis() - timer;
                 System.out.println("ms: " + timerResult +
                         ", %dt: " + (deltaTime * 1000) +
-                ", valls.size(): " + balls.size());
+                ", balls.size(): " + balls.size());
                 /*==============================================================*/
 
-			    //Add all objects to the registry that are in queue.
-			    objects.addAll(registryList);
-			    registryList.removeAll(registryList);
-
-			    //Remove all objects from the registry that are in queue.
-			    objects.removeAll(deRegistryList);
-			    balls.removeAll(deRegistryList);
-			    powerups.removeAll(deRegistryList);
-			    obstacles.removeAll(deRegistryList);
-			    deRegistryList.removeAll(deRegistryList);
 
 			    //Run update for all registered objects.
 			    for (Object object : objects)
@@ -154,7 +165,7 @@ public class World
                 }
 
                 placeGoal();
-                //spawnEnemies();
+                activateEnemies();
                 spawnPowerups();
 
                 //Set the screen position to that of the player.
@@ -222,71 +233,79 @@ public class World
     //CONTAINS A GAME OVER CONDITION.
     private void resolvePhysics()
     {
-        int maxDistSquared = 640000;
-
-        // Check all ball on ball action
-        for(int i = 0; i < balls.size() - 1; i++)
-        {
-            for(int j = i + 1; j < balls.size(); j++)
+        new Thread(new Runnable() {
+            public void run()
             {
-                Ball ballOne = balls.get(i);
-                Ball ballTwo = balls.get(j);
-                List<String> tags = Arrays.asList(ballOne.tag, ballTwo.tag);
+                int maxDistSquared = 640000;
 
-                //Only check collision on objects in proximity to eachother.
-                if (ballOne.getPosition().Sub(ballTwo.getPosition()).LengthS() < maxDistSquared &&
-                        !deRegistryList.contains(ballOne) && // neither ball is about to be deregistered
-                        !deRegistryList.contains(ballTwo) &&
-                        ballOne.getCollider().OnOverlap(ballTwo, ballOne.getPosition())) // balls are touching
+                // Check all ball on ball action
+                for(int i = 0; i < balls.size() - 1; i++)
                 {
-                    // Start checking tags to determine outcome of collision
-                    if (ballOne.tag == ballTwo.tag)
+                    for(int j = i + 1; j < balls.size(); j++)
                     {
-                        ballOne.Combine(ballTwo);
-                    }
-                    else if (tags.contains("Player") && tags.contains("Goal"))
-                    {
-                        player.Combine(notPlayer(ballOne, ballTwo));
-                        game.vibrateForInterval(50);
-                    }
-                    else if (tags.contains("Player") && tags.contains("Enemy"))
-                    {
-                        if (ballOne.color == ballTwo.color)
+                        Ball ballOne = balls.get(i);
+                        Ball ballTwo = balls.get(j);
+                        List<String> tags = Arrays.asList(ballOne.tag, ballTwo.tag);
+
+                        //Only check collision on objects in proximity to eachother.
+                        if (ballOne.getPosition().Sub(ballTwo.getPosition()).LengthS() < maxDistSquared &&
+                                !deRegistryList.contains(ballOne) && // neither ball is about to be deregistered
+                                !deRegistryList.contains(ballTwo) &&
+                                ballOne.getCollider().OnOverlap(ballTwo, ballOne.getPosition())) // balls are touching
                         {
-                            player.Combine(notPlayer(ballOne, ballTwo));
-                            game.vibrateForInterval(50);
-                        }
-                        else
-                        {
-                            unregister(ballOne);
-                            unregister(ballTwo);
-                            game.setGameState(Game.GAMESTATE.GameOver);
+                            // Start checking tags to determine outcome of collision
+                            if (ballOne.tag == ballTwo.tag)
+                            {
+                                ballOne.Combine(ballTwo);
+                            }
+                            else if (tags.contains("Player") && tags.contains("Goal"))
+                            {
+                                player.Combine(notPlayer(ballOne, ballTwo));
+                                game.vibrateForInterval(50);
+                            }
+                            else if (tags.contains("Player") && tags.contains("Enemy"))
+                            {
+                                if (ballOne.color == ballTwo.color)
+                                {
+                                    player.Combine(notPlayer(ballOne, ballTwo));
+                                    game.vibrateForInterval(50);
+                                }
+                                else
+                                {
+                                    unregister(ballOne);
+                                    unregister(ballTwo);
+                                    game.setGameState(Game.GAMESTATE.GameOver);
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        for (Powerup p : powerups)
-        {
-            System.out.println("Before PU add: " + player.powerups);
-            p.acquire();
-            System.out.println("After PU add: " + player.powerups);
-            unregister(p);
-        }
-
-        // Check ball on obstacle collisions
-        for (Ball ball : balls)
-        {
-            for (Obstacle obstacle : obstacles)
-            {
-                if (ball.tag != "Goal" &&
-                        ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared)
+                for (Powerup p : powerups)
                 {
-                    ball.CollisionCheck(obstacle);
+                    System.out.println("Before PU add: " + player.powerups);
+                    p.acquire();
+                    System.out.println("After PU add: " + player.powerups);
+                    unregister(p);
+                }
+
+                // Check ball on obstacle collisions
+                try {
+                    for (Ball ball : balls) {
+                        for (Obstacle obstacle : obstacles) {
+                            if (ball.tag != "Goal" &&
+                                    ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared) {
+                                ball.CollisionCheck(obstacle);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.e("THREAD NULLREF ERROR", String.valueOf(e));
                 }
             }
-        }
+        }).start();
     }
 
     //If the player has reached the goal spawn a new one.
@@ -327,43 +346,23 @@ public class World
     //Spawn enemies at appropriate time.
     private void spawnEnemies()
     {
-        int enemySpawnWait = 5000;  //10 seconds.
+        FTuple pos = new FTuple(0.0f, 0.0f);
+        int radius = 10;
+        new Enemy(this, radius, pos);
+    }
 
-        if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait)
+    private void activateEnemies()
+    {
+        int enemySpawnWait = 2000;  //5 seconds.
+
+        if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait &&
+                !inactiveEnemies.isEmpty())
         {
-            FTuple pos = new FTuple(0.0f, 0.0f);
-            int radius = 10;
-            boolean inside = true;
-
-            //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 0);
-            unregister(playerOb);
-            LevelGenny.placedObstacles.set(0, playerOb);
-
-            //Check against obstacle list to avoid spawning enemies inside obstacles.
-            while(inside)
-            {
-                inside = false;
-                pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
-
-                for(Obstacle ob : LevelGenny.placedObstacles)
-                {
-                    ObRectangle rect = (ObRectangle) ob;
-
-                    if ((pos.x + radius) > (rect.position.x - rect.getSize().x) &&
-                            (pos.x - radius) < (rect.position.x + rect.getSize().x) &&
-                            (pos.y + radius) > (rect.position.y - rect.getSize().y) &&
-                            (pos.y + radius) < (rect.position.y + rect.getSize().y))
-                    {
-                        inside = true;
-                        Log.e("LvlGen Placement error","TRIED TO PLACE GOAL INSIDE OBSTACLE." );
-                        break;
-                    }
-                }
-            }
+            int rand = r.nextInt(inactiveEnemies.size());
 
             lastEnemySpawn = System.currentTimeMillis();
-            new Enemy(this, radius, pos);
+
+            activate(inactiveEnemies.get(rand));
         }
     }
 
@@ -439,6 +438,40 @@ public class World
     public void unregister(Object object)
     {
         deRegistryList.add(object);
+    }
+
+    public void activate(Enemy enemy)
+    {
+        int ctr = 0;
+        FTuple pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+
+        while ((pos.Sub(player.getPosition())).LengthS() < 32000 && ctr++ < 3)
+        {
+            pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+        }
+
+        enemy.position = pos;
+
+        register(enemy);
+        inactiveEnemies.remove(enemy);
+    }
+
+    public void deactivate(Enemy enemy)
+    {
+        inactiveEnemies.add(enemy);
+        unregister(enemy);
+    }
+
+    private void iterativelyClearList( List listToRemoveFrom)
+    {
+        Iterator<Object> iter = listToRemoveFrom.iterator();
+        while(iter.hasNext() )
+        {
+            if (deRegistryList.contains(iter.next()))
+            {
+                iter.remove();
+            }
+        }
     }
 
     //Getters.

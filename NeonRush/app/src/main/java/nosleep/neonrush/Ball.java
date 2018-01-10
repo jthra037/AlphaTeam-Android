@@ -36,8 +36,6 @@ public abstract class Ball extends Object
         radius = rad;
         collisions = new ArrayList<>();
         collider = new CircleCollider(radius, this);
-
-        world.register(this);
     }
 
     //This constructor is used for menu balls (for color effects), which require less functionality than game balls.
@@ -169,7 +167,14 @@ public abstract class Ball extends Object
             g.resizePixmap(img, imgScalar, imgScalar);
         }
 
-        world.unregister(other);
+        if (other instanceof Enemy)
+        {
+            world.deactivate((Enemy) other);
+        }
+        else
+        {
+            world.unregister(other);
+        }
     }
 
     void CollisionCheck(Object other)

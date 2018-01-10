@@ -30,6 +30,8 @@ public class Enemy extends Ball
         g.resizePixmap(img, imgScalar, imgScalar);
 
         position = pos;
+
+        world.deactivate(this); // this puts it on the inactiveEnemy list to start with
     }
 
     @Override

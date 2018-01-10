@@ -24,6 +24,8 @@ public class Goal extends Ball
         img = g.newPixmap(imageRef, Graphics.PixmapFormat.ARGB8888);
         int imgScalar = (int)(radius * 2.0f * 1.5f);    //Manually calculated to suit art assets.
         g.resizePixmap(img, imgScalar, imgScalar);
+
+        world.register(this);
     }
 
     //Alternative constructor used in main menu for color effect. Goals are basically just balls lets be real.

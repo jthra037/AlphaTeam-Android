@@ -62,6 +62,8 @@ public class Player extends Ball
 
         //Powerups List.
         powerups = new Vector(10, 3);
+
+        world.register(this);
     }
 
     @Override
