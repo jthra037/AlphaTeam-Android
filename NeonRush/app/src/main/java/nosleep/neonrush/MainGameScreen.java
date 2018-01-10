@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import nosleep.androidgames.framework.Audio;
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Input;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Screen;
+import nosleep.androidgames.framework.Sound;
 import nosleep.game.framework.Button;
 
 /**
@@ -28,12 +30,18 @@ public class MainGameScreen extends Screen
     private World world;
     private SharedPreferences settings;
     public Graphics g;
+    public Audio a;
 
     //UI.
     private Paint textPaint;
     private Paint scorePaint;
     private Rect screenRect;
     private List<Button> buttons = new ArrayList<Button>();
+
+    //Audio
+    private Sound achievementUnlockSound;
+    private Sound buttonSound;
+    private boolean shouldSFXPlay;
 
     //Advertisement counters.
     private int adDisplayCount = 4;
@@ -43,16 +51,22 @@ public class MainGameScreen extends Screen
     {
         super(game);
         g = game.getGraphics();
+        a = game.getAudio();
 
         //Create the whole world.
         int worldSize = 4;
-        world = new World(game, g, worldSize);
+        world = new World(game, g, a, worldSize);
         settings = game.getSharedPreferences();
 
         //Create rect for pause / game over menu, and buttons.
         screenRect = new Rect(0,0,800,400);
         screenRect.set(g.getWidth()/2- screenRect.right/2,g.getHeight()/2-screenRect.bottom/2,screenRect.right,screenRect.bottom);
         createButtons();
+
+        //Create Audio
+        achievementUnlockSound = a.newSound("Sounds/SFX/achievementunlocked.wav");
+        buttonSound = a.newSound("Sounds/SFX/buttonsound.wav");
+        shouldSFXPlay = settings.getBoolean("enableSFX", true);
 
         //Create the font used in menus.
         Typeface tf = Typeface.createFromAsset(g.getAssets(),"fonts/antoniobold.ttf");
@@ -206,6 +220,7 @@ public class MainGameScreen extends Screen
     {
         int butWidth = 200;
         int butHeight = 80;
+        final int vibrateTime = 50;
 
         //Pause Button.
         Pixmap pauseButton = g.newPixmap("buttons/pausebutton.png", Graphics.PixmapFormat.ARGB4444);
@@ -216,6 +231,11 @@ public class MainGameScreen extends Screen
                 buttons.get(2).hide(false);
                 buttons.get(4).hide(true);
                 game.setGameState(Game.GAMESTATE.Pause);
+                if (shouldSFXPlay)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(vibrateTime);
                 return null;
             }
         }, new Callable<Void>(){
@@ -235,6 +255,11 @@ public class MainGameScreen extends Screen
                 buttons.get(2).hide(true);
                 buttons.get(4).hide(false);
                 game.setGameState(Game.GAMESTATE.Play);
+                if (shouldSFXPlay)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(vibrateTime);
                 return null;
             }
         }, new Callable<Void>(){
@@ -254,7 +279,13 @@ public class MainGameScreen extends Screen
                 if (game.isSignedIn())
                 {
                     game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
+                    if (shouldSFXPlay)
+                    {
+                        buttonSound.play();
+                    }
+                    game.vibrateForInterval(vibrateTime);
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
+
                 }
 
                 SharedPreferences.Editor editor = settings.edit();
@@ -262,6 +293,7 @@ public class MainGameScreen extends Screen
                 editor.commit();
 
                 game.setScreen(new MainMenuScreen(game));
+
                 return null;
             }
         }, new Callable<Void>(){
@@ -281,6 +313,11 @@ public class MainGameScreen extends Screen
                 if (game.isSignedIn())
                 {
                     game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
+                    if (shouldSFXPlay)
+                    {
+                        buttonSound.play();
+                    }
+                    game.vibrateForInterval(vibrateTime);
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
                 }
 
@@ -328,6 +365,10 @@ public class MainGameScreen extends Screen
             game.unlockAchievement(R.string.a_score_2000);
             game.unlockAchievement(R.string.a_score_1000);
             game.unlockAchievement(R.string.a_score_500);
+            if (shouldSFXPlay)
+            {
+                achievementUnlockSound.play(100);
+            }
             Log.i("Achievement", "Unlocked a_4000!");
         }
         if (world.getLScore() >= milestone3 && world.getLScore() <= milestone4) {
@@ -335,21 +376,37 @@ public class MainGameScreen extends Screen
             game.unlockAchievement(R.string.a_score_2000);
             game.unlockAchievement(R.string.a_score_1000);
             game.unlockAchievement(R.string.a_score_500);
+            if (shouldSFXPlay)
+            {
+                achievementUnlockSound.play(100);
+            }
             Log.i("Achievement", "Unlocked a_3000!");
         }
         if (world.getLScore() >= milestone2 && world.getLScore() <= milestone3) {
             game.unlockAchievement(R.string.a_score_2000);
             game.unlockAchievement(R.string.a_score_1000);
             game.unlockAchievement(R.string.a_score_500);
+            if (shouldSFXPlay)
+            {
+                achievementUnlockSound.play(100);
+            }
             Log.i("Achievement", "Unlocked a_2000!");
         }
         if (world.getLScore() >= milestone1 && world.getLScore() <= milestone2) {
             game.unlockAchievement(R.string.a_score_1000);
             game.unlockAchievement(R.string.a_score_500);
+            if (shouldSFXPlay)
+            {
+                achievementUnlockSound.play(100);
+            }
             Log.i("Achievement", "Unlocked a_1000!");
         }
         if (world.getLScore() >= milestone0 && world.getLScore() <= milestone1) {
             game.unlockAchievement(R.string.a_score_500);
+            if (shouldSFXPlay)
+            {
+                achievementUnlockSound.play(100);
+            }
             Log.i("Achievement", "Unlocked a_500!");
         }
     }

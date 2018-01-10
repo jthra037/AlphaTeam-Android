@@ -19,6 +19,9 @@ public class AndroidSound implements Sound {
     }
 
     @Override
+    public void play(){soundPool.play(soundId,100,100,0,0,1);} //defaults to 100% audio. You can also adjust whether orn ot the audio loops, or how fast it polays back
+
+    @Override
     public void dispose() {
         soundPool.unload(soundId);
     }

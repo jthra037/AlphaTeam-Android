@@ -78,6 +78,7 @@ public abstract class AndroidGame extends BaseGameActivity implements Game {
         graphics = new AndroidGraphics(getAssets(), frameBuffer);
         fileIO = new AndroidFileIO(getAssets());
         audio = new AndroidAudio(this);
+        settings = getSharedPreferences(Settings_Prefs,0);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         MobileAds.initialize(this,"ca-app-pub-4948492122982090~9045022299");
 
@@ -108,7 +109,7 @@ public abstract class AndroidGame extends BaseGameActivity implements Game {
 
         screen = getStartScreen();
         context = getApplicationContext();
-        settings = getSharedPreferences(Settings_Prefs,0);
+
     }
 
     @Override

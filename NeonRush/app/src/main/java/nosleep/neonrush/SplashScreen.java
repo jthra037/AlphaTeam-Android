@@ -8,6 +8,9 @@ import nosleep.androidgames.framework.Screen;
  */
 
 public class SplashScreen extends Screen {
+
+    private boolean debugMode = false;
+
     public SplashScreen(Game game)
     {
         super(game);

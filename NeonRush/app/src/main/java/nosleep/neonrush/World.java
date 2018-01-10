@@ -1,5 +1,6 @@
 package nosleep.neonrush;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
@@ -10,9 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import nosleep.androidgames.framework.Audio;
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Pixmap;
+import nosleep.androidgames.framework.Sound;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.ITuple;
 import nosleep.game.framework.Object;
@@ -41,9 +44,18 @@ public class World
             "enemies/red.png","enemies/blue.png","enemies/yellow.png","enemies/grey.png"};
 
     public Game game;
+    public Audio a;
     public Graphics g;
     private ViewableScreen v;
-    private Thread physicsThread;
+    private SharedPreferences settings;
+
+    //Audio
+    private Sound goalPickupSound;
+    private Sound powerupPickupSound;
+    private Sound powerupUseSound;
+    private Sound deathSound;
+    private Sound playerEatsEnemySound;
+    private boolean shouldSFXPlay;
 
     //World info.
     public int worldSize;
@@ -77,9 +89,11 @@ public class World
     // Debugging
     private long timer;
 
-    public World(Game gm, Graphics graphics, int ws) {
+    public World(Game gm, Graphics graphics, Audio audio, int ws) {
         game = gm;
         g = graphics;
+        a = audio;
+        settings = game.getSharedPreferences();
 
         //Set world parameters.
         worldSize = ws;
@@ -89,6 +103,14 @@ public class World
         //Set background.
         background = g.newPixmap("newbackground.png", Graphics.PixmapFormat.RGB565);
         g.resizePixmap(background, g.getWidth(), g.getHeight());
+
+        //Set audio
+        goalPickupSound = a.newSound("Sounds/SFX/goalpickup.wav");
+        powerupPickupSound = a.newSound("Sounds/SFX/poweruppickup.wav");
+        powerupUseSound = a.newSound("Sounds/SFX/powerupuse.wav");
+        deathSound = a.newSound("Sounds/SFX/death.wav");
+        playerEatsEnemySound = a.newSound("Sounds/SFX/playereatsenemy.wav");
+        shouldSFXPlay = settings.getBoolean("enableSFX", true);
 
         //Make the player, the viewport, and generate the level.
         player = new Player(this, "enemies/white.png");
@@ -261,6 +283,10 @@ public class World
                             else if (tags.contains("Player") && tags.contains("Goal"))
                             {
                                 player.Combine(notPlayer(ballOne, ballTwo));
+                                if (shouldSFXPlay)
+                                {
+                                    goalPickupSound.play();
+                                }
                                 game.vibrateForInterval(50);
                             }
                             else if (tags.contains("Player") && tags.contains("Enemy"))
@@ -268,12 +294,20 @@ public class World
                                 if (ballOne.color == ballTwo.color)
                                 {
                                     player.Combine(notPlayer(ballOne, ballTwo));
+                                    if (shouldSFXPlay)
+                                    {
+                                        playerEatsEnemySound.play();
+                                    }
                                     game.vibrateForInterval(50);
                                 }
                                 else
                                 {
                                     unregister(ballOne);
                                     unregister(ballTwo);
+                                    if (shouldSFXPlay)
+                                    {
+                                        deathSound.play();
+                                    }
                                     game.setGameState(Game.GAMESTATE.GameOver);
                                 }
                             }
