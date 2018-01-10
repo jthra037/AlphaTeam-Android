@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import nosleep.androidgames.framework.Audio;
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Input;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Screen;
+import nosleep.androidgames.framework.Sound;
 import nosleep.game.framework.Button;
 
 /**
@@ -27,12 +29,15 @@ public class SettingsScreen extends Screen {
 
     private Pixmap gameTitle;
     Graphics g;
+    Audio a;
     Rect backGround;
 
     private Pixmap checked;
     private Pixmap unchecked;
     private Pixmap handHeldPlayButton;
+    private Pixmap sfxButton;
     private Pixmap backButton;
+    private Sound buttonSound;
     private Paint titleTextPaint;
     private Paint bodyTextPaint;
     Typeface tf;
@@ -40,19 +45,27 @@ public class SettingsScreen extends Screen {
     private List<Button> buttons = new ArrayList<Button>();
 
     private boolean handheldPlay;
+    private boolean enableSFX;
 
 
     public SettingsScreen (final Game game)
     {
         super(game);
         g = game.getGraphics();
+        a = game.getAudio();
         backGround = new Rect(0,0,g.getWidth()+1,g.getHeight());
+
+        buttonSound = a.newSound("Sounds/SFX/buttonsound.wav");
 
         settings = game.getSharedPreferences();
         handheldPlay = settings.getBoolean("handHeldPlay",false); //false is the value if shared preferences doesn't exist
+        enableSFX = settings.getBoolean("enableSFX",true); //true is the value, if shared preferences doesn't exist
 
         handHeldPlayButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(handHeldPlayButton,125,125);
+
+        sfxButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(sfxButton,125,125);
 
         unchecked = g.newPixmap("buttons/unchecked.png", Graphics.PixmapFormat.ARGB4444);
         g.resizePixmap(unchecked,125,125);
@@ -67,6 +80,11 @@ public class SettingsScreen extends Screen {
         else
             handHeldPlayButton.setBitmap(unchecked.getBitmap());
 
+        if (enableSFX)
+            sfxButton.setBitmap(checked.getBitmap());
+        else
+            sfxButton.setBitmap(unchecked.getBitmap());
+
 
 
         buttons.add(new Button(game,handHeldPlayButton, new Callable<Void>(){
@@ -74,7 +92,12 @@ public class SettingsScreen extends Screen {
                 handheldPlay = !handheldPlay;
                 toggleHandHeldPlay(handheldPlay);
                 toggleCheckbox(handHeldPlayButton,handheldPlay);
-                Log.d("Temp boolean", String.valueOf(settings.getBoolean("handHeldPlay",false)));
+                if (enableSFX)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(50);
+                //Log.d("Temp boolean", String.valueOf(settings.getBoolean("handHeldPlay",false)));
                 return null;
             }
         }, new Callable<Void>(){
@@ -88,6 +111,11 @@ public class SettingsScreen extends Screen {
 
         buttons.add(new Button(game,backButton, new Callable<Void>(){
             public Void call() {
+                if (enableSFX)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(50);
                 game.setScreen(new MainMenuScreen(game));
                 return null;
             }
@@ -99,6 +127,28 @@ public class SettingsScreen extends Screen {
         } ));
         buttons.get(1).resize(100,100);
         buttons.get(1).setPosition(20, g.getHeight() - backButton.getHeight() - 20);
+
+        buttons.add(new Button(game,sfxButton, new Callable<Void>(){
+            public Void call() {
+                enableSFX = !enableSFX;
+                if (enableSFX)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(50);
+                toggleSFX(enableSFX);
+                toggleCheckbox(sfxButton,enableSFX);
+                //Log.d("Temp boolean", String.valueOf(settings.getBoolean("handHeldPlay",false)));
+                return null;
+            }
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
+        buttons.get(2).resize(125,125);
+        buttons.get(2).setPosition(100,350);
 
 
         setupTypefaces();//moved to a function so as not to clutter the constructor
@@ -159,6 +209,11 @@ public class SettingsScreen extends Screen {
         g.drawText("Hand Held Play: Zeroes Accelerometer ",240,260, bodyTextPaint);
         g.drawText("based on hand position as apposed to laying flat",240,315, bodyTextPaint);
 
+        g.drawText("Sound ",240,400, bodyTextPaint);
+        g.drawText("SFX",260,455, bodyTextPaint);
+
+
+
 
 
 
@@ -173,6 +228,7 @@ public class SettingsScreen extends Screen {
     public void pause() //what is called when you leave/close the app
     {
         toggleHandHeldPlay(handheldPlay);
+        toggleSFX(enableSFX);
     }
 
     @Override
@@ -223,9 +279,17 @@ public class SettingsScreen extends Screen {
     private void toggleHandHeldPlay(boolean val)
     {
         SharedPreferences.Editor editor = settings.edit();
-        editor.clear();
+        //editor.clear();
         editor.putBoolean("handHeldPlay", val);
         editor.commit();//always has to be last in order for your preferences to be saved
+    }
+
+    private void toggleSFX(boolean val)
+    {
+        SharedPreferences.Editor editor = settings.edit();
+        //editor.clear();
+        editor.putBoolean("enableSFX", val);
+        editor.commit();
     }
 
     void setupTypefaces()

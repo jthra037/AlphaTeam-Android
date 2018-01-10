@@ -1,6 +1,7 @@
 package nosleep.neonrush;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.widget.Toast;
 
@@ -9,11 +10,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+import nosleep.androidgames.framework.Audio;
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
 import nosleep.androidgames.framework.Input;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Screen;
+import nosleep.androidgames.framework.Sound;
+import nosleep.androidgames.framework.impl.AndroidAudio;
 import nosleep.game.framework.Button;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.IMath;
@@ -26,12 +30,19 @@ import nosleep.game.framework.IMath;
 public class MainMenuScreen extends Screen
 {
     Graphics g;
+    Audio a;
+    SharedPreferences settings;
     private Random random;
 
     //UI
     private Pixmap gameTitle;
     private Pixmap backGround;
     private List<Button> buttons = new ArrayList<>();
+
+    //Audio
+    private Sound playSound;
+    private Sound buttonSound;
+    private boolean shouldSFXPlay;
 
     //Background Color Effect.
     private List<Goal> balls = new ArrayList<>();
@@ -42,6 +53,14 @@ public class MainMenuScreen extends Screen
     {
         super(game);
         g = game.getGraphics();
+        a = game.getAudio();
+        settings = game.getSharedPreferences();
+
+        //Audio Loading
+        shouldSFXPlay = settings.getBoolean("enableSFX", true);
+        playSound = a.newSound("Sounds/SFX/playsound.wav");
+        buttonSound = a.newSound("Sounds/SFX/buttonsound.wav");
+
 
         //Background Layer.
         backGround = g.newPixmap("mainscreen1.png", Graphics.PixmapFormat.ARGB4444);
@@ -127,6 +146,10 @@ public class MainMenuScreen extends Screen
         Pixmap playButton = g.newPixmap("buttons/playbutton.png", Graphics.PixmapFormat.RGB565);
         buttons.add(new Button(game,playButton, new Callable<Void>(){
             public Void call() {
+                if (shouldSFXPlay)
+                {
+                    playSound.play();
+                }
                 game.vibrateForInterval(vibrateTime);
                 game.setScreen(new MainGameScreen(game));
                 return null;
@@ -147,12 +170,16 @@ public class MainMenuScreen extends Screen
                 game.vibrateForInterval(vibrateTime);
                 if (game.isSignedIn())
                 {
+                    if(shouldSFXPlay)
+                    {
+                        buttonSound.play();
+                    }
                     game.showAchievements();
                 }
                 else
                 {
                     Toast t = new Toast(game.getContext());
-                    t.makeText(game.getContext(), "Not sogned in", Toast.LENGTH_SHORT).show();
+                    t.makeText(game.getContext(), "Not signed in", Toast.LENGTH_SHORT).show();
                 }
                 return null;
             }
@@ -169,6 +196,10 @@ public class MainMenuScreen extends Screen
         Pixmap settingsButton = g.newPixmap("buttons/settingsbutton.png", Graphics.PixmapFormat.RGB565);
         buttons.add(new Button(game,settingsButton, new Callable<Void>(){
             public Void call() {
+                if (shouldSFXPlay)
+                {
+                    buttonSound.play();
+                }
                 game.vibrateForInterval(vibrateTime);
                 game.setScreen(new SettingsScreen(game));
                 game.showBanner();
@@ -190,6 +221,11 @@ public class MainMenuScreen extends Screen
                 game.vibrateForInterval(vibrateTime);
                 if (game.isSignedIn())
                 {
+                    if (shouldSFXPlay)
+                    {
+                        buttonSound.play();
+                    }
+
                     game.showLeaderboard();
                 }
                 else
