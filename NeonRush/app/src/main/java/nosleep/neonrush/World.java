@@ -80,8 +80,7 @@ public class World
     private List<Powerup> powerups = new ArrayList<>();
 
     //Timer and score metrics.
-    private long score = 0;
-    private long regTime = 0;
+    private float score = 0;
     private long lastEnemySpawn = 0;
     private long lastPuSpawn = 0;
     private Random r;
@@ -122,7 +121,6 @@ public class World
         dArrow.setAlpha(25);
 
         //Set timer related systems.
-        regTime = System.currentTimeMillis()/1000;
         lastEnemySpawn = System.currentTimeMillis();
         lastPuSpawn = System.currentTimeMillis() - 20000;
 
@@ -145,6 +143,7 @@ public class World
         switch(game.getGameState())
         {
             case Play:
+
 
                 //Add all objects to the registry that are in queue.
                 objects.addAll(registryList);
@@ -181,8 +180,7 @@ public class World
                    //Add score to the player.
                     if (object == player)
                     {
-                        score += (System.currentTimeMillis()/1000 - regTime) * player.getMass() * player.getMass();
-                        regTime = System.currentTimeMillis()/1000;
+                        score += (deltaTime/2.5f) * player.getMass() * player.getMass();
                     }
                 }
 
@@ -197,7 +195,6 @@ public class World
             case Pause:
 
                 Log.i("gameState", "Paused!");
-                regTime = System.currentTimeMillis()/1000;
 
                 break;
             case GameOver:
@@ -525,7 +522,8 @@ public class World
     {
         return String.valueOf(score);
     }
-    public long getLScore() {return score;}
+    public long getLScore() {return (long)score;}
+    public float getFScore(){return score;}
 
     //Compares two balls and returns the one that isn't the player.
     private Ball notPlayer(Object one, Object two)

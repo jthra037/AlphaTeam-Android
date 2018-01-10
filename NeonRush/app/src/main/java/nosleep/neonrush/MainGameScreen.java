@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -37,6 +38,7 @@ public class MainGameScreen extends Screen
     private Paint scorePaint;
     private Rect screenRect;
     private List<Button> buttons = new ArrayList<Button>();
+    DecimalFormat df = new DecimalFormat("#"); //to format the score
 
     //Audio
     private Sound achievementUnlockSound;
@@ -46,6 +48,8 @@ public class MainGameScreen extends Screen
     //Advertisement counters.
     private int adDisplayCount = 4;
     private int countBeforeAd;
+
+
 
     public MainGameScreen(final Game game)
     {
@@ -212,7 +216,7 @@ public class MainGameScreen extends Screen
         }
 
         //Draw the score and powerup count UI.
-        g.drawText(world.getScore(), g.getWidth()/2, 100, scorePaint);
+        g.drawText( df.format(world.getFScore()), g.getWidth()/2, 100, scorePaint);
         g.drawText(String.valueOf(world.getPlayer().PUColorphaseCount), 50, 100, scorePaint);
     }
 
