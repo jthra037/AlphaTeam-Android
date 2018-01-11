@@ -11,6 +11,7 @@ import nosleep.androidgames.framework.Pixmap;
 import nosleep.game.framework.CircleCollider;
 import nosleep.game.framework.FTuple;
 import nosleep.game.framework.Hit;
+import nosleep.game.framework.Object;
 
 /**
  * Created by Mark- on 17-Oct-17.
@@ -70,7 +71,6 @@ public class Player extends Ball
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        resolvePhysics(deltaTime);
 
         //Timer to return back to white while ColorPhased.
         if(PUColorphaseIsActive)
@@ -91,9 +91,6 @@ public class Player extends Ball
             PUColorphaseRatio = ((double)(System.currentTimeMillis() - PUTimeActivated) / (double)(PUTimeEnd - PUTimeActivated));
         }
 
-        //Move the player.
-        //world.ConvertToWorldSpace(position);
-        //localCoord = world.toLocalCoord(position);
         move();
     }
 
@@ -102,7 +99,7 @@ public class Player extends Ball
     {
         super.present(deltaTime, localCoord);
 
-        //Colorphase timer effect. Will turn off if we start using proper art, aka img != null.
+        //Colorphase timer effect.
         if(PUColorphaseIsActive)
         {
             if (backupImg == null)
@@ -163,12 +160,11 @@ public class Player extends Ball
         lastAccel = accel;
     }
 
-    private void resolvePhysics(float deltaTime)
+    void phaseCheck(Object other)
     {
+        CollisionCheck(other);
         if (!collisions.isEmpty())
         {
-            //If the player is trying to activate a powerup, check to see what powerups the player has.
-            boolean colorphasingThisFrame = false;  //Used to ignore a collision if the player decides to phase through. Prevents stutter.
             if (PUTriggerActive)
             {
                 for(Powerup pow : powerups)
@@ -184,33 +180,14 @@ public class Player extends Ball
                         //Denote accordingly.
                         PUTriggerActive = false;
                         PUColorphaseIsActive = true;
-                        colorphasingThisFrame = true;
 
+                        //Clear collisions for this frame to allow the player to pass.
+                        collisions.clear();
                         break;
                     }
                 }
             }
-
-            //If the player hasn't chosen to avoid the collision using ColorPhase, proceed.
-            /*if (!colorphasingThisFrame)
-            {
-                //Move forward until exact collision time (less than 1 frame of movement).
-                position = collision.worldSpaceLocation.Add(collision.GetNormal().Mul(radius + 1.0001f)); // Should this really have this here? AKA shouldn't you just solve why the ball sticks to walls instead
-                FTuple velocityRelTangent = velocity.ProjectedOnto(collision.GetTangent());
-                position = position.Add(velocityRelTangent.Mul(deltaTime - (collision.GetTStep() * deltaTime)));
-
-                //Hit resolved; clear the hit.
-                collision = new Hit();
-            }
-            else
-            {
-                position = position.Add(velocity.Mul(deltaTime));
-            }*/
         }
-        /*else
-        {
-            position = position.Add(velocity.Mul(deltaTime));
-        }*/
     }
 
     //Tweaked to account for Colorphasing.

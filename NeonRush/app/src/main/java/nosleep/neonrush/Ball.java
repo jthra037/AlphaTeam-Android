@@ -47,12 +47,12 @@ public abstract class Ball extends Object
     @Override
     public void update(float deltaTime)
     {
-        //If a collision is projected to occur this frame.
+        //If no collision is projected, move full velocity for this frame.
         if (collisions.isEmpty())
         {
             position = position.Add(velocity.Mul(deltaTime));
         }
-        //Otherwise move full velocity for this frame.
+        //Otherwise calculate the correct velocity accounting for the collision.
         else
         {
             FTuple velocityRelTangent = new FTuple(velocity);
@@ -72,8 +72,6 @@ public abstract class Ball extends Object
 
             position = earliest.worldSpaceLocation.Add(earliest.GetNormal().Mul(radius + 1.0001f));
             position = position.Add(velocityRelTangent.Mul(deltaTime - (earliest.GetTStep() * deltaTime))); // apply velocity along possible vector for remainder of frame
-
-            //position = position.Add(velocity.Mul(deltaTime));
 
             //Hit resolved; clear the hit.
             collisions.clear();
