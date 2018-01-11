@@ -14,6 +14,7 @@ import java.util.Random;
 import nosleep.androidgames.framework.Audio;
 import nosleep.androidgames.framework.Game;
 import nosleep.androidgames.framework.Graphics;
+import nosleep.androidgames.framework.Music;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Sound;
 import nosleep.game.framework.FTuple;
@@ -52,10 +53,11 @@ public class World
     //Audio
     private Sound goalPickupSound;
     private Sound powerupPickupSound;
-    private Sound powerupUseSound;
     private Sound deathSound;
     private Sound playerEatsEnemySound;
     private boolean shouldSFXPlay;
+    public Music inGameMusic;
+    private boolean shouldMusicPlay;
 
     //World info.
     public int worldSize;
@@ -106,10 +108,11 @@ public class World
         //Set audio
         goalPickupSound = a.newSound("Sounds/SFX/goalpickup.wav");
         powerupPickupSound = a.newSound("Sounds/SFX/poweruppickup.wav");
-        powerupUseSound = a.newSound("Sounds/SFX/powerupuse.wav");
         deathSound = a.newSound("Sounds/SFX/death.wav");
         playerEatsEnemySound = a.newSound("Sounds/SFX/playereatsenemy.wav");
         shouldSFXPlay = settings.getBoolean("enableSFX", true);
+        inGameMusic = a.newMusic("Sounds/Music/ingame.mp3");
+        shouldMusicPlay = settings.getBoolean("enableMusic", true);
 
         //Make the player, the viewport, and generate the level.
         player = new Player(this, "enemies/white.png");
@@ -123,6 +126,13 @@ public class World
         //Set timer related systems.
         lastEnemySpawn = System.currentTimeMillis();
         lastPuSpawn = System.currentTimeMillis() - 20000;
+
+        //Set the game music
+        if (shouldMusicPlay)
+        {
+            inGameMusic.play();
+            inGameMusic.setLooping(true);
+        }
 
         // Make some enemies
         for(int i = 0; i < 30; i++)
@@ -322,6 +332,10 @@ public class World
                             player.getCollider().OnOverlap(p, player.position))
                     {
                         p.acquire();
+                        if(shouldSFXPlay)
+                        {
+                            powerupPickupSound.play();
+                        }
                         unregister(p);
                     }
                 }
