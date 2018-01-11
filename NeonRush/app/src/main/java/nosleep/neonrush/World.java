@@ -36,8 +36,8 @@ public class World
         Color.BLUE, Color.YELLOW, Color.GRAY };
 
     //Obstacle art palette.
-    String[] obstaclePalette = {"obstacles/cyan.png","obstacles/green.png","obstacles/magenta.png",
-        "obstacles/red.png","obstacles/blue.png","obstacles/yellow.png","obstacles/grey.png"};
+    String[] obstaclePalette = {"obstacles/obstaclespatch9/cyan.9.png","obstacles/obstaclespatch9/green.9.png","obstacles/obstaclespatch9/magenta.9.png",
+        "obstacles/obstaclespatch9/red.9.png","obstacles/obstaclespatch9/blue.9.png","obstacles/obstaclespatch9/yellow.9.png","obstacles/obstaclespatch9/grey.9.png"};
 
     //Enemy art palette.
     String[] enemyPalette = {"enemies/cyan.png","enemies/green.png","enemies/magenta.png",
