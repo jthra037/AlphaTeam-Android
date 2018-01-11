@@ -165,10 +165,12 @@ public class World
                 resolvePhysics();
 
                 /*=======================::Timer End::==========================*/
+                /*
                 long timerResult = System.currentTimeMillis() - timer;
                 System.out.println("ms: " + timerResult +
                         ", %dt: " + (deltaTime * 1000) +
                 ", balls.size(): " + balls.size());
+                */
                 /*==============================================================*/
 
 
@@ -222,7 +224,7 @@ public class World
                     }
                 }
 
-                /*
+
                 //Draw Wrap Debug Lines.
                 FTuple zero = new FTuple(0.0f, 0.0f);
                 FTuple worldsize = new FTuple(getWidth(), getHeight());
@@ -230,7 +232,7 @@ public class World
                 g.drawLine(toLocalCoord(worldsize).x, toLocalCoord(zero).y, toLocalCoord(worldsize).x, toLocalCoord(worldsize).y, Color.RED);
                 g.drawLine(toLocalCoord(worldsize).x, toLocalCoord(worldsize).y, toLocalCoord(zero).x, toLocalCoord(worldsize).y, Color.RED);
                 g.drawLine(toLocalCoord(zero).x, toLocalCoord(worldsize).y, toLocalCoord(zero).x, toLocalCoord(zero).y, Color.RED);
-                */
+
 
                 //Render all the objects.
                 for (Object object : objects)
@@ -312,21 +314,38 @@ public class World
                     }
                 }
 
+                //Check if overlapping any powerups.
                 for (Powerup p : powerups)
                 {
-                    System.out.println("Before PU add: " + player.powerups);
-                    p.acquire();
-                    System.out.println("After PU add: " + player.powerups);
-                    unregister(p);
+                    if(player.position.Sub(p.position).LengthS() < maxDistSquared &&
+                            !deRegistryList.contains(p) &&
+                            player.getCollider().OnOverlap(p, player.position))
+                    {
+                        p.acquire();
+                        unregister(p);
+                    }
                 }
 
-                // Check ball on obstacle collisions
+                //Check ball on obstacle collisions.
                 try {
-                    for (Ball ball : balls) {
-                        for (Obstacle obstacle : obstacles) {
-                            if (ball.tag != "Goal" &&
-                                    ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared) {
+                    for (Ball ball : balls)
+                    {
+                        for (Obstacle obstacle : obstacles)
+                        {
+                            //For all cases except the player.
+                            if (ball.tag != "Player" &&
+                                ball.tag != "Goal" &&
+                                ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared &&
+                                ball.color != obstacle.color)
+                            {
                                 ball.CollisionCheck(obstacle);
+                            }
+                            //For the player, this accounts for colorphasing.
+                            else if (ball.tag != "Goal" &&
+                                    ball.getPosition().Sub(obstacle.getPosition()).LengthS() < maxDistSquared &&
+                                    ball.color != obstacle.color)
+                            {
+                                ((Player)ball).phaseCheck(obstacle);
                             }
                         }
                     }
@@ -384,7 +403,7 @@ public class World
 
     private void activateEnemies()
     {
-        int enemySpawnWait = 2000;  //5 seconds.
+        int enemySpawnWait = 20000;  //10 seconds.
 
         if (System.currentTimeMillis() > lastEnemySpawn + enemySpawnWait &&
                 !inactiveEnemies.isEmpty())
@@ -400,53 +419,53 @@ public class World
     //Spawn powerups at the appropriate time.
     private void spawnPowerups()
     {
-        int puSpawnWait = 20000;    //20 seconds.
+        int puSpawnWait = 10000;    //20 seconds.
         int puTypeNum = 1;          //Number of different powerup types.
 
         if(System.currentTimeMillis() > lastPuSpawn + puSpawnWait)
         {
-            FTuple pos = new FTuple(0.0f, 0.0f);
-            int radius = 10;
-            boolean inside = true;
+        FTuple pos = new FTuple(0.0f, 0.0f);
+        int radius = 10;
+        boolean inside = true;
 
-            //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
-            ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 0);
-            unregister(playerOb);
-            LevelGenny.placedObstacles.set(0, playerOb);
-            //Check against obstacle list to avoid spawning enemies inside obstacles.
-            while(inside)
+        //Set the impromptu player obstacle to the location of the player so that enemies won't spawn on/near the player.
+        ObRectangle playerOb = new ObRectangle(game, this, player.position, v.viewSize, 0);
+        unregister(playerOb);
+        LevelGenny.placedObstacles.set(0, playerOb);
+        //Check against obstacle list to avoid spawning enemies inside obstacles.
+        while(inside)
+        {
+            inside = false;
+            pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+
+            for(Obstacle ob : LevelGenny.placedObstacles)
             {
-                inside = false;
-                pos = new FTuple((float) r.nextInt((int) getWidth()), (float) r.nextInt((int) getHeight()));
+                ObRectangle rect = (ObRectangle) ob;
 
-                for(Obstacle ob : LevelGenny.placedObstacles)
+                if ((pos.x + radius) > (rect.position.x - (rect.getSize().x / 2)) &&
+                        (pos.x - radius) < (rect.position.x + (rect.getSize().x / 2)) &&
+                        (pos.y + radius) > (rect.position.y - (rect.getSize().y / 2)) &&
+                        (pos.y + radius) < (rect.position.y + (rect.getSize().y / 2)))
                 {
-                    ObRectangle rect = (ObRectangle) ob;
-
-                    if ((pos.x + radius) > (rect.position.x - rect.getSize().x) &&
-                            (pos.x - radius) < (rect.position.x + rect.getSize().x) &&
-                            (pos.y + radius) > (rect.position.y - rect.getSize().y) &&
-                            (pos.y + radius) < (rect.position.y + rect.getSize().y))
-                    {
-                        inside = true;
-                        System.out.println("TRIED TO PLACE POWERUP INSIDE OBSTACLE.");
-                        break;
-                    }
+                    inside = true;
+                    System.out.println("TRIED TO PLACE POWERUP INSIDE OBSTACLE.");
+                    break;
                 }
             }
-
-            lastPuSpawn = System.currentTimeMillis();
-
-            //Selects a random powerup type to spawn.
-            //Value between 0 INCLUSIVE and number of different powerup types EXCLUSIVE.
-            int whichPU = r.nextInt(puTypeNum);
-            switch(whichPU)
-            {
-                case 0:
-                    new PUColorphase(this, pos);
-                    break;
-            }
         }
+
+        lastPuSpawn = System.currentTimeMillis();
+
+        //Selects a random powerup type to spawn.
+        //Value between 0 INCLUSIVE and number of different powerup types EXCLUSIVE.
+        int whichPU = r.nextInt(puTypeNum);
+        switch(whichPU)
+        {
+            case 0:
+                PUColorphase newP = new PUColorphase(this, pos);
+                break;
+        }
+    }
     }
 
     //Used to register and unregister objects to be updated, presented etc.

@@ -7,7 +7,7 @@ import nosleep.neonrush.Ball;
  */
 
 public class CircleCollider extends Collider {
-    private int radius = 5;
+    private int radius;
     private ITuple offset = new ITuple(0,0);
     private Object object;
 

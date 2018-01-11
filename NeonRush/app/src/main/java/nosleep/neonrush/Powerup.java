@@ -48,7 +48,7 @@ public abstract class Powerup extends Object
     public void update(float deltaTime)
     {
         lifetime = System.currentTimeMillis() - timespawned;
-        setAlpha(100.0f - (lifetime / timeout * 100.f));    //Not working as intended yet.
+        //setAlpha(100.0f - (lifetime / timeout * 100.f));    //Not working as intended yet.
 
         if(lifetime >= timeout)
         {
