@@ -43,6 +43,7 @@ public class MainGameScreen extends Screen
     //Audio
     private Sound achievementUnlockSound;
     private Sound buttonSound;
+    private Sound playSound;
     private boolean shouldSFXPlay;
 
     //Advertisement counters.
@@ -70,6 +71,7 @@ public class MainGameScreen extends Screen
         //Create Audio
         achievementUnlockSound = a.newSound("Sounds/SFX/achievementunlocked.wav");
         buttonSound = a.newSound("Sounds/SFX/buttonsound.wav");
+        playSound = a.newSound("Sounds/SFX/playsound.wav");
         shouldSFXPlay = settings.getBoolean("enableSFX", true);
 
         //Create the font used in menus.
@@ -319,7 +321,7 @@ public class MainGameScreen extends Screen
                     game.submitScore((int)world.getLScore()); //when user quits the game, their score is submitted to be evaluated
                     if (shouldSFXPlay)
                     {
-                        buttonSound.play();
+                        playSound.play();
                     }
                     game.vibrateForInterval(vibrateTime);
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
