@@ -597,6 +597,13 @@ public class MainGameScreen extends Screen
             game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
             buttons.get(1).hide(false);
             buttons.get(2).hide(false);
+            buttons.get(5).hide(false);
+            buttons.get(6).hide(false);
+
+            if (world.inGameMusic != null)
+            {
+                world.inGameMusic.pause();
+            }
         }
     }
 
@@ -606,6 +613,12 @@ public class MainGameScreen extends Screen
         game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
         buttons.get(1).hide(false);
         buttons.get(2).hide(false);
+        buttons.get(5).hide(false);
+        buttons.get(6).hide(false);
+        if (world.inGameMusic != null)
+        {
+            world.inGameMusic.pause();
+        }
     }
 
     @Override
