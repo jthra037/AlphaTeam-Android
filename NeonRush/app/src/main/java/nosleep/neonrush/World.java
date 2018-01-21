@@ -63,6 +63,7 @@ public class World
     private float worldHeight;
     private float gravity = -8;
     private LevelGenerator LevelGenny;
+    static public float DT;
 
     //Gameplay objects.
     private Player player;
@@ -140,6 +141,8 @@ public class World
     public void update(float deltaTime)
     {
         //Cascade update to objects based on gamestate.
+        DT = deltaTime;
+
         switch(game.getGameState())
         {
             case Play:

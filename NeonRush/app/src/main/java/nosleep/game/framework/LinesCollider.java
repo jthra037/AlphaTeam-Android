@@ -90,7 +90,8 @@ public class LinesCollider extends Collider {
         {
             FTuple loi = other.getPosition().Add(line.getNormal().Mul(-other.getRadius()));
             // One day we will need relative velocity here
-            Line otherLine = new Line(loi, other.getVelocity().Mul(0.05f), w); // this should be replaced with something other than a hardcoded approximation
+
+            Line otherLine = new Line(loi, other.getVelocity().Mul(w.DT), w); // this should be replaced with something other than a hardcoded approximation
 
             float p = other.getRadius()/line.getDirection().Length();
 
