@@ -19,6 +19,7 @@ import nosleep.androidgames.framework.Input;
 import nosleep.androidgames.framework.Pixmap;
 import nosleep.androidgames.framework.Screen;
 import nosleep.androidgames.framework.Sound;
+import nosleep.androidgames.framework.impl.AndroidMusic;
 import nosleep.game.framework.Button;
 
 /**
@@ -35,16 +36,24 @@ public class MainGameScreen extends Screen
 
     //UI.
     private Paint textPaint;
+    private Paint bodyPaint;
     private Paint scorePaint;
     private Rect screenRect;
     private List<Button> buttons = new ArrayList<Button>();
     DecimalFormat df = new DecimalFormat("#"); //to format the score
+    Pixmap toggleSFXButton;
+    Pixmap toggleMusicButton;
+    Pixmap unchecked;
+    Pixmap checked;
+
+
 
     //Audio
     private Sound achievementUnlockSound;
     private Sound buttonSound;
     private Sound playSound;
     private boolean shouldSFXPlay;
+    private boolean shouldMusicPlay;
 
     //Advertisement counters.
     private int adDisplayCount = 4;
@@ -63,23 +72,35 @@ public class MainGameScreen extends Screen
         world = new World(game, g, a, worldSize);
         settings = game.getSharedPreferences();
 
-        //Create rect for pause / game over menu, and buttons.
-        screenRect = new Rect(0,0,800,400);
-        screenRect.set(g.getWidth()/2- screenRect.right/2,g.getHeight()/2-screenRect.bottom/2,screenRect.right,screenRect.bottom);
-        createButtons();
-
         //Create Audio
         achievementUnlockSound = a.newSound("Sounds/SFX/achievementunlocked.wav");
         buttonSound = a.newSound("Sounds/SFX/buttonsound.wav");
         playSound = a.newSound("Sounds/SFX/playsound.wav");
         shouldSFXPlay = settings.getBoolean("enableSFX", true);
+        shouldMusicPlay = settings.getBoolean("enableMusic", true);
 
-        //Create the font used in menus.
+        //Create rect for pause / game over menu, and buttons.
+        screenRect = new Rect(0,0,800,400);
+        screenRect.set(g.getWidth()/2- screenRect.right/2,g.getHeight()/2-screenRect.bottom/2,screenRect.right,screenRect.bottom);
+        unchecked = g.newPixmap("buttons/uncheckedblack.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(unchecked,100,100);
+        checked = g.newPixmap("buttons/checkedblack.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(checked,100,100);
+        createButtons();
+        toggleSoundButtons();
+
+        //Create the title font used in menus.
         Typeface tf = Typeface.createFromAsset(g.getAssets(),"fonts/antoniobold.ttf");
         textPaint = new Paint();
         textPaint.setTypeface(tf);
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(100);
+
+        //Create the body font used in game
+        bodyPaint = new Paint();
+        bodyPaint.setTypeface(tf);
+        bodyPaint.setColor(Color.BLACK);
+        bodyPaint.setTextSize(50);
 
         //Create the font used for in game score.
         scorePaint = new Paint();
@@ -87,25 +108,14 @@ public class MainGameScreen extends Screen
         scorePaint.setStyle(Paint.Style.FILL);
         scorePaint.setTextSize(50);
 
-        //Create hitbox for powerup trigger. Invisible overlay. buttons.get(4)
-        buttons.add(new Button(game, 0, 88, g.getWidth(), g.getHeight() - 88, new Callable<Void>() {
-            public Void call()
-            {
-                world.getPlayer().PUTriggerActive = true;
-                return null;
-            }
-        }, new Callable<Void>() {
-            public Void call()
-            {
-                world.getPlayer().PUTriggerActive = false;
-                return null;
-            }
-        } ));
+
 
         //Hiding the buttons after initialization so they don't show up immediately.
         buttons.get(1).hide(true);
         buttons.get(2).hide(true);
         buttons.get(3).hide(true);
+        buttons.get(5).hide(true);
+        buttons.get(6).hide(true);
 
         //Start the game.
         countBeforeAd = settings.getInt("adCount", 0);
@@ -236,10 +246,16 @@ public class MainGameScreen extends Screen
                 buttons.get(1).hide(false);
                 buttons.get(2).hide(false);
                 buttons.get(4).hide(true);
+                buttons.get(5).hide(false);
+                buttons.get(6).hide(false);
                 game.setGameState(Game.GAMESTATE.Pause);
                 if (shouldSFXPlay)
                 {
                     buttonSound.play();
+                }
+                if (world.inGameMusic != null)
+                {
+                    world.inGameMusic.pause();
                 }
                 game.vibrateForInterval(vibrateTime);
                 return null;
@@ -260,10 +276,26 @@ public class MainGameScreen extends Screen
                 buttons.get(1).hide(true);
                 buttons.get(2).hide(true);
                 buttons.get(4).hide(false);
+                buttons.get(5).hide(true);
+                buttons.get(6).hide(true);
                 game.setGameState(Game.GAMESTATE.Play);
                 if (shouldSFXPlay)
                 {
                     buttonSound.play();
+                }
+
+
+                if (world.inGameMusic != null)
+                {
+                    if (shouldMusicPlay)
+                    {
+                        world.inGameMusic.play();
+                    }
+                    else
+                    {
+                        world.inGameMusic.pause();
+                    }
+
                 }
                 game.vibrateForInterval(vibrateTime);
                 return null;
@@ -288,6 +320,10 @@ public class MainGameScreen extends Screen
                     if (shouldSFXPlay)
                     {
                         buttonSound.play();
+                    }
+                    if (world.inGameMusic != null)
+                    {
+                        world.inGameMusic.stop();
                     }
                     game.vibrateForInterval(vibrateTime);
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
@@ -323,6 +359,10 @@ public class MainGameScreen extends Screen
                     {
                         playSound.play();
                     }
+                    if (world.inGameMusic != null)
+                    {
+                        world.inGameMusic.stop();
+                    }
                     game.vibrateForInterval(vibrateTime);
                     milestonecheck(); //to check whether or not play has met criteria for unlocking achievements based on score
                 }
@@ -342,18 +382,93 @@ public class MainGameScreen extends Screen
         } ));
         buttons.get(3).resize(butWidth, butHeight);
         buttons.get(3).setPosition((g.getWidth()/2 - replayButton.getWidth()/2) ,g.getHeight()/2 - replayButton.getHeight());
+
+        //Create hitbox for powerup trigger. Invisible overlay. buttons.get(4)
+        buttons.add(new Button(game, 0, 88, g.getWidth(), g.getHeight() - 88, new Callable<Void>() {
+            public Void call()
+            {
+                world.getPlayer().PUTriggerActive = true;
+                return null;
+            }
+        }, new Callable<Void>() {
+            public Void call()
+            {
+                world.getPlayer().PUTriggerActive = false;
+                return null;
+            }
+        } ));
+
+
+        //Toggle SFX on Pause Menu
+        toggleSFXButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(toggleSFXButton,100,100);
+        buttons.add(new Button(game,toggleSFXButton, new Callable<Void>(){
+            public Void call() {
+
+                shouldSFXPlay = !shouldSFXPlay;
+                if (shouldSFXPlay)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(50);
+                toggleSFX(shouldSFXPlay);
+                toggleCheckbox(toggleSFXButton,shouldSFXPlay);
+
+                return null;
+            }
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
+        buttons.get(5).setPosition(g.getWidth()/2 - 325, g.getHeight()/2 );
+
+        //Toggle Music on Pause Menu
+        toggleMusicButton = g.newPixmap("emptyimage.png", Graphics.PixmapFormat.ARGB4444);
+        g.resizePixmap(toggleSFXButton,100,100);
+        buttons.add(new Button(game,toggleMusicButton, new Callable<Void>(){
+            public Void call() {
+
+                shouldMusicPlay = !shouldMusicPlay;
+                if (shouldSFXPlay)
+                {
+                    buttonSound.play();
+                }
+                game.vibrateForInterval(50);
+                toggleMusic(shouldMusicPlay);
+                toggleCheckbox(toggleMusicButton,shouldMusicPlay);
+
+                return null;
+            }
+        }, new Callable<Void>(){
+            public Void call()
+            {
+                return null;
+            }
+        } ));
+        buttons.get(6).setPosition(g.getWidth()/2 + 200, g.getHeight()/2);
+
+
     }
 
     private void createPauseMenu()
     {
         g.drawARGBRect(screenRect,255,255,255,255);
         g.drawText("PAUSED",g.getWidth()/2 - 130,g.getHeight()/2 - 100, textPaint);
+        g.drawText("Toggle SFX", g.getWidth()/2 - 375, g.getHeight()/2 - 25,bodyPaint);
+        g.drawText("Toggle Music", g.getWidth()/2 + 125, g.getHeight()/2 - 25,bodyPaint);
     }
 
     private void createGameOverScreen()
     {
         g.drawARGBRect(screenRect,255,255,0,0);
         g.drawText("You are Dead.",g.getWidth()/2 - 250,g.getHeight()/2 - 100, textPaint);
+        if (world.inGameMusic != null)
+        {
+            world.inGameMusic.stop();
+        }
+
     }
 
     private void milestonecheck()
@@ -417,6 +532,63 @@ public class MainGameScreen extends Screen
         }
     }
 
+    private void toggleSoundButtons()
+    {
+        if (shouldSFXPlay)
+        {
+            toggleSFXButton.setBitmap(checked.getBitmap());
+        }
+        else
+        {
+            toggleSFXButton.setBitmap(unchecked.getBitmap());
+        }
+
+        if (shouldMusicPlay)
+        {
+            toggleMusicButton.setBitmap(checked.getBitmap());
+        }
+        else
+        {
+            toggleMusicButton.setBitmap(unchecked.getBitmap());
+        }
+    }
+
+    private void toggleSFX(boolean val)
+    {
+        SharedPreferences.Editor editor = settings.edit();
+        //editor.clear();
+        editor.putBoolean("enableSFX", val);
+        editor.commit();
+    }
+
+    private void toggleMusic(boolean val)
+    {
+        SharedPreferences.Editor editor = settings.edit();
+        //editor.clear();
+        editor.putBoolean("enableMusic", val);
+        editor.commit();
+    }
+
+    private void toggleCheckbox(Pixmap target, boolean val)
+    {
+        if(val)
+        {
+            Log.d("toggleCheckbox","bitmap to checked");
+            if(checked.getBitmap() != null)
+            {
+                target.setBitmap(checked.getBitmap());
+            }
+        }
+        else
+        {
+            Log.d("toggleCheckbox","bitmap to unchecked");
+            if (unchecked.getBitmap() != null)
+            {
+                target.setBitmap(unchecked.getBitmap());
+            }
+        }
+    }
+
     @Override
     public void focusChanged(boolean hasFocus)
     {
@@ -425,6 +597,13 @@ public class MainGameScreen extends Screen
             game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
             buttons.get(1).hide(false);
             buttons.get(2).hide(false);
+            buttons.get(5).hide(false);
+            buttons.get(6).hide(false);
+
+            if (world.inGameMusic != null)
+            {
+                world.inGameMusic.pause();
+            }
         }
     }
 
@@ -434,6 +613,12 @@ public class MainGameScreen extends Screen
         game.setGameState(Game.GAMESTATE.Pause); //pause the game if user leaves the screen, or accidentally leaves the game
         buttons.get(1).hide(false);
         buttons.get(2).hide(false);
+        buttons.get(5).hide(false);
+        buttons.get(6).hide(false);
+        if (world.inGameMusic != null)
+        {
+            world.inGameMusic.pause();
+        }
     }
 
     @Override
